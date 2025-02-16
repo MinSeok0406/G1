@@ -15,4 +15,10 @@ class PacketHandler
 		ClientSession clientSession = (ClientSession)session;
 		clientSession.HandlePong();
 	}
+
+    public static void C_MoveHandler(PacketSession session, IMessage packet)
+    {
+		C_Move movepacket = (C_Move)packet;
+        ClientSession clientSession = (ClientSession)session;
+    }
 }

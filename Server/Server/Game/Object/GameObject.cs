@@ -42,11 +42,11 @@ namespace Server.Game
 
 		}
 
-		public Vector2Int CellPos
+		public Vector2Float CellPos
 		{
 			get
 			{
-				return new Vector2Int(PosInfo.PosX, PosInfo.PosY);
+				return new Vector2Float(PosInfo.PosX, PosInfo.PosY);
 			}
 
 			set
@@ -56,35 +56,35 @@ namespace Server.Game
 			}
 		}
 
-		public Vector2Int GetFrontCellPos()
+		public Vector2Float GetFrontCellPos()
 		{
 			return GetFrontCellPos(PosInfo.MoveDir);
 		}
 
-		public Vector2Int GetFrontCellPos(MoveDir dir)
+		public Vector2Float GetFrontCellPos(MoveDir dir)
 		{
-			Vector2Int cellPos = CellPos;
+			Vector2Float cellPos = CellPos;
 
 			switch (dir)
 			{
 				case MoveDir.Up:
-					cellPos += Vector2Int.up;
+					cellPos += Vector2Float.up;
 					break;
 				case MoveDir.Down:
-					cellPos += Vector2Int.down;
+					cellPos += Vector2Float.down;
 					break;
 				case MoveDir.Left:
-					cellPos += Vector2Int.left;
+					cellPos += Vector2Float.left;
 					break;
 				case MoveDir.Right:
-					cellPos += Vector2Int.right;
+					cellPos += Vector2Float.right;
 					break;
 			}
 
 			return cellPos;
 		}
 
-		public static MoveDir GetDirFromVec(Vector2Int dir)
+		public static MoveDir GetDirFromVec(Vector2Float dir)
 		{
 			if (dir.x > 0)
 				return MoveDir.Right;

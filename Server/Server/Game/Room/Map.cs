@@ -9,9 +9,9 @@ namespace Server.Game
 {
 	public struct Pos
 	{
-		public Pos(int y, int x) { Y = y; X = x; }
-		public int Y;
-		public int X;
+		public Pos(float y, float x) { Y = y; X = x; }
+		public float Y;
+		public float X;
 
 		public static bool operator==(Pos lhs, Pos rhs)
 		{
@@ -28,24 +28,29 @@ namespace Server.Game
 			return (Pos)obj == this;
         }
 
-        public override int GetHashCode()
+        /*public override int GetHashCode()
         {
-			long value = (Y << 32) | X;
+			long value = (Y << 32.0f) | X;
             return value.GetHashCode();
-        }
+        }*/
 
         public override string ToString()
         {
             return base.ToString();
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Y, X);
+        }
     }
 
 	public struct PQNode : IComparable<PQNode>
 	{
-		public int F;
-		public int G;
-		public int Y;
-		public int X;
+		public float F;
+		public float G;
+		public float Y;
+		public float X;
 
 		public int CompareTo(PQNode other)
 		{
@@ -55,31 +60,31 @@ namespace Server.Game
 		}
 	}
 
-	public struct Vector2Int
+	public struct Vector2Float
 	{
-		public int x;
-		public int y;
+		public float x;
+		public float y;
 
-		public Vector2Int(int x, int y) { this.x = x; this.y = y; }
+		public Vector2Float(float x, float y) { this.x = x; this.y = y; }
 
-		public static Vector2Int up { get { return new Vector2Int(0, 1); } }
-		public static Vector2Int down { get { return new Vector2Int(0, -1); } }
-		public static Vector2Int left { get { return new Vector2Int(-1, 0); } }
-		public static Vector2Int right { get { return new Vector2Int(1, 0); } }
+		public static Vector2Float up { get { return new Vector2Float(0.0f, 1.0f); } }
+		public static Vector2Float down { get { return new Vector2Float(0.0f, -1.0f); } }
+		public static Vector2Float left { get { return new Vector2Float(-1.0f, 0.0f); } }
+		public static Vector2Float right { get { return new Vector2Float(1.0f, 0.0f); } }
 
-		public static Vector2Int operator+(Vector2Int a, Vector2Int b)
+		public static Vector2Float operator+(Vector2Float a, Vector2Float b)
 		{
-			return new Vector2Int(a.x + b.x, a.y + b.y);
+			return new Vector2Float(a.x + b.x, a.y + b.y);
 		}
 
-		public static Vector2Int operator -(Vector2Int a, Vector2Int b)
+		public static Vector2Float operator -(Vector2Float a, Vector2Float b)
 		{
-			return new Vector2Int(a.x - b.x, a.y - b.y);
+			return new Vector2Float(a.x - b.x, a.y - b.y);
 		}
 
 		public float magnitude { get { return (float)Math.Sqrt(sqrMagnitude); } }
-		public int sqrMagnitude { get { return (x * x + y * y); } }
-		public int cellDistFromZero { get { return Math.Abs(x) + Math.Abs(y); } }
+		public float sqrMagnitude { get { return (x * x + y * y); } }
+		public float cellDistFromZero { get { return Math.Abs(x) + Math.Abs(y); } }
 	}
 
 	public class Map
@@ -92,31 +97,32 @@ namespace Server.Game
 		public int SizeX { get { return MaxX - MinX + 1; } }
 		public int SizeY { get { return MaxY - MinY + 1; } }
 
-		bool[,] _collision;
-		GameObject[,] _objects;
+		//bool[,] _collision;
+		GameObject _objects;
 
-		public bool CanGo(Vector2Int cellPos, bool checkObjects = true)
+		public bool CanGo(Vector2Float cellPos, bool checkObjects = true)
 		{
 			if (cellPos.x < MinX || cellPos.x > MaxX)
 				return false;
 			if (cellPos.y < MinY || cellPos.y > MaxY)
 				return false;
 
-			int x = cellPos.x - MinX;
-			int y = MaxY - cellPos.y;
-			return !_collision[y, x] && (!checkObjects || _objects[y, x] == null);
+			float x = cellPos.x - MinX;
+			float y = MaxY - cellPos.y;
+			return true;
+			//!_collision[y, x] && (!checkObjects || _objects[y, x] == null);
 		}
 
-		public GameObject Find(Vector2Int cellPos)
+		public GameObject Find(Vector2Float cellPos)
 		{
 			if (cellPos.x < MinX || cellPos.x > MaxX)
 				return null;
 			if (cellPos.y < MinY || cellPos.y > MaxY)
 				return null;
 
-			int x = cellPos.x - MinX;
-			int y = MaxY - cellPos.y;
-			return _objects[y, x];
+			float x = cellPos.x - MinX;
+			float y = MaxY - cellPos.y;
+			return _objects;
 		}
 
 		public bool ApplyLeave(GameObject gameObject)
@@ -133,20 +139,21 @@ namespace Server.Game
 				return false;
 
 			// Zone
-			Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
-			zone.Remove(gameObject);
+			/*Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
+			zone.Remove(gameObject);*/
 
+			// TODO
 			{
-				int x = posInfo.PosX - MinX;
-				int y = MaxY - posInfo.PosY;
-				if (_objects[y, x] == gameObject)
-					_objects[y, x] = null;
+				float x = posInfo.PosX - MinX;
+                float y = MaxY - posInfo.PosY;
+				if (_objects == gameObject)
+					_objects = null;
 			}
 
 			return true;
 		}
 
-		public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true)
+		public bool ApplyMove(GameObject gameObject, Vector2Float dest, bool checkObjects = true, bool collision = true)
 		{
 			// 예외 처리
 			if (gameObject.Room == null)
@@ -163,22 +170,23 @@ namespace Server.Game
 			// 목적지에 나를 텔레포트 시킴
 			if (collision)
 			{
+				// TODO
                 {
-                    int x = posInfo.PosX - MinX;
-                    int y = MaxY - posInfo.PosY;
-                    if (_objects[y, x] == gameObject)
-                        _objects[y, x] = null;
+                    float x = posInfo.PosX - MinX;
+                    float y = MaxY - posInfo.PosY;
+                    if (_objects == gameObject)
+                        _objects = null;
                 }
 
 				{
-                    int x = dest.x - MinX;
-                    int y = MaxY - dest.y;
-                    _objects[y, x] = gameObject;
+                    float x = dest.x - MinX;
+                    float y = MaxY - dest.y;
+                    _objects = gameObject;
                 }
 			}
 			
 			// Zone
-			GameObjectType type = GameObjectType.Player;
+			/*GameObjectType type = GameObjectType.Player;
 			if (type == GameObjectType.Player)
 			{
                 Player player = (Player)gameObject;
@@ -190,7 +198,7 @@ namespace Server.Game
                     now.Players.Remove(player);
                     now.Players.Add(player);
                 }
-            }
+            }*/
 
 			// 실제 좌표 이동
 			posInfo.PosX = dest.x;
@@ -199,7 +207,7 @@ namespace Server.Game
 		}
 
 		// 문제 가능성 있음
-		public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
+		/*public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
 		{
 			string mapName = "Map_" + mapId.ToString("000");
 
@@ -225,7 +233,7 @@ namespace Server.Game
 					_collision[y, x] = (line[x] == '1' ? true : false);
 				}
 			}
-		}
+		}*/
 
 		#region A* PathFinding
 
@@ -234,7 +242,7 @@ namespace Server.Game
 		int[] _deltaX = new int[] { 0, 0, -1, 1 };
 		int[] _cost = new int[] { 10, 10, 10, 10 };
 
-		public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects = true, int maxDist = 10)
+		public List<Vector2Float> FindPath(Vector2Float startCellPos, Vector2Float destCellPos, bool checkObjects = true, int maxDist = 10)
 		{
 			List<Pos> path = new List<Pos>();
 
@@ -250,7 +258,7 @@ namespace Server.Game
             // (y, x) 가는 길을 한 번이라도 발견했는지
             // 발견X => MaxValue
             // 발견O => F = G + H
-			Dictionary<Pos, int> openList = new Dictionary<Pos, int>();	// OpenList
+			Dictionary<Pos, float> openList = new Dictionary<Pos, float>();	// OpenList
 
 			// 첫 번째 인자값의 키 값을 가져와서 두 번째 인자값이 부모 값으로 설정
 			Dictionary<Pos, Pos> parent = new Dictionary<Pos, Pos>();
@@ -306,11 +314,11 @@ namespace Server.Game
 						continue;
 
 					// 비용 계산
-					int g = 0;// node.G + _cost[i];
-					int h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
+					float g = 0.0f;// node.G + _cost[i];
+					float h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
 
 					// 다른 경로에서 더 빠른 길 이미 찾았으면 스킵
-					int value = 0;
+					float value = 0;
 					if (openList.TryGetValue(next, out value) == false)
                         value = Int32.MaxValue;
 
@@ -331,18 +339,18 @@ namespace Server.Game
 			return CalcCellPathFromParent(parent, dest);
 		}
 
-		List<Vector2Int> CalcCellPathFromParent(Dictionary<Pos, Pos> parent, Pos dest)
+		List<Vector2Float> CalcCellPathFromParent(Dictionary<Pos, Pos> parent, Pos dest)
 		{
-			List<Vector2Int> cells = new List<Vector2Int>();
+			List<Vector2Float> cells = new List<Vector2Float>();
 
 			if (parent.ContainsKey(dest) == false)
 			{
 				Pos best = new Pos();
-				int bestDist = Int32.MaxValue;
+				float bestDist = Int32.MaxValue;
 
 				foreach (Pos pos in parent.Keys)
 				{
-					int dist = Math.Abs(dest.X - pos.X) + Math.Abs(dest.Y - pos.Y);
+					float dist = Math.Abs(dest.X - pos.X) + Math.Abs(dest.Y - pos.Y);
 					// 제일 우수한 후보를 뽑는다
 					if (dist < bestDist)
 					{
@@ -368,16 +376,16 @@ namespace Server.Game
 			return cells;
 		}
 
-		Pos Cell2Pos(Vector2Int cell)
+		Pos Cell2Pos(Vector2Float cell)
 		{
 			// CellPos -> ArrayPos
 			return new Pos(MaxY - cell.y, cell.x - MinX);
 		}
 
-		Vector2Int Pos2Cell(Pos pos)
+		Vector2Float Pos2Cell(Pos pos)
 		{
 			// ArrayPos -> CellPos
-			return new Vector2Int(pos.X + MinX, MaxY - pos.Y);
+			return new Vector2Float(pos.X + MinX, MaxY - pos.Y);
 		}
 
 		#endregion

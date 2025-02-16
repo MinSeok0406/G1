@@ -99,11 +99,6 @@ namespace Server
 		{
 			//Console.WriteLine($"OnConnected : {endPoint}");
 
-			{
-				S_Connected connectedPacket = new S_Connected();
-				Send(connectedPacket);
-			}
-
 			GameLogic.Instance.PushAfter(5000, Ping);
 		}
 

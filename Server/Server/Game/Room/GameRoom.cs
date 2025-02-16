@@ -15,17 +15,17 @@ namespace Server.Game
 		Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
 		public Zone[,] Zones { get; private set; }
-		public int ZoneCells { get; private set; }
+		public float ZoneCells { get; private set; }
 
 		public Map Map { get; private set; } = new Map();
 
-		public Zone GetZone(Vector2Int cellPos)
+		/*public Zone GetZone(Vector2Float cellPos)
 		{
-			int x = (cellPos.x - Map.MinX) / ZoneCells;
-			int y = (Map.MaxY - cellPos.y) / ZoneCells;
+			float x = (cellPos.x - Map.MinX) / ZoneCells;
+			float y = (Map.MaxY - cellPos.y) / ZoneCells;
 
 			return GetZone(y, x);
-        }
+        }*/
 
 		public Zone GetZone(int indexY, int indexX)
 		{
@@ -70,7 +70,7 @@ namespace Server.Game
 
 			if (randomPos)
 			{
-                Vector2Int respawnPos;
+                Vector2Float respawnPos;
                 while (true)
                 {
                     respawnPos.x = _rand.Next(Map.MinX, Map.MaxX + 1);
@@ -92,9 +92,9 @@ namespace Server.Game
 				//_players.Add(gameObject.Id, player);
 				player.Room = this;
 
-				Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
+				Map.ApplyMove(player, new Vector2Float(player.CellPos.x, player.CellPos.y));
 
-				GetZone(player.CellPos).Players.Add(player);
+				//GetZone(player.CellPos).Players.Add(player);
 
 				// 본인한테 정보 전송
 				{
@@ -118,7 +118,7 @@ namespace Server.Game
 		{
 			GameObjectType type = ObjectManager.GetObjectTypeById(objectId);
 
-			Vector2Int cellPos;
+			Vector2Float cellPos;
 
 			if (type == GameObjectType.Player)
 			{
@@ -163,20 +163,20 @@ namespace Server.Game
 		}
 
 		// 살짝 부담스러운 함수 -> 너무 많은 시간 복잡도를 가짐
-		public Player FindClosestPlayer(Vector2Int pos, int range)
+		/*public Player FindClosestPlayer(Vector2Float pos, int range)
 		{
 			List<Player> players = GetAdjacentPlayers(pos, range);
 
 			players.Sort((left, right) =>
 			{
-				int leftDist = (left.CellPos - pos).cellDistFromZero;
-				int rightDist = (right.CellPos - pos).cellDistFromZero;
+				float leftDist = (left.CellPos - pos).cellDistFromZero;
+				float rightDist = (right.CellPos - pos).cellDistFromZero;
 				return leftDist - rightDist;
 			});
 
 			foreach (Player player in players)
 			{
-                List<Vector2Int> path = Map.FindPath(pos, player.CellPos, checkObjects: true);
+                List<Vector2Float> path = Map.FindPath(pos, player.CellPos, checkObjects: true);
 				if (path.Count < 2 || path.Count > range)
 					continue;
 
@@ -184,9 +184,9 @@ namespace Server.Game
             }
 
 			return null;
-		}
+		}*/
 
-		public void Broadcast(Vector2Int pos, IMessage packet)
+		/*public void Broadcast(Vector2Float pos, IMessage packet)
 		{
 			List<Zone> zones = GetAdjacentZones(pos);
 			
@@ -202,36 +202,36 @@ namespace Server.Game
 
                 p.Session.Send(packet);
 			}
-		}
+		}*/
 
-		public List<Player> GetAdjacentPlayers(Vector2Int pos, int range)
+		/*public List<Player> GetAdjacentPlayers(Vector2Float pos, int range)
 		{
 			List<Zone> zones = GetAdjacentZones(pos, range);
 			return zones.SelectMany(z => z.Players).ToList();
-		}
+		}*/
 
-		public List<Zone> GetAdjacentZones(Vector2Int cellPos, int range = GameRoom.VisionCells)
+		/*public List<Zone> GetAdjacentZones(Vector2Float cellPos, int range = GameRoom.VisionCells)
 		{
 			HashSet<Zone> zones = new HashSet<Zone>();
 
-			int maxY = cellPos.y + range;
-			int minY = cellPos.y - range;
-            int maxX = cellPos.x + range;
-            int minX = cellPos.x - range;
+			float maxY = cellPos.y + range;
+			float minY = cellPos.y - range;
+            float maxX = cellPos.x + range;
+            float minX = cellPos.x - range;
 
 			// 좌측 상단
-			Vector2Int leftTop = new Vector2Int(minX, maxY);
-			int minIndexY = (Map.MaxY - leftTop.y) / ZoneCells;
-			int minIndexX = (leftTop.x - Map.MinX) / ZoneCells;
+			Vector2Float leftTop = new Vector2Float(minX, maxY);
+			float minIndexY = (Map.MaxY - leftTop.y) / ZoneCells;
+			float minIndexX = (leftTop.x - Map.MinX) / ZoneCells;
 
 			// 우측 하단
-			Vector2Int rightBot = new Vector2Int(maxX, minY);
-            int maxIndexY = (Map.MaxY - rightBot.y) / ZoneCells;
-            int maxIndexX = (rightBot.x - Map.MinX) / ZoneCells;
+			Vector2Float rightBot = new Vector2Float(maxX, minY);
+            float maxIndexY = (Map.MaxY - rightBot.y) / ZoneCells;
+            float maxIndexX = (rightBot.x - Map.MinX) / ZoneCells;
 
-			for (int x = minIndexX; x <= maxIndexX; x++)
+			for (float x = minIndexX; x <= maxIndexX; x++)
 			{
-				for (int y = minIndexY; y <= maxIndexY; y++)
+				for (float y = minIndexY; y <= maxIndexY; y++)
 				{
 					Zone zone = GetZone(y, x);
 					if (zone == null)
@@ -248,7 +248,7 @@ namespace Server.Game
 				{
 					int y = cellPos.y + dy;
 					int x = cellPos.x + dx;
-					Zone zone = GetZone(new Vector2Int(x, y));
+					Zone zone = GetZone(new Vector2Float(x, y));
 					if (zone == null)
 						continue;
 
@@ -257,6 +257,6 @@ namespace Server.Game
 			}
 
 			return zones.ToList();
-		}
+		}*/
 	}
 }
