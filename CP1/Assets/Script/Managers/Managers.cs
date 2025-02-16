@@ -16,15 +16,6 @@ public class Managers : MonoBehaviour
     public static NetworkManager Network { get { return Instance._network; } }
     #endregion
 
-    #region Core
-    ResourceManager _resource = new ResourceManager();
-    PoolManager _pool = new PoolManager();
-    SceneManagerEx _scene = new SceneManagerEx();
-
-    public static PoolManager Pool { get { return Instance._pool; } }
-    public static SceneManagerEx Scene { get { return Instance._scene; } }
-    public static ResourceManager Resource { get { return Instance._resource; } }
-    #endregion
 
     void Start()
     {
@@ -51,14 +42,7 @@ public class Managers : MonoBehaviour
             s_instance = go.GetComponent<Managers>();
 
             s_instance.Update();
-            s_instance._pool.Init();
             s_instance._network.Init();
         }		
 	}
-
-    public static void Clear()
-    {
-        Pool.Clear();
-        Scene.Clear();
-    }
 }
