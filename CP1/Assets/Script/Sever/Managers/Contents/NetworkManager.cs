@@ -1,16 +1,20 @@
 ﻿using ServerCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 using Google.Protobuf;
 
-public class NetworkManager
+public class NetworkManager : SingletonMonobehaviour<NetworkManager>
 {
 	ServerSession _session = new ServerSession();
 
-	public void Send(IMessage packet)
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
+    public void Send(IMessage packet)
 	{
 		_session.Send(packet);
 	}
