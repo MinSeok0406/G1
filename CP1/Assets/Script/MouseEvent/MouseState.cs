@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.EventSystems;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -43,17 +44,23 @@ public class MouseState
 
         if (raycastResult.Count > 0)
         {
-            RaycastResult topHit = raycastResult.OrderBy(hit => hit.depth).Last();
-            eventData.pointerCurrentRaycast = topHit;
-
-            return true;
+            raycastResult.OrderBy(hit => hit.depth);
+            
+            foreach(RaycastResult raycast in raycastResult)
+            {
+                if(raycast.gameObject.GetComponentInParent<MouseInteractiveObject>() != null)
+                {
+                    eventData.pointerCurrentRaycast = raycast;
+                    return true;
+                }
+            }
         }
 
         return false;
     }
 
-    protected MouseInterectiveObject GetInterectiveObject()
+    protected MouseInteractiveObject GetInterectiveObject()
     {
-        return eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<MouseInterectiveObject>();
+        return eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<MouseInteractiveObject>();
     }
 }

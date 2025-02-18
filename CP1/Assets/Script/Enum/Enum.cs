@@ -20,4 +20,12 @@
         Click,
         Drag,
     }
+
+}
+
+public enum MouseInteractive
+{
+    Drag,
+    Button,
+    ToggleButton
 }

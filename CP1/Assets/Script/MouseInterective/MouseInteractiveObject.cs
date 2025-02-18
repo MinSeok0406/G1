@@ -3,13 +3,23 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class MouseInterectiveObject : MonoBehaviour
+#region RequireComponent
+[RequireComponent(typeof(MouseInteractiveEvent))]
+#endregion
+[DisallowMultipleComponent]
+public class MouseInteractiveObject : MonoBehaviour
 {
+    [HideInInspector] public MouseInteractiveEvent mouseInteractiveEvent;
+
+    public MouseInteractive mouseInteractive = MouseInteractive.Button;
+
     public PRS originPRS { get; private set;}
 
     private void Awake()
     {
         originPRS = new PRS(transform.position, transform.rotation, transform.localScale);
+
+        mouseInteractiveEvent = GetComponent<MouseInteractiveEvent>();
     }
 
     public void MoveTransform(PRS prs, float duration)

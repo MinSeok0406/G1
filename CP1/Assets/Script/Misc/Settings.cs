@@ -6,7 +6,8 @@ public static class Settings
     public const float interactionRange = 3;
     #endregion
 
-    #region
+    #region Tag
+    public const string interactable = "Interactable";
     #endregion
 }
 

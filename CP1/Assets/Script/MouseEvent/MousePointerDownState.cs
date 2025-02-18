@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class MousePointerDownState: MouseState
 {
     private Vector2 previousPosition;
+    MouseInteractiveObject mouseInteractiveObject;
 
     public MousePointerDownState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
     {
@@ -15,6 +16,9 @@ public class MousePointerDownState: MouseState
         base.Enter();
 
         Vector2 previousPosition = eventData.position;
+
+        mouseInteractiveObject = GetInterectiveObject();
+        mouseInteractiveObject?.mouseInteractiveEvent.CallPointerDownEvent();
     }
 
     public override void Update()
@@ -23,7 +27,15 @@ public class MousePointerDownState: MouseState
 
         if (Input.GetMouseButton(0))
         {
-            DetectDrag();
+            if(mouseInteractiveObject.mouseInteractive == MouseInteractive.Drag)
+            {
+                DetectDrag();
+            }
+            else
+            {
+                stateMachine.ChangeState(mouseStateController.pointerUpState);
+                return;
+            }
         }
         else
         {
@@ -34,6 +46,8 @@ public class MousePointerDownState: MouseState
     public override void Exit()
     {
         base.Exit();
+
+        mouseInteractiveObject = null;
     }
 
     private void DetectDrag()

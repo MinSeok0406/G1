@@ -5,7 +5,7 @@ public class MouseDragState : MouseState
 {
     private PRS prs;
     private Vector3 offset;
-    private MouseInterectiveObject mouseInterectiveObject;
+    private MouseInteractiveObject mouseInterectiveObject;
 
     public MouseDragState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
     {
@@ -29,7 +29,12 @@ public class MouseDragState : MouseState
         if (Input.GetMouseButton(0))
         {
             prs.pos = HelperUtilities.GetMouseWorldPosition(eventData) + offset;
+
+            prs.pos.x = Mathf.Clamp(prs.pos.x, mouseStateController.minDragBounds.position.x, mouseStateController.maxDragBounds.position.x);
+            prs.pos.y = Mathf.Clamp(prs.pos.y, mouseStateController.minDragBounds.position.y, mouseStateController.maxDragBounds.position.y);
+
             mouseInterectiveObject?.MoveTransform(prs, 0);
+
         }
         else
         {

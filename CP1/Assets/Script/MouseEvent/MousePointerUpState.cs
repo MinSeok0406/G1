@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class MousePointerUpState : MouseState
@@ -17,12 +18,17 @@ public class MousePointerUpState : MouseState
     {
         base.Update();
 
-        stateMachine.ChangeState(mouseStateController.idleState);
+        if (!Input.GetMouseButton(0))
+        {
+            stateMachine.ChangeState(mouseStateController.idleState);
+        }
     }
 
     public override void Exit()
     {
         base.Exit();
+
+        GetInterectiveObject().mouseInteractiveEvent.CallPointerUpEvent();
 
         eventData.pointerCurrentRaycast = new RaycastResult();
     }

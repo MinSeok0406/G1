@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class MafiaAbility : MonoBehaviour, IClassAbility
 {
-    public void UseClassAbility(float coolDown)
+    public void UseClassAbility()
     {
-
+    
     }
 }

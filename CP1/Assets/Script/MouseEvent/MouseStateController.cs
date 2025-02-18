@@ -3,6 +3,9 @@ using UnityEngine.EventSystems;
 
 public class MouseStateController : MonoBehaviour
 {
+    public Transform maxDragBounds;
+    public Transform minDragBounds;
+
     protected PointerEventData eventData;
 
     #region State
@@ -35,5 +38,16 @@ public class MouseStateController : MonoBehaviour
     {
         stateMachine.currentState.Update();
     }
+
+
+    #region Validate
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        ValidateCheck.ValidateCheckNullValue(this, nameof(maxDragBounds), maxDragBounds);
+        ValidateCheck.ValidateCheckNullValue(this, nameof(minDragBounds), minDragBounds);       
+    }
+#endif
+    #endregion
 }
 
