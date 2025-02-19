@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 배치 및 회전</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #bbbbbb;
+        }
+
+        .image-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            width: 80px;
+            height: 80px;
+            cursor: grab;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(15, 80px); /* 가로 15개 */
+            grid-template-rows: repeat(10, 80px); /* 세로 10개 */
+            gap: 2px;
+            border: 2px solid #000;
+            margin-bottom: 20px;
+        }
+
+        .grid-cell {
+            width: 80px;
+            height: 80px;
+            background-color: #000; /* 배경색: 검은색 */
+            border: 1px solid #c2c2c2; /* 선 색깔: 회색 */
+            position: relative;
+        }
+
+        .grid-cell img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .delete-zone {
+            width: 300px;
+            height: 80px;
+            background-color: #ffcccc;
+            border: 2px dashed #ff0000;
+            color: #ff0000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .delete-zone.drag-over {
+            background-color: #ffaaaa;
+        }
+    </style>
+</head>
+<body>
+    <h2>이미지 배치 및 회전</h2>
+    <div class="image-container">
+        <img src="./map_image/1.jpg" class="draggable-original" draggable="true" alt="1">
+        <img src="./map_image/2.jpg" class="draggable-original" draggable="true" alt="2">
+        <img src="./map_image/3.jpg" class="draggable-original" draggable="true" alt="3">
+        <img src="./map_image/4.jpg" class="draggable-original" draggable="true" alt="4">
+        <img src="./map_image/5.jpg" class="draggable-original" draggable="true" alt="5">
+        <img src="./map_image/6.jpg" class="draggable-original" draggable="true" alt="6">
+        <img src="./map_image/7.jpg" class="draggable-original" draggable="true" alt="7">
+        <img src="./map_image/8.jpg" class="draggable-original" draggable="true" alt="8">
+        <img src="./map_image/9.jpg" class="draggable-original" draggable="true" alt="9">
+    </div>
+    <div class="grid">
+        <!-- 10x15 Grid 생성 -->
+        <script>
+            for (let i = 0; i < 150; i++) { // 15 * 10 = 150
+                document.write('<div class="grid-cell" ondrop="drop(event)" ondragover="allowDrop(event)"></div>');
+            }
+        </script>
+    </div>
+    <div class="delete-zone" ondrop="deleteImage(event)" ondragover="allowDrop(event)">
+        여기로 드래그하면 삭제됨
+    </div>
+
+    <script>
+        let draggedImage = null;
+        let isClone = false;
+
+        // 원본 이미지는 복제하여 배치
+        document.querySelectorAll('.draggable-original').forEach(img => {
+            img.addEventListener('dragstart', (e) => {
+                draggedImage = e.target;
+                isClone = true;
+            });
+        });
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            
+            if (draggedImage) {
+                // 드래그한 것이 원본일 경우 복제하여 배치
+                if (isClone) {
+                    const newImg = document.createElement('img');
+                    newImg.src = draggedImage.src;
+                    newImg.alt = draggedImage.alt;
+                    newImg.style.transform = 'rotate(0deg)';
+                    newImg.classList.add('cloned');
+                    newImg.setAttribute('draggable', 'true');
+                    newImg.setAttribute('data-rotation', '0');
+                    newImg.addEventListener('click', rotateImage);
+                    newImg.addEventListener('dragstart', (e) => {
+                        draggedImage = e.target;
+                        isClone = false;
+                    });
+                    e.target.innerHTML = '';
+                    e.target.appendChild(newImg);
+                } else {
+                    e.target.innerHTML = '';
+                    e.target.appendChild(draggedImage);
+                }
+                updateURL(); // URL 갱신
+            }
+        }
+
+        function rotateImage(e) {
+            // 현재 회전 상태 확인 (없으면 0으로 초기화)
+            let rotation = parseInt(e.target.getAttribute('data-rotation')) || 0;
+            rotation = (rotation + 90) % 360; // 90도씩 증가, 360도 넘으면 0도로 초기화
+            e.target.style.transform = `rotate(${rotation}deg)`;
+            e.target.setAttribute('data-rotation', rotation); // 현재 회전 상태 저장
+            updateURL(); // URL 갱신
+        }
+
+        function deleteImage(e) {
+            e.preventDefault();
+            // 드래그된 이미지가 복제된 것일 때만 삭제
+            if (draggedImage && draggedImage.classList.contains('cloned')) {
+                draggedImage.remove();
+                draggedImage = null;
+                updateURL(); // URL 갱신
+            }
+        }
+
+        // 배치 데이터를 저장하고 URL에 반영하는 함수
+        function updateURL() {
+            const gridCells = document.querySelectorAll('.grid-cell');
+            let mapData = '';
+
+            gridCells.forEach((cell) => {
+                const img = cell.querySelector('img');
+                if (img) {
+                    const imageIndex = img.alt;
+                    const rotation = img.getAttribute('data-rotation') || 0;
+                    let rotationCode = 0;
+                    // 회전 상태를 코드로 변환
+                    switch (rotation) {
+                        case '0': rotationCode = 0; break;
+                        case '90': rotationCode = 1; break;
+                        case '180': rotationCode = 2; break;
+                        case '270': rotationCode = 3; break;
+                    }
+                    mapData += `${imageIndex}${rotationCode}`;
+                } else {
+                    mapData += '00'; // 이미지가 없을 때는 00
+                }
+            });
+
+            const newUrl = `${window.location.origin}${window.location.pathname}?map=${mapData}`;
+            window.history.replaceState(null, '', newUrl);
+        }
+
+        // URL 쿼리 스트링에서 데이터 읽어오기
+        function loadMapFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const mapData = params.get('map');
+
+            if (mapData) {
+                const gridCells = document.querySelectorAll('.grid-cell');
+
+                for (let i = 0; i < gridCells.length; i++) {
+                    const imageCode = mapData.substr(i * 2, 2); // 2자리씩 가져옴
+                    const imageIndex = imageCode.charAt(0);
+                    const rotationCode = imageCode.charAt(1);
+
+                    // 이미지가 존재하면 배치
+                    if (imageIndex !== '0') {
+                        const newImg = document.createElement('img');
+                        newImg.src = `./map_image/${imageIndex}.jpg`;
+                        newImg.alt = imageIndex;
+
+                        // 회전 상태 복원
+                        switch (rotationCode) {
+                            case '0': newImg.style.transform = 'rotate(0deg)'; break;
+                            case '1': newImg.style.transform = 'rotate(90deg)'; break;
+                            case '2': newImg.style.transform = 'rotate(180deg)'; break;
+                            case '3': newImg.style.transform = 'rotate(270deg)'; break;
+                        }
+                        newImg.setAttribute('data-rotation', rotationCode);
+                        newImg.classList.add('cloned');
+                        newImg.setAttribute('draggable', 'true');
+                        newImg.addEventListener('click', rotateImage);
+                        newImg.addEventListener('dragstart', (e) => {
+                            draggedImage = e.target;
+                            isClone = false;
+                        });
+                        gridCells[i].innerHTML = '';
+                        gridCells[i].appendChild(newImg);
+                    }
+                }
+            }
+        }
+
+        // 페이지 로드 시 실행
+        window.addEventListener('load', loadMapFromURL);
+    </script>
+</body>
+</html>
