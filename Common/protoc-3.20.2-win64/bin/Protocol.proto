@@ -23,15 +23,11 @@ enum CreatureState {
 }
 
 enum MoveDir {
-  UP = 0;
-  DOWN = 1;
-  LEFT = 2;
-  RIGHT = 3;
-}
-
-enum GameObjectType {
   NONE = 0;
-  PLAYER = 1;
+  UP = 1;
+  DOWN = 2;
+  LEFT = 3;
+  RIGHT = 4;
 }
 
 message S_Ping {
@@ -43,7 +39,7 @@ message C_Pong {
 }
 
 message S_EnterGame {
-  ObjectInfo player = 1;
+  PlayerInfo player = 1;
 }
 
 message S_LeaveGame {
@@ -51,15 +47,15 @@ message S_LeaveGame {
 }
 
 message S_Spawn {
-  repeated ObjectInfo objects = 1;
+  repeated PlayerInfo players = 1;
 }
 
 message S_Despawn {
-  repeated int32 objectIds = 1;
+  repeated int32 playerIds = 1;
 }
 
 message S_Move {
-  int32 objectID = 1;
+  int32 playerId = 1;
   PositionInfo posInfo = 2;
 }
 
@@ -67,15 +63,13 @@ message C_Move {
   PositionInfo posInfo = 2;
 }
 
-message ObjectInfo {
-  int32 objectId = 1;
+message PlayerInfo {
+  int32 playerId = 1;
   string name = 2;
   PositionInfo posInfo = 3;
 }
 
 message PositionInfo {
-  CreatureState state = 1;
-  MoveDir moveDir = 2;
-  float posX = 3;
-  float posY = 4;
+  float posX = 2;
+  float posY = 3;
 }

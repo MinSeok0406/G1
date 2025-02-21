@@ -8,42 +8,53 @@ class PacketHandler
     public static void S_PingHandler(PacketSession session, IMessage packet)
     {
         C_Pong pongPacket = new C_Pong();
-		Debug.Log("[Server] PingCheck");
-		Managers.Network.Send(pongPacket);
+		//Debug.Log("[Server] PingCheck");
+		//Managers.Network.Send(pongPacket);
     }
 
     public static void S_EnterGameHandler(PacketSession session, IMessage packet)
     {
-        S_EnterGame enterPacket = packet as S_EnterGame;
-        //Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
+        S_EnterGame enterGamePacket = (S_EnterGame)packet;
+        Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
     }
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
         S_LeaveGame leaveGameHandler = packet as S_LeaveGame;
-        //Managers.Object.Clear();
+        Managers.Object.RemoveMyPlayer();
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
-        S_Spawn spawnPacket = packet as S_Spawn;
-        foreach (ObjectInfo obj in spawnPacket.Objects)
+        S_Spawn spawnPacket = (S_Spawn)packet;
+        foreach (PlayerInfo obj in spawnPacket.Players)
         {
-            //Managers.Object.Add(obj, myPlayer: false);
+            Managers.Object.Add(obj, myPlayer: false);
         }
     }
 
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
         S_Despawn despawnPacket = packet as S_Despawn;
-        foreach (int id in despawnPacket.ObjectIds)
+        foreach (int id in despawnPacket.PlayerIds)
         {
-            //Managers.Object.Remove(id);
+            Managers.Object.Remove(id);
         }
     }
 
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
-        S_Move move = packet as S_Move;
+        S_Move movePacket = packet as S_Move;
+        ServerSession serverSession = session as ServerSession;
+
+        GameObject go = Managers.Object.FindById(movePacket.PlayerId);
+        if (go == null)
+            return;
+
+        Player pc = go.GetComponent<Player>();
+        if (pc == null)
+            return;
+
+        pc.PosInfo = movePacket.PosInfo;
     }
 }
