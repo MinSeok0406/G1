@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Google.Protobuf.WellKnownTypes;
+using UnityEngine;
 
 #region RequireComponent
 [RequireComponent(typeof(Player))]
@@ -18,7 +19,15 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        MovementInput();
+
+        if (player.PosInfo.PosX == player.transform.position.x && player.PosInfo.PosY == transform.position.y)
+            return;
+
+        transform.position = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, 0);
+
+        Debug.Log(gameObject.name + player.CellPos);
+
+        //MovementInput();
     }
 
     private void MovementInput()

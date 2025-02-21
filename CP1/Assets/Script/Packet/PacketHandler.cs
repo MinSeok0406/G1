@@ -44,6 +44,22 @@ class PacketHandler
 
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
+<<<<<<< Updated upstream
         S_Move move = packet as S_Move;
+=======
+        S_Move movePacket = packet as S_Move;
+        ServerSession serverSession = session as ServerSession;
+
+        GameObject go = Managers.Object.FindById(movePacket.PlayerId);
+        if (go == null)
+            return;
+
+        Player pc = go.GetComponent<Player>();
+        if (pc == null)
+            return;
+
+        pc.PosInfo = movePacket.PosInfo;
+
+>>>>>>> Stashed changes
     }
 }
