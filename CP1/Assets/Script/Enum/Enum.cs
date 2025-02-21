@@ -29,3 +29,10 @@ public enum MouseInteractive
     Button,
     ToggleButton
 }
+
+public enum PlayerClassType
+{
+    Mafia,
+    Citizen,
+    PlayerGhost
+}

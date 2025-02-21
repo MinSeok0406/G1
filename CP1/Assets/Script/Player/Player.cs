@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public IdleEvent idleEvent;
     [HideInInspector] public MovementByVelocityEvent movementByVelocityEvent;
 
+    [HideInInspector] public PlayerClassType playerClassType;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
