@@ -6,54 +6,52 @@ using UnityEngine;
 
 public class ObjectManager
 {
-    //public MyPlayerController MyPlayer { get; set; }
-    Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+    //public MyPlayerControl MyPlayer { get; set; }
+    public Player MyPlayer { get; set; }
+    public Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
 
-    public static GameObjectType GetObjectTypeById(int id)
+    /*public static GameObjectType GetObjectTypeById(int id)
     {
         int type = (id >> 24) & 0x7F;
         return (GameObjectType)type;
-    }
+    }*/
 
-    /*public void Add(ObjectInfo info, bool myPlayer = false)
+    public void Add(PlayerInfo info, bool myPlayer = false)
     {
-        if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
+        /*if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
             return;
 
         if (_objects.ContainsKey(info.ObjectId))
-            return;
+            return;*/
 
-        GameObjectType objectType = GetObjectTypeById(info.ObjectId);
-        if (objectType == GameObjectType.Player)
+        //GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+        if (myPlayer)
         {
-            if (myPlayer)
-            {
-                GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
-                go.name = info.Name;
-                _objects.Add(info.ObjectId, go);
+            GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
+            go.name = info.Name;
+            _objects.Add(info.PlayerId, go);
 
-                MyPlayer = go.GetComponent<MyPlayerController>();
-                MyPlayer.Id = info.ObjectId;
-                MyPlayer.PosInfo = info.PosInfo;
-                MyPlayer.Stat.MergeFrom(info.StatInfo);
-                MyPlayer.SyncPos();
-            }
-            else
-            {
-                GameObject go = Managers.Resource.Instantiate("Creature/Player");
-                go.name = info.Name;
-                _objects.Add(info.ObjectId, go);
+            MyPlayer = go.GetComponent<Player>();
+            MyPlayer.Id = info.PlayerId;
+            MyPlayer.PosInfo = info.PosInfo;
 
-                PlayerController pc = go.GetComponent<PlayerController>();
-                pc.Id = info.ObjectId;
-                pc.PosInfo = info.PosInfo;
-                pc.Stat.MergeFrom(info.StatInfo);
-                pc.SyncPos();
-            }
+            MyPlayer.myPlayer = true;
+            //MyPlayer.SyncPos();
         }
-    }*/
+        else
+        {
+            GameObject go = Managers.Resource.Instantiate("Creature/Player");
+            go.name = info.Name;
+            _objects.Add(info.PlayerId, go);
 
-    /*public void Remove(int id)
+            Player pc = go.GetComponent<Player>();
+            pc.Id = info.PlayerId;
+            pc.PosInfo = info.PosInfo;
+            //pc.SyncPos();
+        }
+    }
+
+    public void Remove(int id)
     {
         if (MyPlayer != null && MyPlayer.Id == id)
             return;
@@ -67,7 +65,7 @@ public class ObjectManager
 
         _objects.Remove(id);
         Managers.Resource.Destroy(go);
-    }*/
+    }
 
     public GameObject FindById(int id)
     {
@@ -76,22 +74,37 @@ public class ObjectManager
         return go;
     }
 
-    /*public GameObject FindCreature(Vector3Int cellPos)
+    public GameObject FindCreature(Vector3 cellPos)
     {
         foreach (GameObject obj in _objects.Values)
         {
-            CreatureController cc = obj.GetComponent<CreatureController>();
-            if (cc == null)
+            Player player = obj.GetComponent<Player>();
+            if (player == null)
                 continue;
 
-            if (cc.CellPos == cellPos)
+            if (player.CellPos == cellPos)
                 return obj;
         }
 
         return null;
-    }*/
+    }
 
-    public GameObject Find(Func<GameObject, bool> condition)
+    public GameObject Find(Vector3 cellPos)
+    {
+        foreach (GameObject obj in _objects.Values)
+        {
+            Player p = obj.GetComponent<Player>();
+            if (p == null)
+                continue;
+
+            if (p.CellPos == cellPos)
+                return obj;
+        }
+
+        return null;
+    }
+
+    /*public GameObject Find(Func<GameObject, bool> condition)
     {
         foreach (GameObject obj in _objects.Values)
         {
@@ -100,13 +113,22 @@ public class ObjectManager
         }
 
         return null;
+    }*/
+
+    public void RemoveMyPlayer()
+    {
+        if (MyPlayer == null)
+            return;
+
+        Remove(MyPlayer.Id);
+        MyPlayer = null;
     }
 
-    /*public void Clear()
+    public void Clear()
     {
         foreach (GameObject obj in _objects.Values)
             Managers.Resource.Destroy(obj);
         _objects.Clear();
         MyPlayer = null;
-    }*/
+    }
 }

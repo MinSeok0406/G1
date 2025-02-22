@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class PoolManager
 {
-	#region Pool
-	class Pool
+    #region Pool
+    class Pool
     {
         public GameObject Original { get; private set; }
         public Transform Root { get; set; }
@@ -63,9 +63,9 @@ public class PoolManager
             return poolable;
         }
     }
-	#endregion
+    #endregion
 
-	Dictionary<string, Pool> _pool = new Dictionary<string, Pool>();
+    Dictionary<string, Pool> _pool = new Dictionary<string, Pool>();
     Transform _root;
 
     public void Init()

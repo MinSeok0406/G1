@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-#region RequireComponent
+/*#region RequireComponent
 [RequireComponent(typeof(MovementByVelocityEvent))]
 [RequireComponent(typeof(Rigidbody2D))]
-#endregion
-[DisallowMultipleComponent]
+#endregion*/
+//[DisallowMultipleComponent]
 public class MovementByVelocity : MonoBehaviour
 {
     private MovementByVelocityEvent movementByVelocityEvent;

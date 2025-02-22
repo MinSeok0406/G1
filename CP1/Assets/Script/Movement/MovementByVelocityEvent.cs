@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-[DisallowMultipleComponent]
+//[DisallowMultipleComponent]
 public class MovementByVelocityEvent : MonoBehaviour
 {
     public event Action<MovementByVelocityEvent, MovementByVelocityEventArgs> OnMovementByVelocity;

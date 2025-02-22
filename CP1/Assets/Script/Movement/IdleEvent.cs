@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[DisallowMultipleComponent]
+//[DisallowMultipleComponent]
 public class IdleEvent : MonoBehaviour
 {
     public event Action<IdleEvent> OnIdle;

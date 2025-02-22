@@ -1,10 +1,10 @@
 using UnityEngine;
 
-#region RequrieComponent
+/*#region RequrieComponent
 [RequireComponent(typeof(IdleEvent))]
 [RequireComponent(typeof(Rigidbody2D))]
-#endregion
-[DisallowMultipleComponent]
+#endregion*/
+//[DisallowMultipleComponent]
 public class Idle : MonoBehaviour
 {
     private IdleEvent idleEvent;

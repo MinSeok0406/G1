@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Google.Protobuf.Protocol;
+using UnityEngine;
 
-#region RequireComponent
+/*#region RequireComponent
 [RequireComponent(typeof(Player))]
-#endregion
-[DisallowMultipleComponent]
+#endregion*/
+//[DisallowMultipleComponent]
 public class PlayerControl : MonoBehaviour
 {
     private Player player;
@@ -18,7 +19,16 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        MovementInput();
+        if (player.myPlayer)
+        {
+            MovementInput();
+
+            CheckUpdatedFlag();
+        }
+        else
+        {
+            transform.position = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY);
+        }
     }
 
     private void MovementInput()
@@ -40,6 +50,19 @@ public class PlayerControl : MonoBehaviour
         else
         {
             player.idleEvent.CallIdleEvent();
+        }
+
+        player.CellPos = transform.position;
+    }
+
+    void CheckUpdatedFlag()
+    {
+        if (player._updated)
+        {
+            C_Move movePacket = new C_Move();
+            movePacket.PosInfo = player.PosInfo;
+            Managers.Network.Send(movePacket);
+            player._updated = false;
         }
     }
 }

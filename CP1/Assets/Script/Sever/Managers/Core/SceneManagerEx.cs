@@ -7,6 +7,11 @@ public class SceneManagerEx
 {
     public BaseScene CurrentScene { get { return GameObject.FindObjectOfType<BaseScene>(); } }
 
+    public void StartScene()
+    {
+
+    }
+
 	public void LoadScene(Enum.Scene type)
     {
         Managers.Clear();

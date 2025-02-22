@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class Mission : MonoBehaviour, IInteractable
@@ -16,6 +15,5 @@ public class Mission : MonoBehaviour, IInteractable
     public void Interact()
     {
         SceneManager.LoadScene(missionDetails.sceneName, LoadSceneMode.Additive);
-
     }
 }

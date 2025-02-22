@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-#region RequireComponent
+/*#region RequireComponent
 [RequireComponent(typeof(CircleCollider2D))]
-#endregion
-[DisallowMultipleComponent]
+#endregion*/
+//[DisallowMultipleComponent]
 public class InteractiveControl : MonoBehaviour
 {
     private CircleCollider2D circleCollider2D;

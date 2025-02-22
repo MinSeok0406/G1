@@ -12,7 +12,7 @@ using Server.Game;
 
 namespace Server
 {
-	public partial class ClientSession : PacketSession
+    public class ClientSession : PacketSession
 	{
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
@@ -24,8 +24,8 @@ namespace Server
 		int _reservedSendBytes;
 		long _lastSendTick;
 
-        long _pingpongTick = 0;
-		public void Ping()
+        //long _pingpongTick = 0;
+		/*public void Ping()
 		{
 			if (_pingpongTick > 0)
 			{
@@ -41,16 +41,17 @@ namespace Server
 			S_Ping pingPacket = new S_Ping();
 			Send(pingPacket);
 
-			GameLogic.Instance.PushAfter(5000, Ping);
-		}
+			//GameLogic.Instance.PushAfter(5000, Ping);
+		}*/
 
-		public void HandlePong()
+		/*public void HandlePong()
 		{
 			_pingpongTick = System.Environment.TickCount64;
-		}
+		}*/
+
 
         #region Network
-		// 예약만 하고 보내지는 않는다
+        // 예약만 하고 보내지는 않는다
         public void Send(IMessage packet)
 		{
 			string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
@@ -60,14 +61,15 @@ namespace Server
 			Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
 			Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
 			Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+            Send(new ArraySegment<byte>(sendBuffer));
 
-			lock (_lock)
+            /*lock (_lock)
 			{
                 _reserveQueue.Add(sendBuffer);
 				_reservedSendBytes += sendBuffer.Length;
-            }
-			//Send(new ArraySegment<byte>(sendBuffer));
-		}
+            }*/
+            //Send(new ArraySegment<byte>(sendBuffer));
+        }
 
 		// 실제 Network IO 보내는 부분
 		public void FlushSend()
@@ -97,10 +99,22 @@ namespace Server
 
         public override void OnConnected(EndPoint endPoint)
 		{
-			//Console.WriteLine($"OnConnected : {endPoint}");
+            //Console.WriteLine($"OnConnected : {endPoint}");
 
-			GameLogic.Instance.PushAfter(5000, Ping);
-		}
+            MyPlayer = PlayerManager.Instance.Add();
+            {
+                MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerId}";
+                MyPlayer.Info.PosInfo.PosX = 0;
+                MyPlayer.Info.PosInfo.PosY = 0;
+
+                MyPlayer.Session = this;
+            }
+
+            RoomManager.Instance.Find(1).EnterGame(MyPlayer);
+
+            //GameLogic.Instance.PushAfter(5000, Ping);
+
+        }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
@@ -109,16 +123,9 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-            GameLogic.Instance.Push(() =>
-            {
-				if (MyPlayer == null)
-					return;
+            RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.PlayerId);
 
-                GameRoom room = GameLogic.Instance.Find(1);
-                //room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
-            });
-
-			SessionManager.Instance.Remove(this);
+            SessionManager.Instance.Remove(this);
 		}
 
 		public override void OnSend(int numOfBytes)
