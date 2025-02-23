@@ -18,8 +18,7 @@ enum MsgId {
 enum CreatureState {
   IDLE = 0;
   MOVING = 1;
-  SKILL = 2;
-  DEAD = 3;
+  DEAD = 2;
 }
 
 enum MoveDir {
@@ -70,6 +69,8 @@ message PlayerInfo {
 }
 
 message PositionInfo {
-  float posX = 2;
-  float posY = 3;
+  CreatureState state = 1;
+  MoveDir moveDir = 2;
+  float posX = 3;
+  float posY = 4;
 }

@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class ObjectManager
 {
-    //public MyPlayerControl MyPlayer { get; set; }
-    public PlayerControl MyPlayer { get; set; }
+    public MyPlayerControl MyPlayer { get; set; }
     public Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
 
     /*public static GameObjectType GetObjectTypeById(int id)

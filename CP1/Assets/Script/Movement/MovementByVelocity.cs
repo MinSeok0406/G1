@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Google.Protobuf.Protocol;
+using Unity.VisualScripting;
+using UnityEngine;
 
 /*#region RequireComponent
 [RequireComponent(typeof(MovementByVelocityEvent))]
@@ -7,6 +9,7 @@
 //[DisallowMultipleComponent]
 public class MovementByVelocity : MonoBehaviour
 {
+    private PlayerControl pc;
     private MovementByVelocityEvent movementByVelocityEvent;
     private Rigidbody2D rb;
 
@@ -14,6 +17,7 @@ public class MovementByVelocity : MonoBehaviour
     {
         movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
         rb = GetComponent<Rigidbody2D>();
+        pc = GetComponent<PlayerControl>();
     }
 
     private void OnEnable()
@@ -28,6 +32,7 @@ public class MovementByVelocity : MonoBehaviour
 
     private void MoveRigidBody(Vector2 moveDirection, float moveSpeed)
     {
-        rb.velocity = moveDirection * moveSpeed;
+        rb.velocity = moveDirection * moveSpeed * Time.unscaledDeltaTime;
+        PlayerControl.Instance.State = CreatureState.Moving;
     }
 }
