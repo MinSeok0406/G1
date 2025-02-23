@@ -7,6 +7,12 @@ option csharp_namespace = "Google.Protobuf.Protocol";
 enum MsgId {
   S_PING = 0;
   C_PONG = 1;
+  S_ENTER_GAME = 2;
+  S_LEAVE_GAME = 3;
+  S_SPAWN = 4;
+  S_DESPAWN = 5;
+  S_MOVE = 6;
+  C_MOVE = 7;
 }
 
 enum CreatureState {
@@ -17,15 +23,11 @@ enum CreatureState {
 }
 
 enum MoveDir {
-  UP = 0;
-  DOWN = 1;
-  LEFT = 2;
-  RIGHT = 3;
-}
-
-enum GameObjectType {
   NONE = 0;
-  PLAYER = 1;
+  UP = 1;
+  DOWN = 2;
+  LEFT = 3;
+  RIGHT = 4;
 }
 
 message S_Ping {
@@ -36,9 +38,38 @@ message C_Pong {
 
 }
 
+message S_EnterGame {
+  PlayerInfo player = 1;
+}
+
+message S_LeaveGame {
+
+}
+
+message S_Spawn {
+  repeated PlayerInfo players = 1;
+}
+
+message S_Despawn {
+  repeated int32 playerIds = 1;
+}
+
+message S_Move {
+  int32 playerId = 1;
+  PositionInfo posInfo = 2;
+}
+
+message C_Move {
+  PositionInfo posInfo = 2;
+}
+
+message PlayerInfo {
+  int32 playerId = 1;
+  string name = 2;
+  PositionInfo posInfo = 3;
+}
+
 message PositionInfo {
-  CreatureState state = 1;
-  MoveDir moveDir = 2;
-  int32 posX = 3;
-  int32 posY = 4;
+  float posX = 2;
+  float posY = 3;
 }

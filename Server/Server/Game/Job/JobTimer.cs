@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using ServerCore;
 
-namespace Server.Game
+namespace Server
 {
     struct JobTimerElem : IComparable<JobTimerElem>
     {
         public int execTick; // 실행 시간
-        public IJob job;
+        public Action action;
 
         public int CompareTo(JobTimerElem other)
         {
@@ -16,20 +16,22 @@ namespace Server.Game
         }
     }
 
-    public class JobTimer
+    class JobTimer
     {
         PriorityQueue<JobTimerElem> _pq = new PriorityQueue<JobTimerElem>();
         object _lock = new object();
 
-        public void Push(IJob job, int tickAfter = 0)
+        public static JobTimer Instance { get; } = new JobTimer();
+
+        public void Push(Action action, int tickAfter = 0)
         {
-            JobTimerElem jobElement;
-            jobElement.execTick = Environment.TickCount + tickAfter;
-            jobElement.job = job;
+            JobTimerElem job;
+            job.execTick = System.Environment.TickCount + tickAfter;
+            job.action = action;
 
             lock (_lock)
             {
-                _pq.Push(jobElement);
+                _pq.Push(job);
             }
         }
 
@@ -37,23 +39,23 @@ namespace Server.Game
         {
             while (true)
             {
-                int now = Environment.TickCount;
+                int now = System.Environment.TickCount;
 
-                JobTimerElem jobElement;
+                JobTimerElem job;
 
                 lock (_lock)
                 {
                     if (_pq.Count == 0)
                         break;
 
-                    jobElement = _pq.Peek();
-                    if (jobElement.execTick > now)
+                    job = _pq.Peek();
+                    if (job.execTick > now)
                         break;
 
                     _pq.Pop();
                 }
 
-                jobElement.job.Execute();
+                job.action.Invoke();
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Server.Game
 
         public IJob PushAfter(int tickAfter, IJob job)
 		{
-			_timer.Push(job, tickAfter);
+			//_timer.Push(job, tickAfter);
 			return job;
 		}
 
