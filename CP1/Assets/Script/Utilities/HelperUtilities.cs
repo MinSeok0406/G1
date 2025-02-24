@@ -1,5 +1,7 @@
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class HelperUtilities
 {
@@ -37,6 +39,39 @@ public class HelperUtilities
         worldPosition.z = 0f;
 
         return worldPosition;
+    }
+
+    public static float GetAngleFromVector(Vector3 vector)
+    {
+        float radians = Mathf.Atan2(vector.y, vector.x);
+
+        float degrees = radians * Mathf.Rad2Deg;
+        return degrees;
+    }
+
+    public static MoveDir GetMoveDirection(float angleDegrees)
+    {
+        MoveDir moveDirection = MoveDir.None;
+
+        if ((0f < angleDegrees && angleDegrees < 90f) || (-90f < angleDegrees && angleDegrees <= 0))
+        {
+            moveDirection = MoveDir.Right;
+        }
+        else if ((90f < angleDegrees && angleDegrees <= 180f) || (-180f < angleDegrees && angleDegrees < -90f))
+        {
+            moveDirection = MoveDir.Left;
+        }
+        else if (angleDegrees == 90f)
+        {
+            moveDirection = MoveDir.Up;
+        }
+        else if (angleDegrees == -90f)
+        {
+            moveDirection = MoveDir.Down;
+        }
+
+     
+        return moveDirection;
     }
 
 }

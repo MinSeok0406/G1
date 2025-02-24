@@ -3,102 +3,38 @@ using UnityEngine;
 
 public class MyPlayerControl : PlayerControl
 {
+    private Vector3 moveDirection;
+
     protected override void Init()
     {
         base.Init();
     }
 
-    protected override void UpdateAnimation()
-    {
-        if (State == CreatureState.Idle)
-        {
-            switch (_lastDir)
-            {
-                case MoveDir.Up:
-                    //_animator.Play("IDLE_BACK");
-                    //_sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    //_animator.Play("IDLE_FRONT");
-                    //_sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    //_animator.Play("IDLE_RIGHT");
-                    //_sprite.flipX = true;
-                    break;
-                case MoveDir.Right:
-                    //_animator.Play("IDLE_RIGHT");
-                    //_sprite.flipX = false;
-                    break;
-            }
-        }
-        else if (State == CreatureState.Moving)
-        {
-            switch (Dir)
-            {
-                case MoveDir.Up:
-                    //_animator.Play("WALK_BACK");
-                    //_sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    //_animator.Play("WALK_FRONT");
-                    //_sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    //_animator.Play("WALK_RIGHT");
-                    //_sprite.flipX = true;
-                    break;
-                case MoveDir.Right:
-                    //_animator.Play("WALK_RIGHT");
-                    //_sprite.flipX = false;
-                    break;
-            }
-        }
-    }
-
     protected override void UpdateController()
     {
-        switch (State)
-        {
-            case CreatureState.Idle:
-                GetDirInput();
-                break;
-            case CreatureState.Moving:
-                GetDirInput();
-                break;
-        }
+        GetDirInput();
 
         base.UpdateController();
     }
 
-    protected override void UpdateIdle()
-    {
-        // 이동 상태로 갈지 확인
-        if (Dir != MoveDir.None)
-        {
-            State = CreatureState.Moving;
-            return;
-        }
-    }
-
     // 키보드 입력
-    void GetDirInput()
+    private void GetDirInput()
     {
-        if (Input.GetKey(KeyCode.W))
+        float horizontalMovement = Input.GetAxisRaw("Horizontal");
+        float verticalMovement = Input.GetAxisRaw("Vertical");
+
+        moveDirection = new Vector3(horizontalMovement, verticalMovement, 0);
+
+        if (horizontalMovement != 0f && verticalMovement != 0f)
         {
-            Dir = MoveDir.Up;
+            moveDirection = moveDirection.normalized;
         }
-        else if (Input.GetKey(KeyCode.S))
+
+
+        if(moveDirection != Vector3.zero)
         {
-            Dir = MoveDir.Down;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            Dir = MoveDir.Left;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            Dir = MoveDir.Right;
+            float angle = HelperUtilities.GetAngleFromVector(moveDirection);
+            Dir = HelperUtilities.GetMoveDirection(angle);
         }
         else
         {
@@ -117,21 +53,7 @@ public class MyPlayerControl : PlayerControl
 
         Vector3 destPos = CellPos;
 
-        switch (Dir)
-        {
-            case MoveDir.Up:
-                destPos += Vector3.up * moveSpeed * Time.unscaledDeltaTime;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3.down * moveSpeed * Time.unscaledDeltaTime;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3.left * moveSpeed * Time.unscaledDeltaTime;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3.right * moveSpeed * Time.unscaledDeltaTime;
-                break;
-        }
+        destPos += moveDirection * moveSpeed * Time.unscaledDeltaTime;
 
         if (Managers.Object.Find(destPos) == null)
         {
