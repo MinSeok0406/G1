@@ -51,7 +51,7 @@ public class HelperUtilities
 
     public static MoveDir GetMoveDirection(float angleDegrees)
     {
-        MoveDir moveDirection = MoveDir.None;
+        MoveDir moveDirection = MoveDir.Down;
 
         if ((0f < angleDegrees && angleDegrees < 90f) || (-90f < angleDegrees && angleDegrees <= 0))
         {

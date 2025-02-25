@@ -21,24 +21,16 @@ class PacketHandler
         C_Move movePacket = packet as C_Move;
         ClientSession clientSession = session as ClientSession;
 
-        Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY})");
+        //Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY})");
 
-        if (clientSession.MyPlayer == null)
+        Player player = clientSession.MyPlayer;
+        if (player == null)
             return;
-        if (clientSession.MyPlayer.Room == null)
+
+        GameRoom room = player.Room;
+        if (room == null)
             return;
 
-        // TODO : 검증
-
-        // 일단 서버에서 좌표 이동
-        PlayerInfo info = clientSession.MyPlayer.Info;
-        info.PosInfo = movePacket.PosInfo;
-
-        // 다른 플레이어한테도 알려준다
-        S_Move resMovePacket = new S_Move();
-        resMovePacket.PlayerId = clientSession.MyPlayer.Info.PlayerId;
-        resMovePacket.PosInfo = movePacket.PosInfo;
-
-        clientSession.MyPlayer.Room.Broadcast(resMovePacket);
+        room.HandleMove(player, movePacket);
     }
 }

@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,11 +56,11 @@ public class AnimatePlayer : MonoBehaviour
         player.animator.SetBool(Settings.isMoving, true);
         player.animator.SetBool(Settings.isIdle, false);
 
-        if (movementByVelocityEventArgs.moveDirection == Google.Protobuf.Protocol.MoveDir.None) return;
+        if (movementByVelocityEventArgs.moveDirection == MoveDir.None) return;
 
-        if (movementByVelocityEventArgs.moveDirection == Google.Protobuf.Protocol.MoveDir.Up || movementByVelocityEventArgs.moveDirection == Google.Protobuf.Protocol.MoveDir.Down) return;
+        if (movementByVelocityEventArgs.moveDirection == MoveDir.Up || movementByVelocityEventArgs.moveDirection == MoveDir.Down) return;
 
-        if (movementByVelocityEventArgs.moveDirection == Google.Protobuf.Protocol.MoveDir.Left)
+        if (movementByVelocityEventArgs.moveDirection == MoveDir.Left)
         {
             player.animator.SetBool(Settings.isRight, false);
             player.animator.SetBool(Settings.isLeft, true);

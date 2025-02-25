@@ -44,6 +44,12 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    public void SyncPos()
+    {
+        Vector3 destPos = new Vector3(0, 0);
+        transform.position = destPos;
+    }
+
     public Vector3 CellPos
     {
         get
@@ -75,8 +81,6 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    protected MoveDir _lastDir = MoveDir.Down;
-
     public MoveDir Dir
     {
         get { return PosInfo.MoveDir; }
@@ -86,9 +90,6 @@ public class PlayerControl : MonoBehaviour
                 return;
 
             PosInfo.MoveDir = value;
-            if (value != MoveDir.None)
-                _lastDir = value;
-
             _updated = true;
         }
     }
@@ -138,33 +139,48 @@ public class PlayerControl : MonoBehaviour
 
     protected virtual void UpdateIdle()
     {
-        idleEvent.CallIdleEvent();
-
+        // 이동 상태로 갈지 확인
         if (Dir != MoveDir.None)
         {
             State = CreatureState.Moving;
             return;
         }
+
+        if (animator == null || rb == null || idleEvent == null || movementByVelocityEvent == null)
+            return;
+
+        idleEvent.CallIdleEvent();
     }
 
     protected virtual void UpdateMoving()
     {
-        movementByVelocityEvent.CallMovementByVelocity(Dir, moveSpeed);
-
-        MoveToNextPos();
-
         if (Dir == MoveDir.None)
         {
             State = CreatureState.Idle;
         }
+
+        if (animator == null || rb == null || idleEvent == null || movementByVelocityEvent == null)
+            return;
+
+        movementByVelocityEvent.CallMovementByVelocity(Dir, moveSpeed);
+
+        MoveToNextPos();
     }
 
     protected virtual void UpdateDead()
     {
+        if (animator == null || rb == null || idleEvent == null || movementByVelocityEvent == null)
+            return;
+
 
     }
 
     protected virtual void MoveToNextPos()
+    {
+
+    }
+
+    protected virtual void CheckUpdatedFlag()
     {
 
     }

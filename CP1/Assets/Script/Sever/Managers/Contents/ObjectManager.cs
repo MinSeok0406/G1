@@ -9,41 +9,41 @@ public class ObjectManager
     public MyPlayerControl MyPlayer { get; set; }
     public Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
 
-    /*public static GameObjectType GetObjectTypeById(int id)
+    public static GameObjectType GetObjectTypeById(int id)
     {
         int type = (id >> 24) & 0x7F;
         return (GameObjectType)type;
-    }*/
+    }
 
-    public void Add(PlayerInfo info, bool myPlayer = false)
+    public void Add(ObjectInfo info, bool myPlayer = false)
     {
-        /*if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
+        if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
             return;
 
         if (_objects.ContainsKey(info.ObjectId))
-            return;*/
+            return;
 
-        //GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+        GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+
         if (myPlayer)
         {
             GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
             go.name = info.Name;
-            _objects.Add(info.PlayerId, go);
+            _objects.Add(info.ObjectId, go);
 
             MyPlayer = go.GetComponent<MyPlayerControl>();
-            MyPlayer.Id = info.PlayerId;
+            MyPlayer.Id = info.ObjectId;
             MyPlayer.PosInfo = info.PosInfo;
-
             //MyPlayer.SyncPos();
         }
         else
         {
             GameObject go = Managers.Resource.Instantiate("Creature/Player");
             go.name = info.Name;
-            _objects.Add(info.PlayerId, go);
+            _objects.Add(info.ObjectId, go);
 
             PlayerControl pc = go.GetComponent<PlayerControl>();
-            pc.Id = info.PlayerId;
+            pc.Id = info.ObjectId;
             pc.PosInfo = info.PosInfo;
             //pc.SyncPos();
         }
@@ -102,7 +102,7 @@ public class ObjectManager
         return null;
     }
 
-    /*public GameObject Find(Func<GameObject, bool> condition)
+    public GameObject Find(Func<GameObject, bool> condition)
     {
         foreach (GameObject obj in _objects.Values)
         {
@@ -111,7 +111,7 @@ public class ObjectManager
         }
 
         return null;
-    }*/
+    }
 
     public void RemoveMyPlayer()
     {

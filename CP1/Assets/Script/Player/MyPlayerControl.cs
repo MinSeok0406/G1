@@ -12,11 +12,19 @@ public class MyPlayerControl : PlayerControl
 
     protected override void UpdateController()
     {
-        GetDirInput();
+        switch (State)
+        {
+            case CreatureState.Idle:
+                GetDirInput();
+                break;
+            case CreatureState.Moving:
+                GetDirInput();
+                break;
+        }
 
         base.UpdateController();
     }
-
+    
     // 키보드 입력
     private void GetDirInput()
     {
@@ -29,7 +37,6 @@ public class MyPlayerControl : PlayerControl
         {
             moveDirection = moveDirection.normalized;
         }
-
 
         if(moveDirection != Vector3.zero)
         {
@@ -63,7 +70,7 @@ public class MyPlayerControl : PlayerControl
         CheckUpdatedFlag();
     }
 
-    void CheckUpdatedFlag()
+    protected override void CheckUpdatedFlag()
     {
         if (_updated)
         {
