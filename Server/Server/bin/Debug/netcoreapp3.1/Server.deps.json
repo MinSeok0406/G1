@@ -1007,10 +1007,7 @@
       },
       "ServerCore/1.0.0": {
         "runtime": {
-          "ServerCore.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "ServerCore.dll": {}
         }
       }
     }
