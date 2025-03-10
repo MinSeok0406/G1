@@ -14,7 +14,7 @@ namespace ColorPicker.InGame
                 Camera mainCamera = Camera.main;
 
                 mainCamera.transform.SetParent(transform);
-                mainCamera.transform.localPosition = new Vector3(0, 0, -10);
+                mainCamera.transform.localPosition = new Vector3(0, 0, -50);
             }
 
         }

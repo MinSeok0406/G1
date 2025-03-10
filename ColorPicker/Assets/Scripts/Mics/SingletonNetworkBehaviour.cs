@@ -27,8 +27,6 @@ namespace ColorPicker.InGame
                 {
                     Destroy(gameObject);
                 }
-
-            
         }
     }
 }
