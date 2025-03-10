@@ -21,24 +21,35 @@ class PacketHandler
         C_Move movePacket = packet as C_Move;
         ClientSession clientSession = session as ClientSession;
 
-        Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY})");
-
-        if (clientSession.MyPlayer == null)
-            return;
-        if (clientSession.MyPlayer.Room == null)
+        Player player = clientSession.MyPlayer;
+        if (player == null)
             return;
 
-        // TODO : 검증
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
 
-        // 일단 서버에서 좌표 이동
-        PlayerInfo info = clientSession.MyPlayer.Info;
-        info.PosInfo = movePacket.PosInfo;
+        room.Push(room.HandleMove, player, movePacket);
+    }
 
-        // 다른 플레이어한테도 알려준다
-        S_Move resMovePacket = new S_Move();
-        resMovePacket.PlayerId = clientSession.MyPlayer.Info.PlayerId;
-        resMovePacket.PosInfo = movePacket.PosInfo;
+    public static void C_LoginHandler(PacketSession session, IMessage packet)
+    {
+        C_Login loginPacket = packet as C_Login;
+        ClientSession clientSession = session as ClientSession;
+        clientSession.HandleLogin(loginPacket);
+    }
 
-        clientSession.MyPlayer.Room.Broadcast(resMovePacket);
+    public static void C_EnterGameHandler(PacketSession session, IMessage packet)
+    {
+        C_EnterGame enterGamePacket = (C_EnterGame)packet;
+        ClientSession clientSession = (ClientSession)session;
+        clientSession.HandleEnterGame(enterGamePacket);
+    }
+
+    public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
+    {
+        C_CreatePlayer createPlayerPacket = (C_CreatePlayer)packet;
+        ClientSession clientSession = (ClientSession)session;
+        clientSession.HandleCreatePlayer(createPlayerPacket);
     }
 }

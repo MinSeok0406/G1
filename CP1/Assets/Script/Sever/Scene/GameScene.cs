@@ -11,6 +11,8 @@ public class GameScene : BaseScene
         Managers.Scene.StartScene();
 
         Screen.SetResolution(640, 480, false);
+
+        Application.runInBackground = true;
     }
 
     /*private void Update()

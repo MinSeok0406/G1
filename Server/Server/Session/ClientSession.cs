@@ -12,9 +12,11 @@ using Server.Game;
 
 namespace Server
 {
-    public class ClientSession : PacketSession
+    public partial class ClientSession : PacketSession
 	{
-		public Player MyPlayer { get; set; }
+        public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
+
+        public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
 		object _lock = new object();
@@ -99,19 +101,10 @@ namespace Server
 
         public override void OnConnected(EndPoint endPoint)
 		{
-            //Console.WriteLine($"OnConnected : {endPoint}");
-
-            MyPlayer = PlayerManager.Instance.Add();
-            {
-                MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerId}";
-                MyPlayer.Info.PosInfo.PosX = 0;
-                MyPlayer.Info.PosInfo.PosY = 0;
-
-                MyPlayer.Session = this;
-            }
-
-            RoomManager.Instance.Find(1).EnterGame(MyPlayer);
-
+			{
+				S_Connected connectedPacket = new S_Connected();
+				Send(connectedPacket);
+			}
             //GameLogic.Instance.PushAfter(5000, Ping);
 
         }
@@ -123,7 +116,8 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-            RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.PlayerId);
+            GameRoom room = RoomManager.Instance.Find(1);
+            room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
 
             SessionManager.Instance.Remove(this);
 		}

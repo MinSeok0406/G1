@@ -27,7 +27,7 @@ class PacketHandler
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
         S_Spawn spawnPacket = (S_Spawn)packet;
-        foreach (PlayerInfo obj in spawnPacket.Players)
+        foreach (ObjectInfo obj in spawnPacket.Objects)
         {
             Managers.Object.Add(obj, myPlayer: false);
         }
@@ -36,7 +36,7 @@ class PacketHandler
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
         S_Despawn despawnPacket = packet as S_Despawn;
-        foreach (int id in despawnPacket.PlayerIds)
+        foreach (int id in despawnPacket.ObjectIds)
         {
             Managers.Object.Remove(id);
         }
@@ -45,16 +45,65 @@ class PacketHandler
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
-        ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.Object.FindById(movePacket.PlayerId);
+        GameObject go = Managers.Object.FindById(movePacket.ObjectId);
         if (go == null)
             return;
 
-        Player pc = go.GetComponent<Player>();
+        PlayerControl pc = go.GetComponent<PlayerControl>();
         if (pc == null)
             return;
 
         pc.PosInfo = movePacket.PosInfo;
+    }
+
+    public static void S_ConnectedHandler(PacketSession session, IMessage packet)
+    {
+        Debug.Log("S_ConnectedHandler");
+        C_Login loginPacket = new C_Login();
+        loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+        Managers.Network.Send(loginPacket);
+    }
+
+    public static void S_LoginHandler(PacketSession session, IMessage packet)
+    {
+        S_Login loginPacket = (S_Login)packet;
+        Debug.Log($"LoginOk({loginPacket.LoginOk})");
+
+        // TODO : 로비 UI에서 캐릭터 보여주고, 선택할 수 있도록
+        if (loginPacket.Players == null || loginPacket.Players.Count == 0)
+        {
+            C_CreatePlayer createPacket = new C_CreatePlayer();
+            createPacket.Name = $"Player_{Random.Range(0, 10000).ToString("0000")}";
+            Managers.Network.Send(createPacket);
+        }
+        else
+        {
+            // 무조건 첫번째 로그인
+            LobbyPlayerInfo info = loginPacket.Players[0];
+            C_EnterGame enterGamePacket = new C_EnterGame();
+            enterGamePacket.Name = info.Name;
+            enterGamePacket.Speed = info.Speed;
+            Managers.Network.Send(enterGamePacket);
+        }
+    }
+
+    public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
+    {
+        S_CreatePlayer createOkPacket = (S_CreatePlayer)packet;
+
+        if (createOkPacket.Player == null)
+        {
+            C_CreatePlayer createPacket = new C_CreatePlayer();
+            createPacket.Name = $"Player_{Random.Range(0, 10000).ToString("0000")}";
+            Managers.Network.Send(createPacket);
+        }
+        else
+        {
+            C_EnterGame enterGamePacket = new C_EnterGame();
+            enterGamePacket.Name = createOkPacket.Player.Name;
+            enterGamePacket.Speed = createOkPacket.Player.Speed;
+            Managers.Network.Send(enterGamePacket);
+        }
     }
 }
