@@ -11,28 +11,25 @@ namespace ColorPicker.InGame
     {
         private void Start()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            SetFollowLight();
+            S_SetFollowLight();
         }
 
-        private void SetFollowLight()
+        private void S_SetFollowLight()
         {
-           Dictionary<int,Player> players = NetworkManager.Instance.GetPlayerDictionary();
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            Dictionary<int,Player> players = NetworkManager.Instance.S_GetPlayerDictionary();
 
             foreach(int playerId in players.Keys)
             {
                 Photon.Realtime.Player targetPlayer = PhotonNetwork.CurrentRoom.Players[playerId];
 
-                //????????없으면 오류
-                Debug.Log(playerId); Debug.Log(targetPlayer == null);
-
-                photonView.RPC("SetFollowLightToClients", targetPlayer);
+                photonView.RPC("C_SetFollowLightToClients", targetPlayer);
             }
         }
 
         [PunRPC]
-        private void SetFollowLightToClients()
+        private void C_SetFollowLightToClients()
         {
             transform.SetParent(NetworkManager.Instance.MyPlayer.transform);
             transform.localPosition = Vector3.zero;

@@ -17,7 +17,7 @@ namespace ColorPicker.InGame
     [RequireComponent(typeof(Animator))]
     #endregion
     [DisallowMultipleComponent]
-    public class Player : MonoBehaviourPun
+    public class Player : MonoBehaviourPunCallbacks
     {
         [HideInInspector] public IdleEvent idleEvent;
         [HideInInspector] public MovementByVelocityEvent movementByVelocityEvent;
@@ -32,21 +32,34 @@ namespace ColorPicker.InGame
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-
         private void Start()
         {
-            if (photonView.IsMine)
-            {
-                NetworkManager.Instance.RegisterClient(PhotonNetwork.LocalPlayer.ActorNumber);
-                NetworkManager.Instance.SetMyPlayer(this);
-            }
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                NetworkManager.Instance.RegisterPlayer(this);
-            }
+            S_RegisterPlayer();
 
             DontDestroyOnLoad(gameObject);
+        }
+
+        public override void OnLeftRoom()
+        {
+            base.OnLeftRoom();
+
+            S_UnRegisterPlayer();
+        }
+
+        private void S_RegisterPlayer()
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                int playerId = photonView.Owner.ActorNumber;
+                NetworkManager.Instance.S_RegisterPlayer(playerId, this);
+            }
+        }
+
+        private void S_UnRegisterPlayer()
+        {
+            int playerId = photonView.Owner.ActorNumber;
+
+            NetworkManager.Instance.S_UnRegisterPlayer(playerId);
         }
     }
 }

@@ -49,6 +49,16 @@ MonoBehaviour:
   - SetFollowLightToClients
   - UpdatePlayerReadyStateUI
   - RegisterClientToServer
+  - C_StartGameOnClients
+  - C_UpdatePlayerReadyStateUI
+  - S_RegisterPlayerToServer
+  - S_UnRegisterPlayerFromServer
+  - S_UpdatePlayerReadyStatus
+  - S_RegisterPlayerTo
+  - S_RegisterPlayerToReadyList
+  - S_UnRegisterPlayerFromReadyList
+  - S_UpdatePlayerStateUI
+  - C_SetFollowLightToClients
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
