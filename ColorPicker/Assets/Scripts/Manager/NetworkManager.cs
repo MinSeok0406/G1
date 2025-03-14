@@ -71,7 +71,7 @@ namespace ColorPicker.InGame
 
         public override void OnLeftRoom()
         {
-            base.OnLeftLobby();
+            base.OnLeftRoom();
 
             Destroy(gameObject);
         }

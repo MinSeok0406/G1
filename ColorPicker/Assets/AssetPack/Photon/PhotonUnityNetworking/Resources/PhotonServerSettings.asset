@@ -59,6 +59,11 @@ MonoBehaviour:
   - S_UnRegisterPlayerFromReadyList
   - S_UpdatePlayerStateUI
   - C_SetFollowLightToClients
+  - S_ReciveMessage
+  - S_SendMessages
+  - C_InitializedChatList
+  - C_ReciveMessages
+  - C_InitializedChat
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

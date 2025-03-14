@@ -6,8 +6,8 @@ using UnityEngine;
 [Serializable]
 public class GameRuleSettings
 {
-    int maxPlayerAmount;
-    int mafiaAmount;
+    public int maxPlayerAmount;
+    public int mafiaAmount;
 
     public void SetRuleSettingRecomend()
     {

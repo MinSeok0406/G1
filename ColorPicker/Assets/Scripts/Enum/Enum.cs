@@ -20,4 +20,36 @@ namespace ColorPicker.InGame
         detective,
         ghost
     }
+
+    public enum ColorTpye
+    {
+        White,
+        Red,
+        Green,
+        Blue,
+        Yellow,
+        Cyan,
+        Magenta,
+        Orange,
+        Purple,
+        Pink,
+        Brown,
+        Black
+    }
+
+    public enum CustomizationColor
+    {
+        White,
+        Red,
+        Green,
+        Blue,
+        Yellow,
+        Cyan,
+        Magenta,
+        Orange,
+        Purple,
+        Pink,
+        Brown
+    }
+
 }

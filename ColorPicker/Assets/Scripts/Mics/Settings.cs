@@ -20,5 +20,9 @@ namespace ColorPicker.InGame
         public static int isRight = Animator.StringToHash("isRight");
         public static int isLeft = Animator.StringToHash("isLeft");
         #endregion
+
+        #region Others Parameters
+        public const int maxTryCount = 1000;
+        #endregion
     }
 }

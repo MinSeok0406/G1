@@ -1,8 +1,6 @@
 using Photon.Pun;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace ColorPicker.InGame {
@@ -27,16 +25,17 @@ namespace ColorPicker.InGame {
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            HandleGameState();
+            S_HandleGameState();
         }
 
         //Only Server
-        private void HandleGameState()
+        private void S_HandleGameState()
         {
             switch (gameState)
             {
                 case GameState.gameStarted:
-                    AssignPlayerClasses();
+                    S_AssignPlayerClasses();
+                    gameState = GameState.playingStage;
                     break;
 
                 case GameState.playingStage: 
@@ -53,18 +52,49 @@ namespace ColorPicker.InGame {
             }
         }
 
-        private void AssignPlayerClasses()
+
+        private void S_AssignPlayerClasses()
         {
-           
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            S_InitalizedPlayerClasses();
+
+            GameRuleSettings gameRules = GameDataManager.Instance.S_GetGameRules();
+
+            List<Player> players = new List<Player>(playerDictionary.Values);
+
+            int mafiaCount = 0;
+            int tryCount = 0;
+
+            while(mafiaCount < gameRules.mafiaAmount && tryCount < Settings.maxTryCount)
+            {
+                int playerIndex = Random.Range(0, players.Count);
+
+                if (players[playerIndex].playerClassType == PlayerClassType.citizen)
+                {
+                    players[playerIndex].playerClassType = PlayerClassType.mafia;
+                    mafiaCount++;
+                }
+
+                tryCount++;
+            }
+
+            //debug Code
+            foreach(Player player in players)
+            {
+                Debug.Log(player.photonView.Owner.ActorNumber + " : " + player.playerClassType);
+            }
 
 
         }
 
-        private void InitalizedPlayerClasses()
+        private void S_InitalizedPlayerClasses()
         {
+            if (!PhotonNetwork.IsMasterClient) return;
+
             foreach(Player player in playerDictionary.Values)
             {
-                
+                player.playerClassType = PlayerClassType.citizen;
             }
         }
 

@@ -24,6 +24,9 @@ namespace ColorPicker.InGame
         [HideInInspector] public Animator animator;
         [HideInInspector] public SpriteRenderer spriteRenderer;
 
+        //[HideInInspector] 
+        public PlayerClassType playerClassType = PlayerClassType.citizen;
+
         private void Awake()
         {
             idleEvent = GetComponent<IdleEvent>();            
@@ -41,9 +44,9 @@ namespace ColorPicker.InGame
 
         public override void OnLeftRoom()
         {
-            base.OnLeftRoom();
-
             S_UnRegisterPlayer();
+
+            base.OnLeftRoom();
         }
 
         private void S_RegisterPlayer()
@@ -57,6 +60,8 @@ namespace ColorPicker.InGame
 
         private void S_UnRegisterPlayer()
         {
+            if (!PhotonNetwork.IsMasterClient) return;
+
             int playerId = photonView.Owner.ActorNumber;
 
             NetworkManager.Instance.S_UnRegisterPlayer(playerId);
