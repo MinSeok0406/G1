@@ -45,11 +45,28 @@ class PacketHandler
         ClientSession clientSession = (ClientSession)session;
         clientSession.HandleEnterGame(enterGamePacket);
     }
-
+    
     public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
     {
         C_CreatePlayer createPlayerPacket = (C_CreatePlayer)packet;
         ClientSession clientSession = (ClientSession)session;
         clientSession.HandleCreatePlayer(createPlayerPacket);
+    }
+
+    public static void C_ChatHandler(PacketSession session, IMessage packet)
+    {
+        C_Chat chatPacket = (C_Chat)packet;
+        ClientSession clientSession = (ClientSession)session;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        chatPacket.Success = true;
+        room.Push(room.HandleChat, player, chatPacket);
     }
 }

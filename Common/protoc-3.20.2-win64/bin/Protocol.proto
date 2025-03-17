@@ -19,6 +19,9 @@ enum MsgId {
   C_ENTER_GAME = 11;
   C_CREATE_PLAYER = 12;
   S_CREATE_PLAYER = 13;
+  C_CHAT = 14;
+  S_CHAT = 15;
+  S_ACHIEVEMENT_LIST = 16;
 }
 
 enum CreatureState {
@@ -45,6 +48,17 @@ enum PlayerServerState {
   SERVER_STATE_LOGIN = 0;
   SERVER_STATE_LOBBY = 1;
   SERVER_STATE_GAME = 2;
+}
+
+enum MessageType {
+  PRIVATE = 0;	// 귓속말
+  PUBLIC = 1;	// 공개 채팅
+  SYSTEM = 2;	// 관리자 채팅
+}
+
+enum AchievementType {
+  ACHIEVEMENT_TYPE_LOCK = 0;
+  ACHIEVEMENT_TYPE_UNLOCK = 1;
 }
 
 message S_Ping {
@@ -107,9 +121,27 @@ message S_CreatePlayer {
   LobbyPlayerInfo player = 1;
 }
 
+message C_Chat {
+  MessageType type = 1;
+  bool success = 2;
+  string msg = 3;
+}
+
+message S_Chat {
+  MessageType type = 1;
+  int32 sender_id = 2;
+  repeated string msg = 3;
+  //int32 timestamp = 4;
+}
+
+message S_AchievementList {
+  repeated AchievementInfo achievements = 1;
+}
+
 message LobbyPlayerInfo {
-  string name = 1;
-  float speed = 2;
+  int32 playerDbId = 1;
+  string name = 2;
+  float speed = 3;
 }
 
 message ObjectInfo {
@@ -124,4 +156,11 @@ message PositionInfo {
   float posX = 3;
   float posY = 4;
   float speed = 5;
+}
+
+message AchievementInfo {
+  int32 AchievementDbId = 1;
+  int32 templateId = 2;
+  int32 slot = 3;
+  string locked = 4;
 }

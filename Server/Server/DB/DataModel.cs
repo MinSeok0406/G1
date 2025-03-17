@@ -25,6 +25,23 @@ namespace Server.DB
         public int AccountDbId { get; set; }
         public AccountDb Account { get; set; }
 
+        public ICollection<AchievementDb> Achievements { get; set; }
+
         public float Speed { get; set; }
+
+        
+    }
+
+    [Table("Achievement")]
+    public class AchievementDb
+    {
+        public int AchievementDbId { get; set; }
+        public int TemplateId { get; set; }
+        public int Slot { get; set; }
+        public string IsActive { get; set; }
+
+        [ForeignKey("Owner")]
+        public int? OwnerDbId { get; set; }
+        public PlayerDb Owner { get; set; }
     }
 }

@@ -106,4 +106,24 @@ class PacketHandler
             Managers.Network.Send(enterGamePacket);
         }
     }
+
+    public static void S_ChatHandler(PacketSession session, IMessage packet)
+    {
+        S_Chat chatPacket = (S_Chat)packet;
+
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_ChatScene chatUI = gameSceneUI.ChatUI;
+
+        chatUI.ReadChat(chatPacket);
+    }
+
+    public static void S_AchievementListHandler(PacketSession session, IMessage packet)
+    {
+        S_AchievementList AchievementPacket = (S_AchievementList)packet;
+
+        foreach (AchievementInfo achievement in AchievementPacket.Achievements)
+        {
+            Debug.Log($"{achievement.AchievementDbId}, {achievement.Locked}");
+        }
+    }
 }

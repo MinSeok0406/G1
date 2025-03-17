@@ -33,6 +33,4 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     {
         button.onClick.RemoveAllListeners();
     }
-
-    
 }

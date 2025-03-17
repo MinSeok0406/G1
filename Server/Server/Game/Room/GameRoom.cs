@@ -104,6 +104,7 @@ namespace Server.Game
             if (_players.Remove(objectId, out player) == false)
                 return;
 
+            player.OnLeaveGame();
             player.Room = null;
             //Map.ApplyLeave(player);
 
@@ -189,6 +190,48 @@ namespace Server.Game
 
                 Broadcast(resMovePacket);
             }
+        }
+
+        public void HandleChat(Player player, C_Chat chatPacket)
+        {
+            if (player == null)
+                return;
+
+            if (chatPacket.Success == false)
+                return;
+
+            S_Chat schatPacket = new S_Chat();
+            schatPacket.Type = chatPacket.Type;
+            schatPacket.SenderId = player.Info.ObjectId;
+            schatPacket.Msg.Add(chatPacket.Msg);
+
+            if (schatPacket.Type == MessageType.Private)
+            {
+                Broadcast(schatPacket);
+            }
+            else if (schatPacket.Type == MessageType.Public)
+            {
+                Broadcast(schatPacket);
+            }
+            else if (schatPacket.Type == MessageType.System)
+            {
+                Broadcast(schatPacket);
+            }
+
+            Console.WriteLine($"{schatPacket.Msg}");
+
+            chatPacket.Success = false;
+        }
+
+        public Player FindPlayer(Func<GameObject, bool> condition)
+        {
+            foreach (Player player in _players.Values)
+            {
+                if (condition.Invoke(player))
+                    return player;
+            }
+
+            return null;
         }
 
         public void Broadcast(IMessage packet)

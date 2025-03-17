@@ -59,4 +59,31 @@ namespace Server.Data
         }
     }*/
     #endregion
+
+    #region Achievement
+    [Serializable]
+    public class AchievementData
+    {
+        public int id;
+        public string name;
+        public string isActive;
+    }
+
+    [Serializable]
+    public class ItemLoader : ILoader<int, AchievementData>
+    {
+        public List<AchievementData> achievements = new List<AchievementData>();
+
+        public Dictionary<int, AchievementData> MakeDict()
+        {
+            Dictionary<int, AchievementData> dict = new Dictionary<int, AchievementData>();
+            foreach (AchievementData achievement in achievements)
+            {
+                dict.Add(achievement.id, achievement);
+            }
+
+            return dict;
+        }
+    }
+    #endregion
 }

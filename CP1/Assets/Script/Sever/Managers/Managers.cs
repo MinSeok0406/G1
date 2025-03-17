@@ -22,10 +22,12 @@ public class Managers : MonoBehaviour
     ResourceManager _resource = new ResourceManager();
     PoolManager _pool = new PoolManager();
     SceneManagerEx _scene = new SceneManagerEx();
+    UI_Manager _ui = new UI_Manager();
 
     public static PoolManager Pool { get { return Instance._pool; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
+    public static UI_Manager UI { get { return Instance._ui; } }
     #endregion
 
     void Start()

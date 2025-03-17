@@ -82,6 +82,56 @@ namespace Server
             ConfigManager.LoadConfig();
             DataManager.LoadData();
 
+            // TEST CODE
+            /*using (AppDbContext db = new AppDbContext())
+            {
+                PlayerDb player = db.Players.FirstOrDefault();
+                if (player != null)
+                {
+                    db.Achievements.Add(new AchievementDb()
+                    {
+                        TemplateId = 1,
+                        IsActive = "true",
+                        Slot = 0,
+                        Owner = player
+                    });
+
+                    db.Achievements.Add(new AchievementDb()
+                    {
+                        TemplateId = 2,
+                        IsActive = "false",
+                        Slot = 1,
+                        Owner = player
+                    });
+
+                    db.Achievements.Add(new AchievementDb()
+                    {
+                        TemplateId = 3,
+                        IsActive = "false",
+                        Slot = 2,
+                        Owner = player
+                    });
+
+                    db.Achievements.Add(new AchievementDb()
+                    {
+                        TemplateId = 4,
+                        IsActive = "true",
+                        Slot = 5,
+                        Owner = player
+                    });
+
+                    db.Achievements.Add(new AchievementDb()
+                    {
+                        TemplateId = 5,
+                        IsActive = "false",
+                        Slot = 6,
+                        Owner = player
+                    });
+
+                    db.SaveChangesEx();
+                }
+            }*/
+
             GameRoom room = RoomManager.Instance.Add(1);
             TickRoom(room, 10);
 
@@ -99,6 +149,7 @@ namespace Server
 
             while (true)
             {
+                DbTransaction.Instance.Flush();
                 //JobTimer.Instance.Flush();
                 //Thread.Sleep(100);
             }

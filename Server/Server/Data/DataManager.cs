@@ -14,11 +14,13 @@ namespace Server.Data
     {
         //public static Dictionary<int, Data.Stat> StatDict { get; private set; } = new Dictionary<int, Data.Stat>();
         //public static Dictionary<int, Data.Skill> SkillDict { get; private set; } = new Dictionary<int, Data.Skill>();
+        public static Dictionary<int, Data.AchievementData> AchievementDict { get; private set; } = new Dictionary<int, Data.AchievementData>();
 
         public static void LoadData()
         {
             //StatDict = LoadJson<Data.StatData, int, Data.Stat>("StatData").MakeDict();
             //SkillDict = LoadJson<Data.SkillData, int, Data.Skill>("SkillData").MakeDict();
+            AchievementDict = LoadJson<Data.ItemLoader, int, Data.AchievementData>("AchievementData").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

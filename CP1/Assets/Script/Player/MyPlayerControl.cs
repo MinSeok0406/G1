@@ -12,6 +12,8 @@ public class MyPlayerControl : PlayerControl
 
     protected override void UpdateController()
     {
+        GetUIKeyInput();
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -46,6 +48,25 @@ public class MyPlayerControl : PlayerControl
         else
         {
             Dir = MoveDir.None;
+        }
+    }
+
+    void GetUIKeyInput()
+    {
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_ChatScene chatUI = gameSceneUI.ChatUI;
+
+            if (chatUI.gameObject.activeSelf)
+            {
+                chatUI.gameObject.SetActive(false);
+            }
+            else
+            {
+                chatUI.gameObject.SetActive(true);
+                //chatUI.RefreshUI();
+            }
         }
     }
 

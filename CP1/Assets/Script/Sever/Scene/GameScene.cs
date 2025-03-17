@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameScene : BaseScene
 {
+    UI_GameScene _sceneUI;
+
     protected override void Init()
     {
         base.Init();
@@ -13,6 +15,8 @@ public class GameScene : BaseScene
         Screen.SetResolution(640, 480, false);
 
         Application.runInBackground = true;
+
+        _sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>("UI");
     }
 
     /*private void Update()

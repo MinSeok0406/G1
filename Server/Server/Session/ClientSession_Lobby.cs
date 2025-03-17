@@ -45,6 +45,7 @@ namespace Server
                     {
                         LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
                         {
+                            PlayerDbId = playerDb.PlayerDbId,
                             Name = playerDb.PlayerName,
                             Speed = playerDb.Speed
                         };
@@ -64,7 +65,9 @@ namespace Server
                 {
                     AccountDb newAccount = new AccountDb() { AccountName = loginPacket.UniqueId };
                     db.Accounts.Add(newAccount);
-                    db.SaveChanges(); // TODO : Exception 
+                    bool success = db.SaveChangesEx();
+                    if (success == false)
+                        return;
 
                     // AccountDbId 메모리에 기억
                     AccountDbId = newAccount.AccountDbId;
@@ -94,6 +97,31 @@ namespace Server
                 MyPlayer.Info.PosInfo.PosY = 0;
                 MyPlayer.Info.PosInfo.Speed = playerInfo.Speed;
                 MyPlayer.Session = this;
+
+                S_AchievementList achievementListPacket = new S_AchievementList(); 
+
+                // 아이템 목록을 갖고 온다
+                using (AppDbContext db = new AppDbContext())
+                {
+                    List<AchievementDb> achievements = db.Achievements
+                        .Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
+                        .ToList();
+
+                    foreach (AchievementDb achievementDb in achievements)
+                    {
+                        Achievement achievement = Achievement.GetAchievement(achievementDb);
+                        if (achievement != null)
+                        {
+                            MyPlayer.slot.Add(achievement);
+
+                            AchievementInfo info = new AchievementInfo();
+                            info.MergeFrom(achievement.Info);
+                            achievementListPacket.Achievements.Add(info);
+                        }
+                    }
+                }
+
+                Send(achievementListPacket);
             }
 
             ServerState = PlayerServerState.ServerStateGame;
@@ -101,7 +129,6 @@ namespace Server
             GameRoom room = RoomManager.Instance.Find(1);
             room.Push(room.EnterGame, MyPlayer);
         }
-
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
         {
             // TODO : 이런 저런 보안 체크
@@ -130,11 +157,14 @@ namespace Server
                     };
 
                     db.Players.Add(newPlayerDb);
-                    db.SaveChanges(); // TODO : ExceptionHandling
+                    bool success = db.SaveChangesEx();
+                    if (success == false)
+                        return;
 
                     // 메모리에 추가
                     LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
                     {
+                        PlayerDbId = newPlayerDb.PlayerDbId,
                         Name = createPacket.Name,
                         // Speed 서버에서 직접 관리 버전
                         Speed = Stat._speed
