@@ -24,4 +24,15 @@ public class Define
         Click,
         Drag,
     }
+
+    public enum Color
+    {
+        RED,
+        GREEN,
+        BLUE,
+        YELLOW,
+        BLACK,
+        GREY,
+        WHITE
+    }
 }

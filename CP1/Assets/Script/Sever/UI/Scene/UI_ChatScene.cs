@@ -9,16 +9,12 @@ using UnityEngine.UI;
 public class UI_ChatScene : UI_Base
 {
     public GameObject _content;
+    public ScrollRect _scroll;
     GameObject _contentText;
 
     enum GameObjects
     {
         Write
-    }
-
-    enum Texts
-    {
-        LogText
     }
 
     enum Images
@@ -31,7 +27,6 @@ public class UI_ChatScene : UI_Base
         _contentText = _content.transform.GetChild(0).gameObject;
 
         Bind<GameObject>(typeof(GameObjects));
-        Bind<TMP_Text>(typeof(Texts));
         Bind<Image>(typeof(Images));
 
         GetImage((int)Images.Chat_Button).gameObject.BindEvent(SendChat);
@@ -46,16 +41,51 @@ public class UI_ChatScene : UI_Base
         C_Chat chat = new C_Chat();
         chat.Msg = text;
         chat.Type = MessageType.Public;
-        Managers.Network.Send(chat);
 
         Get<GameObject>((int)GameObjects.Write).GetComponent<TMP_InputField>().text = "";
+
+        if (chat.Msg == "")
+        {
+            return;
+        }
+
+        Managers.Network.Send(chat);
     }
 
     public void ReadChat(S_Chat chatPacket)
     {
         //Get<TMP_Text>((int)Texts.LogText).text = $"{chatPacket.SenderId}: {chatPacket.Msg}";
-        GameObject goText = Instantiate(_contentText, _content.transform);
+
+        /*GameObject goText = Instantiate(_contentText, _content.transform);
         goText.GetComponent<TMP_Text>().text = $"{chatPacket.SenderId}: {chatPacket.Msg}";
-        _content.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+        _content.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;*/
+
+        GameObject goText = Instantiate(_contentText, _content.transform);
+        TMP_Text textComponent = goText.GetComponent<TMP_Text>();
+        textComponent.text = $"{chatPacket.SenderId}: {chatPacket.Msg}";
+
+        if (Managers.Object.MyPlayer.Id == chatPacket.SenderId)
+        {
+            textComponent.alignment = TextAlignmentOptions.Right;
+            textComponent.color = Color.red;
+        }
+        else
+        {
+            textComponent.alignment = TextAlignmentOptions.Left;
+            textComponent.color = Color.blue;
+        }
+
+        RectTransform contentRect = _content.GetComponent<RectTransform>();
+        float contentHeight = contentRect.rect.height;
+
+        float newYPosition = contentHeight;  // Move the content down by the new content height
+        contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x, newYPosition);
+
+        _scroll = _content.GetComponentInParent<ScrollRect>();
+        if (_scroll != null)
+        {
+            Canvas.ForceUpdateCanvases(); // Ensure the layout is updated immediately
+            _scroll.verticalNormalizedPosition = 0f; // Scroll to the bottom
+        }
     }
 }

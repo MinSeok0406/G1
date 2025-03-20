@@ -53,7 +53,7 @@ public class MyPlayerControl : PlayerControl
 
     void GetUIKeyInput()
     {
-        if (Input.GetKeyUp(KeyCode.Q))
+        if (Input.GetKeyUp(KeyCode.Return))
         {
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             UI_ChatScene chatUI = gameSceneUI.ChatUI;
@@ -65,7 +65,6 @@ public class MyPlayerControl : PlayerControl
             else
             {
                 chatUI.gameObject.SetActive(true);
-                //chatUI.RefreshUI();
             }
         }
     }

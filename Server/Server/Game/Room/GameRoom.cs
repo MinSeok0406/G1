@@ -203,7 +203,7 @@ namespace Server.Game
             S_Chat schatPacket = new S_Chat();
             schatPacket.Type = chatPacket.Type;
             schatPacket.SenderId = player.Info.ObjectId;
-            schatPacket.Msg.Add(chatPacket.Msg);
+            schatPacket.Msg = chatPacket.Msg;
 
             if (schatPacket.Type == MessageType.Private)
             {

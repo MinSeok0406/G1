@@ -130,7 +130,7 @@ public class PlayerControl : MonoBehaviour
         #endregion
 
         //moveSpeed = Settings.playerMoveSpeed;
-        Speed = Settings.playerMoveSpeed;
+        //Speed = Settings.playerMoveSpeed;
         State = CreatureState.Idle;
         Dir = MoveDir.None;
         CellPos = new Vector3(0, 0, 0);

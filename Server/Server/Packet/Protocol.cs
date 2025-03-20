@@ -41,7 +41,7 @@ namespace Google.Protobuf.Protocol {
             "BHR5cGUYASABKA4yFS5Qcm90b2NvbC5NZXNzYWdlVHlwZRIPCgdzdWNjZXNz",
             "GAIgASgIEgsKA21zZxgDIAEoCSJNCgZTX0NoYXQSIwoEdHlwZRgBIAEoDjIV",
             "LlByb3RvY29sLk1lc3NhZ2VUeXBlEhEKCXNlbmRlcl9pZBgCIAEoBRILCgNt",
-            "c2cYAyADKAkiRAoRU19BY2hpZXZlbWVudExpc3QSLwoMYWNoaWV2ZW1lbnRz",
+            "c2cYAyABKAkiRAoRU19BY2hpZXZlbWVudExpc3QSLwoMYWNoaWV2ZW1lbnRz",
             "GAEgAygLMhkuUHJvdG9jb2wuQWNoaWV2ZW1lbnRJbmZvIkIKD0xvYmJ5UGxh",
             "eWVySW5mbxISCgpwbGF5ZXJEYklkGAEgASgFEgwKBG5hbWUYAiABKAkSDQoF",
             "c3BlZWQYAyABKAIiVQoKT2JqZWN0SW5mbxIQCghvYmplY3RJZBgBIAEoBRIM",
@@ -3116,7 +3116,7 @@ namespace Google.Protobuf.Protocol {
     public S_Chat(S_Chat other) : this() {
       type_ = other.type_;
       senderId_ = other.senderId_;
-      msg_ = other.msg_.Clone();
+      msg_ = other.msg_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3152,16 +3152,17 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "msg" field.</summary>
     public const int MsgFieldNumber = 3;
-    private static readonly pb::FieldCodec<string> _repeated_msg_codec
-        = pb::FieldCodec.ForString(26);
-    private readonly pbc::RepeatedField<string> msg_ = new pbc::RepeatedField<string>();
+    private string msg_ = "";
     /// <summary>
     ///int32 timestamp = 4;
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<string> Msg {
+    public string Msg {
       get { return msg_; }
+      set {
+        msg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3181,7 +3182,7 @@ namespace Google.Protobuf.Protocol {
       }
       if (Type != other.Type) return false;
       if (SenderId != other.SenderId) return false;
-      if(!msg_.Equals(other.msg_)) return false;
+      if (Msg != other.Msg) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3191,7 +3192,7 @@ namespace Google.Protobuf.Protocol {
       int hash = 1;
       if (Type != global::Google.Protobuf.Protocol.MessageType.Private) hash ^= Type.GetHashCode();
       if (SenderId != 0) hash ^= SenderId.GetHashCode();
-      hash ^= msg_.GetHashCode();
+      if (Msg.Length != 0) hash ^= Msg.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3218,7 +3219,10 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(16);
         output.WriteInt32(SenderId);
       }
-      msg_.WriteTo(output, _repeated_msg_codec);
+      if (Msg.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Msg);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3237,7 +3241,10 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(16);
         output.WriteInt32(SenderId);
       }
-      msg_.WriteTo(ref output, _repeated_msg_codec);
+      if (Msg.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Msg);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3254,7 +3261,9 @@ namespace Google.Protobuf.Protocol {
       if (SenderId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(SenderId);
       }
-      size += msg_.CalculateSize(_repeated_msg_codec);
+      if (Msg.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Msg);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -3273,7 +3282,9 @@ namespace Google.Protobuf.Protocol {
       if (other.SenderId != 0) {
         SenderId = other.SenderId;
       }
-      msg_.Add(other.msg_);
+      if (other.Msg.Length != 0) {
+        Msg = other.Msg;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -3298,7 +3309,7 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 26: {
-            msg_.AddEntriesFrom(input, _repeated_msg_codec);
+            Msg = input.ReadString();
             break;
           }
         }
@@ -3325,7 +3336,7 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 26: {
-            msg_.AddEntriesFrom(ref input, _repeated_msg_codec);
+            Msg = input.ReadString();
             break;
           }
         }

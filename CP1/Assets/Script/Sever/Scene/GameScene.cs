@@ -19,18 +19,20 @@ public class GameScene : BaseScene
         _sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>("UI");
     }
 
-    /*private void Update()
+    public void OpenChat()
     {
-        if (Input.GetKeyUp(KeyCode.K))
-        {
-            foreach (GameObject obj in Managers.Object._objects.Values)
-            {
-                PlayerControl cc = obj.GetComponent<PlayerControl>();
-                Debug.Log($"{cc.Id}, {cc.PosInfo}");
-            }
-        }
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_ChatScene chatUI = gameSceneUI.ChatUI;
 
-    }*/
+        if (chatUI.gameObject.activeSelf)
+        {
+            chatUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            chatUI.gameObject.SetActive(true);
+        }
+    }
 
     public override void Clear()
     {
