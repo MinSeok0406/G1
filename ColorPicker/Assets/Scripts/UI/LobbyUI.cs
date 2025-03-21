@@ -46,8 +46,6 @@ namespace ColorPicker.InGame
             photonView.RPC("S_UpdatePlayerStateUI", RpcTarget.MasterClient);
 
             StartCoroutine(C_SetReadyButtonEvent());
-
-            H_InteractableStartButton();
         }
 
         [PunRPC]
@@ -104,6 +102,8 @@ namespace ColorPicker.InGame
         public void C_UpdatePlayerReadyStateUI(int readyPlayer, int playerAmount, int maxPlayer)
         {
             playerStateText.text = $"Player : {readyPlayer} / {playerAmount} (MaxPlayer:{maxPlayer})";
+
+            H_InteractableStartButton();
         }
     }
 }

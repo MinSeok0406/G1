@@ -6,9 +6,10 @@ namespace ColorPicker.InGame
 {
     public class NetworkManager : SingletonNetworkBehaviour<NetworkManager>
     {
-        private Dictionary<int, Player> playerDictionary = new Dictionary<int, Player>();
+        private Dictionary<int, PlayerData> playerDictionary = new Dictionary<int, PlayerData>();
  
         public Player MyPlayer { get; private set; }
+        [HideInInspector] public PlayerData currentPlayerData;
 
         protected override void Awake()
         {
@@ -20,6 +21,17 @@ namespace ColorPicker.InGame
         private void Start()
         {
             S_SpawnPlayer();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                foreach(int playerid in playerDictionary.Keys)
+                {
+                    Debug.Log(playerid);
+                }
+            }
         }
 
         public void S_SpawnPlayer()
@@ -34,9 +46,9 @@ namespace ColorPicker.InGame
             }
         }
 
-        public void S_RegisterPlayer(int playerId, Player player)
+        public void S_RegisterPlayer(int playerId, PlayerData playerData)
         {
-            photonView.RPC("S_RegisterPlayerToServer", RpcTarget.MasterClient, playerId, player);
+            photonView.RPC("S_RegisterPlayerToServer", RpcTarget.MasterClient, playerId, playerData);
         }
 
         public void S_UnRegisterPlayer(int playerId)
@@ -44,17 +56,31 @@ namespace ColorPicker.InGame
             photonView.RPC("S_UnRegisterPlayerFromServer", RpcTarget.MasterClient, playerId);
         }
 
-        public Dictionary<int, Player> S_GetPlayerDictionary()
+        public void C_RegisterPlayer(int playerId, PlayerData playerData)
+        {
+            Photon.Realtime.Player targetPlayer = PhotonNetwork.LocalPlayer;
+
+            photonView.RPC("C_RegisterPlayerToClient", targetPlayer, playerId, playerData);
+        }
+
+        public void C_UnRegisterPlayer(int playerId)
+        {
+            Photon.Realtime.Player targetPlayer = PhotonNetwork.LocalPlayer;
+
+            photonView.RPC("C_UnRegisterPlayerFromClient", targetPlayer, playerId);
+        }
+
+        public Dictionary<int, PlayerData> GetPlayerDictionary()
         {
             return playerDictionary;
         }
 
         [PunRPC]
-        public void S_RegisterPlayerToServer(int playerId, Player player)
+        public void S_RegisterPlayerToServer(int playerId, PlayerData playerData)
         {
             if (!playerDictionary.ContainsKey(playerId))
             {
-                playerDictionary.Add(playerId, player);
+                playerDictionary.Add(playerId, playerData);
             }
         }
 
@@ -63,7 +89,27 @@ namespace ColorPicker.InGame
         {
             if (playerDictionary.ContainsKey(playerId))
             {
-                Destroy(playerDictionary[playerId].gameObject);
+                Destroy(playerDictionary[playerId].player.gameObject);
+
+                playerDictionary.Remove(playerId);
+            }
+        }
+
+        [PunRPC]
+        public void C_RegisterPlayerToClient(int playerId, PlayerData playerData)
+        {
+            if (!playerDictionary.ContainsKey(playerId))
+            {
+                playerDictionary.Add(playerId, playerData);
+            }
+        }
+
+        [PunRPC]
+        public void C_UnRegisterPlayerFromClient(int playerId)
+        {
+            if (playerDictionary.ContainsKey(playerId))
+            {
+                Destroy(playerDictionary[playerId].player.gameObject);
 
                 playerDictionary.Remove(playerId);
             }

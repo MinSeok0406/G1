@@ -5,6 +5,8 @@ namespace ColorPicker.InGame
 {
     public class PlayerControl : MonoBehaviourPun
     {
+        private bool disableControl;
+
         private float moveSpeed;
 
         private Player player;
@@ -18,7 +20,7 @@ namespace ColorPicker.InGame
 
         private void FixedUpdate()
         {
-            if (!photonView.IsMine) return;
+            if (!photonView.IsMine || disableControl) return;
 
             MoveInput();
         }
@@ -40,6 +42,16 @@ namespace ColorPicker.InGame
                 player.movementByVelocityEvent.CallMovementByVElocityEvent(direction, moveSpeed);
             }
             else
+            {
+                player.idleEvent.CallIdleEvent();
+            }
+        }
+
+        public void DisablePlayerControl(bool disableControl)
+        {
+            this.disableControl = disableControl;
+
+            if (disableControl)
             {
                 player.idleEvent.CallIdleEvent();
             }

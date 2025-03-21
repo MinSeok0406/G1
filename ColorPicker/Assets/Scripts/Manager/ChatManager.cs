@@ -63,6 +63,9 @@ namespace ColorPicker.InGame
             {
                 photonView.RPC("S_ReciveMessage", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, message);
                 messageInputField.text = "";
+
+                messageInputField.ActivateInputField();
+                messageInputField.Select();
             }
         }
 
@@ -84,15 +87,29 @@ namespace ColorPicker.InGame
         [PunRPC]
         private void C_ReciveMessages(int playerId, string message)
         {
-            GameObject chatBubble = Instantiate(GameResources.Instance.chatContentPrefab, chatContentContainer.transform);
+
+            GameObject chatBubble = Instantiate(playerId == PhotonNetwork.LocalPlayer.ActorNumber ?
+                GameResources.Instance.myChatContentPrefab : GameResources.Instance.chatContentPrefab,
+                chatContentContainer.transform);
+
             TMP_Text[] messageText = chatBubble.GetComponentsInChildren<TMP_Text>();
             messageText[0].text = $"{playerId}";
             messageText[1].text = $"{message}";
 
+            chatBubble.SetActive(chatContentContainer.activeSelf);
+
             ScrollRect scrollRect = chatBubble.GetComponentInParent<ScrollRect>();
-            scrollRect.verticalNormalizedPosition = 0;
+
+            if (scrollRect != null)
+            {
+                scrollRect.verticalNormalizedPosition = 0;
+            }
         }
 
+        public void C_DisablePlayerControl(bool disableControl)
+        {
+            NetworkManager.Instance.MyPlayer.GetComponent<PlayerControl>().DisablePlayerControl(disableControl);
+        }
     }
 
     [System.Serializable]

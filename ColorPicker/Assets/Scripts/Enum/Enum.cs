@@ -28,10 +28,9 @@ namespace ColorPicker.InGame
         Green,
         Blue,
         Yellow,
-        Cyan,
-        Magenta,
         Orange,
         Purple,
+        Cyan,
         Pink,
         Brown,
         Black

@@ -29,6 +29,7 @@ namespace ColorPicker
         [Header("Others Ref")]
         #endregion
         public GameObject chatContentPrefab;
+        public GameObject myChatContentPrefab;
 
     }
 }

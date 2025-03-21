@@ -12,6 +12,9 @@ namespace ColorPicker.InGame
 
         #region Player Parameters
         public const float moveSpeed = 7f;
+
+        public const string mafiaAbilityComponentName = "ColorPicker.InGame.MafiaAbility";
+        public const string citizenAbilityComponentName = "ColorPicker.InGame.CitizenAbility";
         #endregion
 
         #region Animate Parameters

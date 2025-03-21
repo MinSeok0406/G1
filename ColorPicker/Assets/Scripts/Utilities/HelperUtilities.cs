@@ -15,7 +15,6 @@ public  static class HelperUtilities
             case CustomizationColor.Blue: return Color.blue;
             case CustomizationColor.Yellow: return Color.yellow;
             case CustomizationColor.Cyan: return Color.cyan;
-            case CustomizationColor.Magenta: return Color.magenta;
             case CustomizationColor.Orange: return new Color(1.0f, 0.647f, 0.0f);
             case CustomizationColor.Purple: return new Color(0.5f, 0.0f, 0.5f);
             case CustomizationColor.Pink: return new Color(1.0f, 192 / 255f, 203 / 255f); 

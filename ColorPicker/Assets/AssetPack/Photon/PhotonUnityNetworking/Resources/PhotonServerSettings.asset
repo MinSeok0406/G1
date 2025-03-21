@@ -64,6 +64,12 @@ MonoBehaviour:
   - C_InitializedChatList
   - C_ReciveMessages
   - C_InitializedChat
+  - C_SyncGameState
+  - C_SetPlayerClasses
+  - S_SendPlayerData
+  - C_RecivePlayerData
+  - C_RegisterPlayerToClient
+  - C_UnRegisterPlayerFromClient
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

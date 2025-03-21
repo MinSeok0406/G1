@@ -61,6 +61,10 @@ MonoBehaviour:
   movementByVelocityEvent: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  playerData:
+    playerId: 0
+    playerName: 
+    player: {fileID: 0}
   playerClassType: 0
 --- !u!114 &1876417230162109710
 MonoBehaviour:
