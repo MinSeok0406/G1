@@ -11,5 +11,10 @@ namespace ColorPicker.InGame
         {
 
         }
+
+        protected virtual void Start()
+        {
+            UIManager.Instance.SetPlayerUI();
+        }
     }
 }

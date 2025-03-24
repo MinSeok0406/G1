@@ -159,5 +159,24 @@ namespace ColorPicker.InGame {
             
         }
 
+        public void C_SendPlayerState(int playerId)
+        {
+            photonView.RPC("S_SendPlayerStateUpdate", RpcTarget.MasterClient, playerId);
+        }
+
+        [PunRPC]
+        public void S_SendPlayerStateUpdate(int playerId)
+        {
+            photonView.RPC("C_RecivePlayerState", RpcTarget.All, playerId);
+        }
+
+        [PunRPC]
+        private void C_RecivePlayerState(int playerId)
+        {
+            playerDictionary[playerId].isAlive = false;
+
+            Debug.Log(playerId + " : " + playerDictionary[playerId].isAlive);
+        }
+
     }
 }

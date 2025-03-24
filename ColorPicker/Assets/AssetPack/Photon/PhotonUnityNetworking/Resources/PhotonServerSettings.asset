@@ -70,6 +70,9 @@ MonoBehaviour:
   - C_RecivePlayerData
   - C_RegisterPlayerToClient
   - C_UnRegisterPlayerFromClient
+  - SendKillInfo
+  - S_SendPlayerStateUpdate
+  - C_RecivePlayerState
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
