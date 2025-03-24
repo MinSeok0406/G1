@@ -90,6 +90,7 @@ namespace Server
 
             MyPlayer = ObjectManager.Instance.Add<Player>();
             {
+                MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
                 MyPlayer.Info.Name = playerInfo.Name;
                 MyPlayer.Info.PosInfo.State = CreatureState.Idle;
                 MyPlayer.Info.PosInfo.MoveDir = MoveDir.None;
@@ -126,7 +127,7 @@ namespace Server
 
             ServerState = PlayerServerState.ServerStateGame;
 
-            GameRoom room = RoomManager.Instance.Find(1);
+            GameRoom room = GameLogic.Instance.Find(1);
             room.Push(room.EnterGame, MyPlayer);
         }
         public void HandleCreatePlayer(C_CreatePlayer createPacket)

@@ -29,53 +29,38 @@ namespace Server
     class Program
 	{
 		static Listener _listener = new Listener();
-        static List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
 
-        static void TickRoom(GameRoom room, int tick = 100)
+        static void GameLogicTask()
         {
-            var timer = new System.Timers.Timer();
-            timer.Interval = tick;
-            timer.Elapsed += ((s, e) => { room.Update(); });
-            timer.AutoReset = true;
-            timer.Enabled = true;
-
-            _timers.Add(timer);
-        }
-
-        static void FlushRoom()
-        {
-            JobTimer.Instance.Push(FlushRoom, 250);
-        }
-        /*static void GameLogicTask()
-		{
             while (true)
             {
-                //GameLogic.Instance.Update();
+                GameLogic.Instance.Update();
                 Thread.Sleep(0);
             }
         }
 
-		static void DbTask()
-		{
+        static void DbTask()
+        {
             while (true)
             {
-				Thread.Sleep(0);
+                DbTransaction.Instance.Flush();
+                Thread.Sleep(0);
             }
         }
 
-		static void NetworkTask()
-		{
-			while (true)
-			{
-				List<ClientSession> sessions = SessionManager.Instance.GetSessions();
+        static void NetworkTask()
+        {
+            while (true)
+            {
+                List<ClientSession> sessions = SessionManager.Instance.GetSessions();
                 foreach (ClientSession session in sessions)
                 {
-					session.FlushSend();
+                    session.FlushSend();
                 }
 
                 Thread.Sleep(0);
-			}
-		}*/
+            }
+        }
 
         static void Main(string[] args)
 		{
@@ -132,8 +117,7 @@ namespace Server
                 }
             }*/
 
-            GameRoom room = RoomManager.Instance.Add(1);
-            TickRoom(room, 10);
+            GameLogic.Instance.Push(() => { GameLogic.Instance.Add(1); });
 
             // DNS (Domain Name System)
             string host = Dns.GetHostName();
@@ -147,12 +131,23 @@ namespace Server
             //FlushRoom();
             //JobTimer.Instance.Push(FlushRoom);
 
-            while (true)
+            // DbTask -> 직원 채용 후 일을 시킴
             {
-                DbTransaction.Instance.Flush();
-                //JobTimer.Instance.Flush();
-                //Thread.Sleep(100);
+                Thread t = new Thread(DbTask);
+                t.Name = "DB";
+                t.Start();
             }
+
+            // NetworkTask -> 직원 채용 후 일을 시킴
+            {
+                Thread t = new Thread(NetworkTask);
+                t.Name = "Network Send";
+                t.Start();
+            }
+
+            // GameLogic -> 직원 채용 후 일을 시킴
+            Thread.CurrentThread.Name = "GameLogic";
+            GameLogicTask();
         }
 	}
 }

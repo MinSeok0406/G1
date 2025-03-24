@@ -154,42 +154,36 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            lock (_lock)
+            // TODO : 검증
+            PositionInfo movePosInfo = movePacket.PosInfo;
+            ObjectInfo info = player.Info;
+
+
+            // 다른 좌표로 이동할 경우, 갈 수 있는지 체크
+            // 맵이 나오고 LoadMap을 할 수 있으면 사용 가능
+            //-------------------------------------------
+
+            /*if (movePosInfo.PosX != info.PosInfo.PosX || movePosInfo.PosY != info.PosInfo.PosY)
             {
-                // TODO : 검증
-                PositionInfo movePosInfo = movePacket.PosInfo;
-                ObjectInfo info = player.Info;
-
-
-                // 다른 좌표로 이동할 경우, 갈 수 있는지 체크
-                // 맵이 나오고 LoadMap을 할 수 있으면 사용 가능
-                //-------------------------------------------
-
-                /*if (movePosInfo.PosX != info.PosInfo.PosX || movePosInfo.PosY != info.PosInfo.PosY)
-                {
-                    if (Map.CanGo(new Vector2Float((int)movePosInfo.PosX, (int)movePosInfo.PosY)) == false)
-                        return;
-                }
-
-                info.PosInfo.State = movePosInfo.State;
-                info.PosInfo.MoveDir = movePosInfo.MoveDir;
-                Map.ApplyMove(player, new Vector2Float((int)movePosInfo.PosX, (int)movePosInfo.PosY));*/
-                //-------------------------------------------
-
-                // 일단 서버에서 좌표 이동
-                //PlayerInfo info = player.Info;
-                info.PosInfo = movePacket.PosInfo;
-
-                //info.PosInfo.State = movePosInfo.State;
-                //info.PosInfo.MoveDir = movePosInfo.MoveDir;
-
-                // 다른 플레이어한테도 알려준다
-                S_Move resMovePacket = new S_Move();
-                resMovePacket.ObjectId = player.Info.ObjectId;
-                resMovePacket.PosInfo = movePacket.PosInfo;
-
-                Broadcast(resMovePacket);
+                if (Map.CanGo(new Vector2Float((int)movePosInfo.PosX, (int)movePosInfo.PosY)) == false)
+                    return;
             }
+
+            info.PosInfo.State = movePosInfo.State;
+            info.PosInfo.MoveDir = movePosInfo.MoveDir;
+            Map.ApplyMove(player, new Vector2Float((int)movePosInfo.PosX, (int)movePosInfo.PosY));*/
+            //-------------------------------------------
+
+            info.PosInfo = movePacket.PosInfo;
+            //info.PosInfo.State = movePosInfo.State;
+            //info.PosInfo.MoveDir = movePosInfo.MoveDir;
+
+            // 다른 플레이어한테도 알려준다
+            S_Move resMovePacket = new S_Move();
+            resMovePacket.ObjectId = player.Info.ObjectId;
+            resMovePacket.PosInfo = movePacket.PosInfo;
+
+            Broadcast(resMovePacket);
         }
 
         public void HandleChat(Player player, C_Chat chatPacket)
@@ -203,6 +197,7 @@ namespace Server.Game
             S_Chat schatPacket = new S_Chat();
             schatPacket.Type = chatPacket.Type;
             schatPacket.SenderId = player.Info.ObjectId;
+            schatPacket.Name = player.Info.Name;
             schatPacket.Msg = chatPacket.Msg;
 
             if (schatPacket.Type == MessageType.Private)

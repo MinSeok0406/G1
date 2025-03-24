@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +19,8 @@ namespace Server.Game
 
         public ObjectInfo Info { get; set; } = new ObjectInfo();
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+
+        public Stat stat { get; private set; } = new Stat();
 
         public GameObject()
         {
@@ -48,6 +51,12 @@ namespace Server.Game
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
+        }
+
+        public float Speed
+        {
+            get { return PosInfo.Speed; }
+            set { PosInfo.Speed = value; }
         }
     }
 }

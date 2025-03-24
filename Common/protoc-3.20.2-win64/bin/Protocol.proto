@@ -130,7 +130,8 @@ message C_Chat {
 message S_Chat {
   MessageType type = 1;
   int32 sender_id = 2;
-  string msg = 3;
+  string name = 3;
+  string msg = 4;
   //int32 timestamp = 4;
 }
 
