@@ -14,7 +14,8 @@
           "Microsoft.EntityFrameworkCore.Tools": "3.1.32",
           "Microsoft.Extensions.Logging.Console": "3.1.32",
           "Newtonsoft.Json": "13.0.3",
-          "ServerCore": "1.0.0"
+          "ServerCore": "1.0.0",
+          "SharedDB": "1.0.0"
         },
         "runtime": {
           "Server.dll": {}
@@ -1012,6 +1013,17 @@
             "fileVersion": "1.0.0.0"
           }
         }
+      },
+      "SharedDB/1.0.0": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.32"
+        },
+        "runtime": {
+          "SharedDB.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -1729,6 +1741,11 @@
       "hashPath": "system.xml.xmlserializer.4.3.0.nupkg.sha512"
     },
     "ServerCore/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SharedDB/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

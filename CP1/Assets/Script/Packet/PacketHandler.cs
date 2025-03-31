@@ -121,9 +121,9 @@ class PacketHandler
     {
         S_AchievementList AchievementPacket = (S_AchievementList)packet;
 
-        foreach (AchievementInfo achievement in AchievementPacket.Achievements)
+        /*foreach (AchievementInfo achievement in AchievementPacket.Achievements)
         {
             Debug.Log($"{achievement.AchievementDbId}, {achievement.Locked}");
-        }
+        }*/
     }
 }

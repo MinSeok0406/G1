@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Principal;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UI_LoginScene : UI_Scene
 {
+    public ServerInfo Info { get; set; }
+
     enum GameObjects
     {
-        AccountName,
-        Password
+        AccountName
     }
 
     enum Images
@@ -32,51 +34,66 @@ public class UI_LoginScene : UI_Scene
 
     public void OnClickCreateButton(PointerEventData evt)
     {
-        string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<InputField>().text;
-        string password = Get<GameObject>((int)GameObjects.Password).GetComponent<InputField>().text;
+        string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text;
 
-        /*CreateAccountPacketReq packet = new CreateAccountPacketReq()
+        if (account == null)
+        {
+            Debug.Log("½ÇÆÐ");
+            return;
+        }
+
+        CreateAccountPacketReq packet = new CreateAccountPacketReq()
         {
             AccountName = account,
-            Password = password
         };
 
         Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
         {
             Debug.Log(res.CreateOk);
 
-            Get<GameObject>((int)GameObjects.AccountName).GetComponent<InputField>().text = "";
-            Get<GameObject>((int)GameObjects.Password).GetComponent<InputField>().text = "";
-        });*/
+            Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text = "";
+        });
     }
 
     public void OnClickLoginButton(PointerEventData evt)
     {
-        string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<InputField>().text;
-        string password = Get<GameObject>((int)GameObjects.Password).GetComponent<InputField>().text;
+        string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text;
 
-        /*LoginAccountPacketReq packet = new LoginAccountPacketReq()
+        LoginAccountPacketReq packet = new LoginAccountPacketReq()
         {
             AccountName = account,
-            Password = password
         };
 
         Managers.Web.SendPostRequest<LoginAccountPacketRes>("account/login", packet, (res) =>
         {
             Debug.Log(res.LoginOk);
 
-            Get<GameObject>((int)GameObjects.AccountName).GetComponent<InputField>().text = "";
-            Get<GameObject>((int)GameObjects.Password).GetComponent<InputField>().text = "";
+            Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text = "";
 
             if (res.LoginOk)
             {
                 Managers.Network.AccountId = res.AccountId;
                 Managers.Network.Token = res.Token;
 
+
+                for (int i = 0; i < res.ServerList.Count; i++)
+                {
+                    Info = res.ServerList[i];
+                }
+
+                Managers.Network.ConnectToGame(Info);
+                Managers.Scene.LoadScene(Define.Scene.Lobby);
+            }
+
+            /*if (res.LoginOk)
+            {
+                Managers.Network.AccountId = res.AccountId;
+                Managers.Network.Token = res.Token;
+
                 UI_SelectServerPopup popup = Managers.UI.ShowPopupUI<UI_SelectServerPopup>();
                 popup.SetServers(res.ServerList);
-            }
-            
-        });*/
+            }*/
+
+        });
     }
 }

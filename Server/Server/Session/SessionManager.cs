@@ -26,6 +26,18 @@ namespace Server
             return sessions;
         }
 
+        public int GetBusyScore()
+        {
+            int count = 0;
+
+            lock (_lock)
+            {
+                count = _sessions.Count;
+            }
+
+            return count / 100;
+        }
+
         public ClientSession Generate()
 		{
 			lock (_lock)

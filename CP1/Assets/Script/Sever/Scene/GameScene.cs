@@ -9,8 +9,7 @@ public class GameScene : BaseScene
     protected override void Init()
     {
         base.Init();
-
-        Managers.Scene.StartScene();
+        SceneType = Define.Scene.Game;
 
         Screen.SetResolution(640, 480, false);
 
