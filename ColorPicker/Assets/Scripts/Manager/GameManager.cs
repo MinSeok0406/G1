@@ -7,67 +7,45 @@ namespace ColorPicker.InGame {
     public class GameManager : SingletonNetworkBehaviour<GameManager>
     {
         private Dictionary<int, PlayerData> playerDictionary = new Dictionary<int, PlayerData>();
-        private GameState gameState;
+
+        #region GameState
+        public GameStateMachine stateMachine { get; private set; }
+
+        public GameStartedState startedState { get; private set; }
+        public PlayingGameState playingGameState { get; private set; }
+        public MeetingState meetingState { get; private set; }
+        public VotingState votingState { get; private set; }
+        #endregion
 
         protected override void Awake()
         {
             base.Awake();
+
+            stateMachine = GetComponent<GameStateMachine>();
+
+            startedState = new GameStartedState(stateMachine);
+            playingGameState = new PlayingGameState(stateMachine);
+            meetingState = new MeetingState(stateMachine);
+            votingState = new VotingState(stateMachine);
         }
 
         private void Start()
         {
-            playerDictionary = NetworkManager.Instance.GetPlayerDictionary();
-
-            gameState = GameState.gameStarted;
+            stateMachine.Initialize(startedState);
         }
 
         private void Update()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            S_HandleGameState();
-
+            stateMachine.currentState.Update();
         }
 
-
-        //Only Server
-        private void S_HandleGameState()
+        public void InitializedGameManager()
         {
-            switch (gameState)
-            {
-                case GameState.gameStarted:
-                    S_AssignPlayerClasses();
-                    gameState = GameState.playingStage;
-                    break;
-
-                case GameState.playingStage:
-                    break;
-
-                case GameState.meetingState:
-                    break;
-
-                case GameState.voteState:
-                    break;
-
-                case GameState.gameEnded:
-                    break;
-            }
-
-            S_SyncGameState(gameState);
+            playerDictionary = NetworkManager.Instance.GetPlayerDictionary();
         }
 
-        private void S_SyncGameState(GameState gameState)
-        {
-            photonView.RPC("C_SyncGameState", RpcTarget.All, gameState);
-        }
-
-        [PunRPC]
-        private void C_SyncGameState(GameState gameState)
-        {
-            this.gameState = gameState;
-        }
-
-        private void S_AssignPlayerClasses()
+        
+        public void S_AssignPlayerClasses()
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
@@ -175,7 +153,7 @@ namespace ColorPicker.InGame {
         {
             playerDictionary[playerId].isAlive = false;
 
-            Debug.Log(playerId + " : " + playerDictionary[playerId].isAlive);
+            Debug.Log(playerId + " : " + playerDictionary[playerId].isAlive); // 추후 onKillEvent로 추가 예정 
         }
 
     }

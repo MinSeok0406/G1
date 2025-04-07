@@ -8,6 +8,8 @@ namespace ColorPicker.InGame
     {
         #region Base Parameters
         public const string gameVersion = "1";
+
+        public static Vector3 playerSpawnPointInGame = Vector3.zero;
         #endregion
 
         #region Player Parameters
