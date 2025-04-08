@@ -39,7 +39,7 @@ namespace ColorPicker.InGame
         {
             base.Start();
 
-            UIManager.Instance.SetMafiaUI();
+            UIManager.Instance.SetMafiaUI(true);
         }
 
         private void IniatializedKillAblity()
@@ -53,19 +53,25 @@ namespace ColorPicker.InGame
             if(currentPlayer != null)
             {
                 killEvent.CallKillEvent(currentPlayer, 100f);
+                transform.position = currentPlayer.transform.position;
             }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+
             currentPlayer = collision.GetComponent<Player>();
-            UIManager.Instance.GetKillButton().interactable = true;
+            if (currentPlayer != null)
+            {
+                UIManager.Instance.GetKillButton().interactable = true;
+            }
+
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            currentPlayer = null;
-            UIManager.Instance.GetKillButton().interactable = false;
+                currentPlayer = null;
+                UIManager.Instance.GetKillButton().interactable = false;
         }
 
     }

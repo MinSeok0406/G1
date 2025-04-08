@@ -21,6 +21,10 @@ namespace ColorPicker.InGame
         public GameObject mafiaUI;
         public GameObject killUI;
 
+        #region Func UI
+        public GameObject meetingButtonUI;
+        #endregion
+
         protected override void Awake()
         {
             base.Awake();
@@ -33,22 +37,33 @@ namespace ColorPicker.InGame
 
         }
 
-        public void SetPlayerUI()
+        public void SetPlayerUI(bool isActive)
         {
-            interactiveUI.SetActive(true);
+            interactiveUI.SetActive(isActive);
 
-            Debug.Log("a");
         }
 
-        public void SetMafiaUI()
+        public void SetMafiaUI(bool isActive)
         {
-            mafiaUI.SetActive(true);
-            killUI.SetActive(true);
+            mafiaUI.SetActive(isActive);
+            killUI.SetActive(isActive);
         }
 
         public Button GetKillButton()
         {
             return killUI.GetComponent<Button>();
+        }
+
+        public void InitializedInteractiveItemUI()
+        {
+            interactiveUI.GetComponent<Button>().interactable = false;  
+
+            meetingButtonUI.SetActive(false);
+        }
+
+        public void UesInteractiveButton()
+        {
+            NetworkManager.Instance.MyPlayer.playerControl.UseInteractive();
         }
     }
 }

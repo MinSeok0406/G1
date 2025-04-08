@@ -156,5 +156,11 @@ namespace ColorPicker.InGame {
             Debug.Log(playerId + " : " + playerDictionary[playerId].isAlive); // 추후 onKillEvent로 추가 예정 
         }
 
+
+        public void ChangeMeetingStateButton()
+        {
+            stateMachine.ChangeState(meetingState);           
+        }
+
     }
 }

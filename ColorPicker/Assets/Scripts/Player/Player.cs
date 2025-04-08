@@ -25,6 +25,8 @@ namespace ColorPicker.InGame
         [HideInInspector] public Animator animator;
         [HideInInspector] public SpriteRenderer spriteRenderer;
         [HideInInspector] public PlayerData playerData;
+        [HideInInspector] public PlayerControl playerControl;
+
 
         //[HideInInspector] 
         public PlayerClassType playerClassType = PlayerClassType.citizen;
@@ -35,6 +37,9 @@ namespace ColorPicker.InGame
             movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+            playerControl = GetComponent<PlayerControl>();
+
+
 
             InitializedPlayerData();
         }
