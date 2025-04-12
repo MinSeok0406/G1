@@ -31,8 +31,6 @@ namespace ColorPicker.InGame
         private void KillEvent_OnKill(KillEvent killEvent, KillEventArgs killEventArgs)
         {
             int playerId = killEventArgs.player.photonView.Owner.ActorNumber;
-
-            GameManager.Instance.C_SendPlayerState(playerId);
         }
 
         protected override void Start()

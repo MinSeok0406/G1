@@ -11,15 +11,15 @@ namespace ColorPicker.InGame
     {
         public int playerId; // actorNum
         public string playerName;
-        public Player player;
-        public bool isAlive = true;
+        public int playerColor;
+        public int playerClass;
 
-        public PlayerData(int playerId, string playerName, Player player, bool isAlive = true)
+        public PlayerData(int playerId, string playerName, int playerColor, int playerClass)
         {
             this.playerId = playerId;
             this.playerName = playerName;
-            this.player = player;
-            this.isAlive = isAlive;
+            this.playerColor = playerColor;
+            this.playerClass = playerClass;
         }
     }
 }

@@ -5,9 +5,7 @@ using UnityEngine;
 
 namespace ColorPicker.InGame {
     public class GameManager : SingletonNetworkBehaviour<GameManager>
-    {
-        private Dictionary<int, PlayerData> playerDictionary = new Dictionary<int, PlayerData>();
-
+    { 
         #region GameState
         public GameStateMachine stateMachine { get; private set; }
 
@@ -37,125 +35,103 @@ namespace ColorPicker.InGame {
         private void Update()
         {
             stateMachine.currentState.Update();
+
         }
 
-        public void InitializedGameManager()
-        {
-            playerDictionary = NetworkManager.Instance.GetPlayerDictionary();
-        }
-
-        
-        public void S_AssignPlayerClasses()
+        public void AssignPlayerClasses()
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            S_InitalizedPlayerClasses();
+            InitializePlayerClasses();
+            AssignMafias();
+
+            NetworkManager.Instance.SyncPlayerData();
+
+            SetPlayerClassAbility();
+
+        }
+
+        private void InitializePlayerClasses()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            Dictionary<int, PlayerData> playerDataDict = NetworkManager.Instance.GetPlayerDictionary();
+
+            foreach (int playerId in playerDataDict.Keys)
+            {
+                if(NetworkManager.Instance.TryGetPlayerData(playerId, out PlayerData playerData))
+                {
+                    playerData.playerClass = (int)PlayerClassType.citizen;
+                }
+                else
+                {
+                    Debug.LogWarning($"PlayerData for playerId {playerId} not found.");
+                }
+            }
+
+        }
+
+        private void AssignMafias()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
 
             GameRuleSettings gameRules = GameDataManager.Instance.S_GetGameRules();
 
-            List<PlayerData> playerDatas = new List<PlayerData>(playerDictionary.Values);
+            Dictionary<int, PlayerData> playerDataDict = NetworkManager.Instance.GetPlayerDictionary();
+
+            List<PlayerData> playerList = new List<PlayerData>(playerDataDict.Values);
+            HelperUtilities.Shuffle(playerList);
 
             int mafiaCount = 0;
-            int tryCount = 0;
-
-            while (mafiaCount < gameRules.mafiaAmount && tryCount < Settings.maxTryCount)
+            foreach (PlayerData player in playerList)
             {
-                int playerIndex = UnityEngine.Random.Range(0, playerDatas.Count);
+                if (mafiaCount >= gameRules.mafiaAmount)
+                    break;
 
-                if (playerDatas[playerIndex].player.playerClassType == PlayerClassType.citizen)
+                if (NetworkManager.Instance.TryGetPlayerData(player.playerId, out PlayerData playerData))
                 {
-                    int playerId = playerDatas[playerIndex].playerId;
-
-                    playerDictionary[playerId].player.playerClassType = PlayerClassType.mafia;
-
-                    Debug.Log(playerDictionary[playerId].player.playerClassType);
-
-                    Photon.Realtime.Player targetPlayer = PhotonNetwork.CurrentRoom.Players[playerId];
-
-                    photonView.RPC("C_SetPlayerClasses", targetPlayer, Settings.mafiaAbilityComponentName);
-                    
-                    mafiaCount++;
+                    if (playerData.playerClass == (int)PlayerClassType.citizen)
+                    {
+                        Debug.Log(playerData.playerId);
+                        playerData.playerClass = (int)PlayerClassType.mafia;
+                        mafiaCount++;
+                    }
                 }
-
-                tryCount++;
-            }
-
-            S_SetCitizenPlayerClasses();
-
-
-            //debug Code
-            foreach (PlayerData playerData in playerDictionary.Values)
-            {
-                Debug.Log(playerData.player.photonView.Owner.ActorNumber + " : " + playerData.player.playerClassType);
-            }
-
-        }
-
-        private void S_InitalizedPlayerClasses()
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            foreach (PlayerData playerData in playerDictionary.Values)
-            {
-                playerData.player.playerClassType = PlayerClassType.citizen;
+                else
+                {
+                    Debug.LogWarning($"PlayerData for playerId {player.playerId} not found.");
+                }
             }
         }
 
-        private void S_SetCitizenPlayerClasses()
+        private void SetPlayerClassAbility()
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            foreach (PlayerData playerData in playerDictionary.Values)
-            {
-                if(playerData.player.playerClassType == PlayerClassType.citizen)
-                {
-                    Photon.Realtime.Player targetPlayer = PhotonNetwork.CurrentRoom.Players[playerData.playerId];
-
-                    photonView.RPC("C_SetPlayerClasses", targetPlayer, Settings.citizenAbilityComponentName);
-                }
-            }
+            photonView.RPC("C_SetPlayerClasses", RpcTarget.All);
         }
 
         [PunRPC]
-        private void C_SetPlayerClasses(string className)
+        private void C_SetPlayerClasses()
         {
-            Type componentType = Type.GetType(className);
+            Type componentType = Type.GetType(Settings.citizenAbilityComponentName);
 
-            if(componentType == null)
+            switch (NetworkManager.Instance.GetPlayerDictionary()[PhotonNetwork.LocalPlayer.ActorNumber].playerClass)
             {
-                Debug.LogError($"Class '{className}' not found.");                
+                case (int)PlayerClassType.mafia:
+                    componentType = Type.GetType(Settings.mafiaAbilityComponentName);
+                    break;
+                
+                default:
+                    componentType = Type.GetType(Settings.citizenAbilityComponentName);
+                    break;
             }
 
             if (NetworkManager.Instance.MyPlayer.gameObject.GetComponent(componentType) == null)
             {
                 NetworkManager.Instance.MyPlayer.gameObject.AddComponent(componentType);
             }
-            else
-            {
-                Debug.LogError($"{PhotonNetwork.LocalPlayer.ActorNumber}Class '{className}' already exists");
-            }
-            
         }
-
-        public void C_SendPlayerState(int playerId)
-        {
-            photonView.RPC("S_SendPlayerStateUpdate", RpcTarget.MasterClient, playerId);
-        }
-
-        [PunRPC]
-        public void S_SendPlayerStateUpdate(int playerId)
-        {
-            photonView.RPC("C_RecivePlayerState", RpcTarget.All, playerId);
-        }
-
-        [PunRPC]
-        private void C_RecivePlayerState(int playerId)
-        {
-            playerDictionary[playerId].isAlive = false;
-
-            Debug.Log(playerId + " : " + playerDictionary[playerId].isAlive); // 추후 onKillEvent로 추가 예정 
-        }
-
 
         public void ChangeMeetingStateButton()
         {

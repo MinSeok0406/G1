@@ -11,9 +11,7 @@ namespace ColorPicker.InGame
         {
             base.Enter();
 
-            GameManager.Instance.InitializedGameManager();
-
-            GameManager.Instance.S_AssignPlayerClasses();
+            GameManager.Instance.AssignPlayerClasses();
 
             NetworkManager.Instance.MyPlayer.transform.position = Settings.playerSpawnPointInGame;
 

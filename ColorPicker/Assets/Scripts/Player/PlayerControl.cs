@@ -18,7 +18,7 @@ namespace ColorPicker.InGame
         private void Awake()
         {
             player = GetComponent<Player>();
-            circleCollider2D = GetComponent<CircleCollider2D>();
+            circleCollider2D = GetComponentInChildren<CircleCollider2D>();
 
             moveSpeed = Settings.moveSpeed;
         }
@@ -28,14 +28,6 @@ namespace ColorPicker.InGame
             if (!photonView.IsMine || disableControl) return;
 
             MoveInput();
-
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                foreach(IInteractive interactive in interactiveObjects)
-                {
-                    Debug.Log(interactive);
-                }
-            }
         }
 
         private void MoveInput()

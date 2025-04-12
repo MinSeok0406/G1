@@ -24,12 +24,11 @@ namespace ColorPicker.InGame
         [HideInInspector] public MovementByVelocityEvent movementByVelocityEvent;
         [HideInInspector] public Animator animator;
         [HideInInspector] public SpriteRenderer spriteRenderer;
-        [HideInInspector] public PlayerData playerData;
         [HideInInspector] public PlayerControl playerControl;
+        [HideInInspector] public PlayerDataChangedEvent playerDataChangedEvent;
 
 
-        //[HideInInspector] 
-        public PlayerClassType playerClassType = PlayerClassType.citizen;
+        [HideInInspector] public PlayerClassType playerClassType = PlayerClassType.citizen;
 
         private void Awake()
         {
@@ -38,55 +37,27 @@ namespace ColorPicker.InGame
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerControl = GetComponent<PlayerControl>();
+            playerDataChangedEvent = GetComponent<PlayerDataChangedEvent>();
 
-
-
-            InitializedPlayerData();
         }
 
         private void Start()
         {
-            S_RegisterPlayer();
+            int playerId = photonView.Owner.ActorNumber;
+            NetworkManager.Instance.RegisterPlayer(playerId, this);
 
             DontDestroyOnLoad(gameObject);
-        }
 
-        private void InitializedPlayerData()
-        {
-            playerData = new PlayerData(photonView.Owner.ActorNumber, null, this); 
+            if (!PhotonNetwork.IsMasterClient) return;
+            PlayerData playerData = new PlayerData(playerId, "", (int)ColorTpye.White, (int)PlayerClassType.citizen);
+            NetworkManager.Instance.AddOrUpdatePlayerData(playerData);
+
         }
 
         private void OnDestroy()
         {
-            S_UnRegisterPlayer();
-        }
-
-        private void S_RegisterPlayer()
-        {
             int playerId = photonView.Owner.ActorNumber;
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                NetworkManager.Instance.S_RegisterPlayer(playerId, playerData);
-            }
-            else
-            {
-                NetworkManager.Instance.C_RegisterPlayer(playerId, playerData);
-            }
-        }
-
-        private void S_UnRegisterPlayer()
-        {
-            int playerId = photonView.Owner.ActorNumber;
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                NetworkManager.Instance.S_UnRegisterPlayer(playerId);
-            }
-            else
-            {
-                NetworkManager.Instance.C_UnRegisterPlayer(playerId);
-            }
+            NetworkManager.Instance.UnregisterPlayerObject(playerId);
         }
 
     }
