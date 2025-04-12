@@ -55,6 +55,8 @@ namespace ColorPicker.InGame
                 killEvent.CallKillEvent(currentPlayer, 100f);
                 transform.position = currentPlayer.transform.position;
             }
+            // 플레이어 시체 생성;
+            // 해당플레이어 포스트 프로세싱 설정
         }
 
         private void OnTriggerEnter2D(Collider2D collision)

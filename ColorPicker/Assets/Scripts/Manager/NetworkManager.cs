@@ -6,10 +6,11 @@ namespace ColorPicker.InGame
 {
     public class NetworkManager : SingletonNetworkBehaviour<NetworkManager>
     {
-        private Dictionary<int, PlayerData> playerDictionary = new Dictionary<int, PlayerData>();
- 
-        public Player MyPlayer { get; private set; }
         [HideInInspector] public PlayerData currentPlayerData;
+       
+        public Player MyPlayer { get; private set; }
+
+        private Dictionary<int, PlayerData> playerDictionary = new Dictionary<int, PlayerData>();
 
         protected override void Awake()
         {

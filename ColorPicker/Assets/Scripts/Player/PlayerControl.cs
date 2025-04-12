@@ -108,7 +108,7 @@ namespace ColorPicker.InGame
             if (interactiveObjects.Count == 0) return null;
 
             IInteractive closestItem = null;
-            float closestDistanceSquared = float.MaxValue; // 초기값을 최대값으로 설정
+            float closestDistanceSquared = float.MaxValue; 
 
             foreach (var interactiveItem in interactiveObjects)
             {
