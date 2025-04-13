@@ -111,7 +111,7 @@ class PacketHandler
     {
         S_Chat chatPacket = (S_Chat)packet;
 
-        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
         UI_ChatScene chatUI = gameSceneUI.ChatUI;
 
         chatUI.ReadChat(chatPacket);

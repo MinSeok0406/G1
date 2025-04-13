@@ -14,12 +14,13 @@ public class UI_ChatScene : UI_Base
 
     enum GameObjects
     {
-        Write
+        Write,
     }
 
     enum Images
     {
-        Chat_Button
+        Chat_Button,
+        Cancle,
     }
 
     public override void Init()
@@ -30,6 +31,24 @@ public class UI_ChatScene : UI_Base
         Bind<Image>(typeof(Images));
 
         GetImage((int)Images.Chat_Button).gameObject.BindEvent(SendChat);
+        GetImage((int)Images.Cancle).gameObject.BindEvent(Cancle);
+    }
+
+    public void Cancle(PointerEventData evt)
+    {
+        UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
+        UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+
+        if (lobbyUI.gameObject.activeSelf)
+        {
+            lobbyUI.gameObject.SetActive(false);
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            lobbyUI?.gameObject.SetActive(true);
+            gameObject.SetActive(false);
+        }
     }
 
     public void SendChat(PointerEventData evt)

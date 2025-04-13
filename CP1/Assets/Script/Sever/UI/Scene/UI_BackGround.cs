@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class UI_BackGround : UI_Scene
 {
-    public UI_mChatScene mChatUI { get; private set; }
+    public UI_LobbyScene mLobbyUI { get; private set; }
+    public UI_ChatScene ChatUI { get; private set; }
 
     public override void Init()
     {
         base.Init();
 
-        mChatUI = GetComponentInChildren<UI_mChatScene>();
+        mLobbyUI = GetComponentInChildren<UI_LobbyScene>();
+        ChatUI = GetComponentInChildren<UI_ChatScene>();
 
-        mChatUI.gameObject.SetActive(false);
+        mLobbyUI.gameObject.SetActive(true);
+        ChatUI.gameObject.SetActive(false);
     }
 }

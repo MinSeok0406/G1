@@ -7,7 +7,7 @@ namespace Server.Data
     #region Stat
     public class Stat
     {
-        public static float _speed = 20.0f;
+        public static float _speed = 7.0f;
     }
 
     /*[Serializable]

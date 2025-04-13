@@ -26,7 +26,12 @@ public class MyPlayerControl : PlayerControl
 
         base.UpdateController();
     }
-    
+
+    void LateUpdate()
+    {
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+    }
+
     // 키보드 입력
     private void GetDirInput()
     {
@@ -55,7 +60,7 @@ public class MyPlayerControl : PlayerControl
     {
         if (Input.GetKeyUp(KeyCode.Return))
         {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
             UI_ChatScene chatUI = gameSceneUI.ChatUI;
 
             if (chatUI.gameObject.activeSelf)
