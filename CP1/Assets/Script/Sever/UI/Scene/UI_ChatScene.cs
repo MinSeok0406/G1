@@ -36,8 +36,8 @@ public class UI_ChatScene : UI_Base
 
     public void Cancle(PointerEventData evt)
     {
-        UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-        UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+        UI_LobbyScene lobbyUI = backSceneUI.mLobbyUI;
 
         if (lobbyUI.gameObject.activeSelf)
         {

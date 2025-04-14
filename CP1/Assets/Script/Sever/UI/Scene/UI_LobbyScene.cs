@@ -8,9 +8,11 @@ using UnityEngine.UI;
 
 public class UI_LobbyScene : UI_Base
 {
-    enum Images
+    public enum Images
     {
-        Chat_mButton
+        Chat_mButton,
+        Custom_mButton,
+        InGame_mButton,
     }
 
     public override void Init()
@@ -18,12 +20,17 @@ public class UI_LobbyScene : UI_Base
         Bind<Image>(typeof(Images));
 
         GetImage((int)Images.Chat_mButton).gameObject.BindEvent(OpenChat);
+        GetImage((int)Images.Custom_mButton).gameObject.BindEvent(OpenCustom);
+        GetImage((int)Images.InGame_mButton).gameObject.BindEvent(OpenInGame);
+
+        GetImage((int)Images.Custom_mButton).gameObject.SetActive(false);
+        GetImage((int)Images.InGame_mButton).gameObject.SetActive(false);
     }
 
     public void OpenChat(PointerEventData evt)
     {
-        UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-        UI_ChatScene chatUI = gameSceneUI.ChatUI;
+        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+        UI_ChatScene chatUI = backSceneUI.ChatUI;
 
         if (chatUI.gameObject.activeSelf)
         {
@@ -36,6 +43,40 @@ public class UI_LobbyScene : UI_Base
             chatUI.gameObject.SetActive(true);
             gameObject.SetActive(false);
             //GetImage((int)Images.Chat_mButton).gameObject.SetActive(false);
+        }
+    }
+
+    public void OpenCustom(PointerEventData evt)
+    {
+        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+        UI_CustomScene customUI = backSceneUI.CustomUI;
+
+        if (customUI.gameObject.activeSelf)
+        {
+            customUI.gameObject.SetActive(false);
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            customUI.gameObject.SetActive(true);
+            gameObject.SetActive(false);
+        }
+    }
+
+    public void OpenInGame(PointerEventData evt)
+    {
+        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+        UI_InGameScene ingameUI = backSceneUI.InGameUI;
+
+        if (ingameUI.gameObject.activeSelf)
+        {
+            ingameUI.gameObject.SetActive(false);
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            ingameUI.gameObject.SetActive(true);
+            gameObject.SetActive(false);
         }
     }
 }
