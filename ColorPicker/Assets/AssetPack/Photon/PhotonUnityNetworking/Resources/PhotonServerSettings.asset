@@ -77,6 +77,14 @@ MonoBehaviour:
   - S_GameStateChange
   - HandleColorChangeRequest
   - ReceivePlayerData
+  - RPC_ConfirmKill
+  - RPC_RequestKill
+  - RPC_UpdatePlayerCooldown
+  - C_SetPlayerClass
+  - RPC_CheckCooldown
+  - RPC_ReceiveCooldownStatus
+  - PRC_SetPlayerClass
+  - RPC_TeleportTo
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -26,6 +26,7 @@ namespace ColorPicker.InGame
         [HideInInspector] public SpriteRenderer spriteRenderer;
         [HideInInspector] public PlayerControl playerControl;
         [HideInInspector] public PlayerDataChangedEvent playerDataChangedEvent;
+        [HideInInspector] public DeathEvent deathEvent;
 
 
         [HideInInspector] public PlayerClassType playerClassType = PlayerClassType.citizen;
@@ -38,6 +39,7 @@ namespace ColorPicker.InGame
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerControl = GetComponent<PlayerControl>();
             playerDataChangedEvent = GetComponent<PlayerDataChangedEvent>();
+            deathEvent = GetComponent<DeathEvent>();
 
         }
 
@@ -49,7 +51,7 @@ namespace ColorPicker.InGame
             DontDestroyOnLoad(gameObject);
 
             if (!PhotonNetwork.IsMasterClient) return;
-            PlayerData playerData = new PlayerData(playerId, "", (int)ColorTpye.White, (int)PlayerClassType.citizen);
+            PlayerData playerData = new PlayerData(playerId, "", (int)ColorType.White, (int)PlayerClassType.citizen);
             NetworkManager.Instance.AddOrUpdatePlayerData(playerData);
 
         }

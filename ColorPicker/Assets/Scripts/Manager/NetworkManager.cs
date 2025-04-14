@@ -20,17 +20,6 @@ namespace ColorPicker.InGame
             DontDestroyOnLoad(gameObject);
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                foreach (Player player in playerObjectDictionary.Values)
-                {
-                    Debug.Log(player.playerClassType);
-                }
-            }
-        }
-
         private void Start()
         {
             SpawnPlayer();

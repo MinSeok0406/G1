@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
@@ -18,6 +19,26 @@ namespace ColorPicker.InGame
             IniatializedKillAblity();
         }
 
+        protected override void Start()
+        {
+            base.Start();
+
+            UIManager.Instance.SetMafiaUI(true);
+        }
+
+        private void IniatializedKillAblity()
+        {
+            Button killButton = UIManager.Instance.GetKillButton();
+
+            if (!killButton.interactable) // 비활성화된 상태라면 활성화 시킴
+            {
+                killButton.interactable = true;
+            }
+            killButton.onClick.AddListener(OnKillButtonPressed);
+
+            killButton.interactable = false;
+        }
+
         private void OnEnable()
         {
             killEvent.OnKill += KillEvent_OnKill;
@@ -30,48 +51,43 @@ namespace ColorPicker.InGame
 
         private void KillEvent_OnKill(KillEvent killEvent, KillEventArgs killEventArgs)
         {
-            int playerId = killEventArgs.player.photonView.Owner.ActorNumber;
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-
-            UIManager.Instance.SetMafiaUI(true);
-        }
-
-        private void IniatializedKillAblity()
-        {
-            UIManager.Instance.GetKillButton().onClick.AddListener(PlayerKill);
+            AbilityManager.Instance.TryPlayerKill(killEventArgs.playerId);
         }
 
 
-        private void PlayerKill()
+        private void OnKillButtonPressed()
         {
-            if(currentPlayer != null)
+            if (currentPlayer == null)
             {
-                killEvent.CallKillEvent(currentPlayer, 100f);
-                transform.position = currentPlayer.transform.position;
+                Debug.LogWarning("현재 타겟 플레이어가 설정되지 않았습니다.");
+                return;
             }
-            // 플레이어 시체 생성;
-            // 해당플레이어 포스트 프로세싱 설정
+
+            int targetPlayerId = currentPlayer.photonView.Owner.ActorNumber;
+
+            killEvent.CallKillEvent(targetPlayerId);
+
+        }
+
+        public Player GetCurrentPlayer()
+        {
+            return currentPlayer;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-
             currentPlayer = collision.GetComponent<Player>();
-            if (currentPlayer != null)
+
+            if (currentPlayer != null && !UIManager.Instance.CheckCooldown())
             {
                 UIManager.Instance.GetKillButton().interactable = true;
             }
-
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-                currentPlayer = null;
-                UIManager.Instance.GetKillButton().interactable = false;
+            currentPlayer = null;
+            UIManager.Instance.GetKillButton().interactable = false;
         }
 
     }

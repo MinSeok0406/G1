@@ -1,6 +1,8 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +26,8 @@ namespace ColorPicker.InGame
         #region Func UI
         public GameObject meetingButtonUI;
         #endregion
+
+        private bool isCooldown;
 
         protected override void Awake()
         {
@@ -64,6 +68,29 @@ namespace ColorPicker.InGame
         public void UesInteractiveButton()
         {
             NetworkManager.Instance.MyPlayer.playerControl.UseInteractive();
+        }
+
+        public void UpdatePlayerCooldownUI(float remainingTime)
+        {
+            if (!killUI.activeSelf) return;
+
+            TMP_Text cooldownText = killUI.GetComponentInChildren<TMP_Text>();
+
+            if(remainingTime > 0)
+            {
+                cooldownText.text = ((int)remainingTime).ToString();
+                isCooldown = true;
+            }
+            else
+            {
+                cooldownText.text = "";
+                isCooldown = false;
+            }
+        }
+
+        public bool CheckCooldown()
+        {
+            return isCooldown;
         }
     }
 }

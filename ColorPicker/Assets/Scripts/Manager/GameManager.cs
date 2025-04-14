@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ColorPicker.InGame {
@@ -45,10 +46,11 @@ namespace ColorPicker.InGame {
             InitializePlayerClasses();
             AssignMafias();
 
-            NetworkManager.Instance.SyncPlayerData();
+            AssignColor();
 
             SetPlayerClassAbility();
 
+            NetworkManager.Instance.SyncPlayerData();
         }
 
         private void InitializePlayerClasses()
@@ -65,7 +67,7 @@ namespace ColorPicker.InGame {
                 }
                 else
                 {
-                    Debug.LogWarning($"PlayerData for playerId {playerId} not found.");
+                    Debug.Log($"PlayerData for playerId {playerId} not found.");
                 }
             }
 
@@ -108,35 +110,120 @@ namespace ColorPicker.InGame {
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            photonView.RPC("C_SetPlayerClasses", RpcTarget.All);
+            foreach (PlayerData player in NetworkManager.Instance.GetPlayerDictionary().Values)
+            {
+                int targetPlayerId = player.playerId;
+                int playerClass = player.playerClass;
+
+                Photon.Realtime.Player targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(targetPlayerId);
+
+                if (targetPlayer != null)
+                {
+                    photonView.RPC("PRC_SetPlayerClass", targetPlayer, playerClass);
+                }
+                else
+                {
+                    Debug.Log($"{targetPlayerId} class not define");
+                }
+            }
         }
 
         [PunRPC]
-        private void C_SetPlayerClasses()
+        private void PRC_SetPlayerClass(int playerClass)
         {
-            Type componentType = Type.GetType(Settings.citizenAbilityComponentName);
+            Type componentType = GetAbilityComponentType(playerClass);
 
-            switch (NetworkManager.Instance.GetPlayerDictionary()[PhotonNetwork.LocalPlayer.ActorNumber].playerClass)
+            if (componentType == null)
             {
-                case (int)PlayerClassType.mafia:
-                    componentType = Type.GetType(Settings.mafiaAbilityComponentName);
-                    break;
-                
-                default:
-                    componentType = Type.GetType(Settings.citizenAbilityComponentName);
-                    break;
+                Debug.LogError($"Player class {playerClass} not found");
+                return;
             }
 
-            if (NetworkManager.Instance.MyPlayer.gameObject.GetComponent(componentType) == null)
+            GameObject myPlayerObj = NetworkManager.Instance.MyPlayer.gameObject;
+
+            if (myPlayerObj.GetComponent(componentType) == null)
             {
-                NetworkManager.Instance.MyPlayer.gameObject.AddComponent(componentType);
+                myPlayerObj.AddComponent(componentType);
+            }
+            else
+            {
+                Debug.Log($"{componentType.Name} already added");
             }
         }
+
+        private Type GetAbilityComponentType(int playerClass)
+        {
+            string componentName;
+
+            switch ((PlayerClassType)playerClass)
+            {
+                case PlayerClassType.mafia:
+                    componentName = Settings.mafiaAbilityComponentName;
+                    break;
+
+                case PlayerClassType.citizen:
+                    componentName = Settings.citizenAbilityComponentName;
+                    break;
+
+                default:
+                    Debug.Log($"Validation Error : {playerClass}");
+                    return null;
+            }
+
+            Type componentType = Type.GetType(componentName);
+
+            if (componentType == null)
+            {
+                Debug.LogError($"Player component {componentName} not found");
+            }
+
+            return componentType;
+        }
+
+        private void AssignColor()
+        {
+
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            var playerDict = NetworkManager.Instance.GetPlayerDictionary();
+
+            // 사용 가능한 색상 리스트 생성. 형변환 후 검정, 흰색이아닌 색상을 리스트에 저장
+            List<ColorType> availableColors = Enum.GetValues(typeof(ColorType))
+                .Cast<ColorType>()
+                .Where(color => color != ColorType.Black && color != ColorType.White)
+                .ToList();
+
+            HelperUtilities.Shuffle(availableColors); // 무작위 순서로 셔플
+
+            int colorIndex = 0;
+
+            foreach (int playerId in playerDict.Keys)
+            {
+                InGameData gameData = new InGameData(); 
+
+                gameData.playerId = playerId;
+
+                var playerData = playerDict[playerId];
+
+                // 마피아는 검정색
+                if (playerData.playerClass == (int)PlayerClassType.mafia)
+                {
+                    gameData.colorType = (int)ColorType.Black;
+                }
+                else
+                {
+                    gameData.colorType = (int)availableColors[colorIndex];
+                    colorIndex++;
+                }
+
+                GameDataManager.Instance.UpdateInGameData(playerId, gameData); 
+            }
+        }
+
 
         public void ChangeMeetingStateButton()
         {
             stateMachine.ChangeState(meetingState);           
         }
-
     }
 }

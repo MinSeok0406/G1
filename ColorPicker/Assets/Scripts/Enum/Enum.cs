@@ -6,13 +6,13 @@ namespace ColorPicker.InGame
 {
     public enum PlayerClassType
     {
-        citizen,
-        mafia,
-        detective,
-        ghost
-    }
+        citizen, // 0
+        mafia, // 1
+        detective, //2
+        ghost // 3
+    } 
 
-    public enum ColorTpye
+    public enum ColorType
     {
         White,
         Red,

@@ -23,6 +23,7 @@ namespace ColorPicker
         [Header("Base Ref")]
         #endregion
         public GameObject playerPrefab;
+        public GameObject playerDeathBodyPrefab;
 
         #region Header Others Ref
         [Space(10)]

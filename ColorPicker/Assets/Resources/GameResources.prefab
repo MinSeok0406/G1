@@ -45,5 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 6269680581958123269, guid: 4f81a54423e7cda47bdbbcf4cc3680b3, type: 3}
+  playerDeathBodyPrefab: {fileID: 4839968478936894869, guid: 5a826561f548b944886c882cdab52864, type: 3}
   chatContentPrefab: {fileID: 7677321529951086244, guid: aac86813caa34f844a259034ba0b6345, type: 3}
   myChatContentPrefab: {fileID: 7677321529951086244, guid: 5a4213bea56df3b48b88440dc1ec37d7, type: 3}

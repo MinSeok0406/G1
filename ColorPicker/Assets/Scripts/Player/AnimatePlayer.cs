@@ -17,6 +17,8 @@ namespace ColorPicker.InGame
             player.idleEvent.OnIdle += IdleEvent_OnIdle;
 
             player.movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
+
+            player.deathEvent.OnDeathEvent += DeathEvent_OnDeathEvent;
         }
 
         private void OnDisable()
@@ -24,6 +26,8 @@ namespace ColorPicker.InGame
             player.idleEvent.OnIdle -= IdleEvent_OnIdle;
 
             player.movementByVelocityEvent.OnMovementByVelocity -= MovementByVelocityEvent_OnMovementByVelocity;
+
+            player.deathEvent.OnDeathEvent -= DeathEvent_OnDeathEvent;
         }
 
         private void IdleEvent_OnIdle(IdleEvent idleEvent)
@@ -36,6 +40,11 @@ namespace ColorPicker.InGame
         {
             InitializedAnimationParameters();
             SetMovementAnimationParameters(movementByVelocityEventArgs);
+        }
+
+        private void DeathEvent_OnDeathEvent(DeathEvent deathEvent)
+        {
+            player.animator.SetBool(Settings.isDead, true);
         }
 
         private void InitializedAnimationParameters()

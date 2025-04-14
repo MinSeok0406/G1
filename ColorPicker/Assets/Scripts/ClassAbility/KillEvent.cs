@@ -8,19 +8,17 @@ namespace ColorPicker.InGame
     {
         public event Action<KillEvent, KillEventArgs> OnKill;
 
-        public void CallKillEvent(Player player, float cooldown)
+        public void CallKillEvent(int playerId)
         {
             OnKill?.Invoke(this, new KillEventArgs()
             {
-                player = player,
-                cooldown = cooldown
+                playerId = playerId,
             });
         }
     }
 
     public class KillEventArgs : EventArgs
     {
-        public Player player;
-        public float cooldown;
+        public int playerId;
     }
 }

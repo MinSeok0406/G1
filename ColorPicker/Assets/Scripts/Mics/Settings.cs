@@ -15,6 +15,8 @@ namespace ColorPicker.InGame
         #region Player Parameters
         public const float moveSpeed = 4f;
 
+        public const float defaultCooldown = 120f;
+
         public const string mafiaAbilityComponentName = "ColorPicker.InGame.MafiaAbility";
         public const string citizenAbilityComponentName = "ColorPicker.InGame.CitizenAbility";
         #endregion
@@ -24,6 +26,7 @@ namespace ColorPicker.InGame
         public static int isMoving = Animator.StringToHash("isMoving");
         public static int isRight = Animator.StringToHash("isRight");
         public static int isLeft = Animator.StringToHash("isLeft");
+        public static int isDead = Animator.StringToHash("isDead");
         #endregion
 
         #region Others Parameters
