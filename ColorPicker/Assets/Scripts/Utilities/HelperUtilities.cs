@@ -1,0 +1,40 @@
+using ColorPicker.InGame;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public  static class HelperUtilities 
+{
+    // for customiz player color 
+    public static Color GetUnityColor(CustomizationColor color)
+    {
+        switch (color)
+        {
+            case CustomizationColor.Red: return Color.red;
+            case CustomizationColor.Green: return Color.green;
+            case CustomizationColor.Blue: return Color.blue;
+            case CustomizationColor.Yellow: return Color.yellow;
+            case CustomizationColor.Cyan: return Color.cyan;
+            case CustomizationColor.Orange: return new Color(1.0f, 0.647f, 0.0f);
+            case CustomizationColor.Purple: return new Color(0.5f, 0.0f, 0.5f);
+            case CustomizationColor.Pink: return new Color(1.0f, 192 / 255f, 203 / 255f); 
+            case CustomizationColor.Brown: return new Color(0.65f, 0.16f, 0.16f);
+            case CustomizationColor.White: return Color.white;
+
+            default: return Color.white;
+        }
+    }
+
+    public static void Shuffle<T>(this List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+}
