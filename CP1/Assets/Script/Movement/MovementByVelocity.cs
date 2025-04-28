@@ -7,32 +7,36 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 #endregion*/
 //[DisallowMultipleComponent]
-public class MovementByVelocity : MonoBehaviour
+
+namespace Minseok
 {
-    private PlayerControl pc;
-    private MovementByVelocityEvent movementByVelocityEvent;
-    private Rigidbody2D rb;
-
-    private void Awake()
+    public class MovementByVelocity : MonoBehaviour
     {
-        movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
-        rb = GetComponent<Rigidbody2D>();
-        pc = GetComponent<PlayerControl>();
-    }
+        private PlayerControl pc;
+        private MovementByVelocityEvent movementByVelocityEvent;
+        private Rigidbody2D rb;
 
-    private void OnEnable()
-    {
-        movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
-    }
+        private void Awake()
+        {
+            movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
+            rb = GetComponent<Rigidbody2D>();
+            pc = GetComponent<PlayerControl>();
+        }
 
-    private void MovementByVelocityEvent_OnMovementByVelocity(MovementByVelocityEvent movementByVelocityEvent, MovementByVelocityEventArgs movementByVelocityEventArgs)
-    {
-        //MoveRigidBody(movementByVelocityEventArgs.moveDirection, movementByVelocityEventArgs.moveSpeed);
-    }
+        private void OnEnable()
+        {
+            movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
+        }
 
-    private void MoveRigidBody(Vector2 moveDirection, float moveSpeed)
-    {
-        rb.velocity = moveDirection * moveSpeed * Time.unscaledDeltaTime;
-        PlayerControl.Instance.State = CreatureState.Moving;
+        private void MovementByVelocityEvent_OnMovementByVelocity(MovementByVelocityEvent movementByVelocityEvent, MovementByVelocityEventArgs movementByVelocityEventArgs)
+        {
+            //MoveRigidBody(movementByVelocityEventArgs.moveDirection, movementByVelocityEventArgs.moveSpeed);
+        }
+
+        private void MoveRigidBody(Vector2 moveDirection, float moveSpeed)
+        {
+            rb.velocity = moveDirection * moveSpeed * Time.unscaledDeltaTime;
+            PlayerControl.Instance.State = CreatureState.Moving;
+        }
     }
 }

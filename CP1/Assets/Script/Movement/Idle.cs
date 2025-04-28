@@ -5,34 +5,38 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 #endregion*/
 //[DisallowMultipleComponent]
-public class Idle : MonoBehaviour
+
+namespace Minseok
 {
-    private IdleEvent idleEvent;
-    private Rigidbody2D rb;
-
-    private void Awake()
+    public class Idle : MonoBehaviour
     {
-        idleEvent = GetComponent<IdleEvent>();
-        rb = GetComponent<Rigidbody2D>();
-    }
+        private IdleEvent idleEvent;
+        private Rigidbody2D rb;
 
-    private void OnEnable()
-    {
-        idleEvent.OnIdle += IdleEvent_OnIdle;
-    }
+        private void Awake()
+        {
+            idleEvent = GetComponent<IdleEvent>();
+            rb = GetComponent<Rigidbody2D>();
+        }
 
-    private void OnDisable()
-    {
-        idleEvent.OnIdle += IdleEvent_OnIdle;
-    }
+        private void OnEnable()
+        {
+            idleEvent.OnIdle += IdleEvent_OnIdle;
+        }
 
-    private void IdleEvent_OnIdle(IdleEvent idleEvent)
-    {
-        MoveRigidBody();
-    }
+        private void OnDisable()
+        {
+            idleEvent.OnIdle += IdleEvent_OnIdle;
+        }
 
-    private void MoveRigidBody()
-    {
-        rb.velocity = Vector2.zero;
+        private void IdleEvent_OnIdle(IdleEvent idleEvent)
+        {
+            MoveRigidBody();
+        }
+
+        private void MoveRigidBody()
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 }

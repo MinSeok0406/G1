@@ -6,77 +6,80 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_LobbyScene : UI_Base
+namespace Minseok
 {
-    public enum Images
+    public class UI_LobbyScene : UI_Base
     {
-        Chat_mButton,
-        Custom_mButton,
-        InGame_mButton,
-    }
-
-    public override void Init()
-    {
-        Bind<Image>(typeof(Images));
-
-        GetImage((int)Images.Chat_mButton).gameObject.BindEvent(OpenChat);
-        GetImage((int)Images.Custom_mButton).gameObject.BindEvent(OpenCustom);
-        GetImage((int)Images.InGame_mButton).gameObject.BindEvent(OpenInGame);
-
-        GetImage((int)Images.Custom_mButton).gameObject.SetActive(false);
-        GetImage((int)Images.InGame_mButton).gameObject.SetActive(false);
-    }
-
-    public void OpenChat(PointerEventData evt)
-    {
-        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
-        UI_ChatScene chatUI = backSceneUI.ChatUI;
-
-        if (chatUI.gameObject.activeSelf)
+        public enum Images
         {
-            chatUI.gameObject.SetActive(false);
-            gameObject.SetActive(true);
-            //GetImage((int)Images.Chat_mButton).gameObject.SetActive(true);
+            Chat_mButton,
+            Custom_mButton,
+            InGame_mButton,
         }
-        else
-        {
-            chatUI.gameObject.SetActive(true);
-            gameObject.SetActive(false);
-            //GetImage((int)Images.Chat_mButton).gameObject.SetActive(false);
-        }
-    }
 
-    public void OpenCustom(PointerEventData evt)
-    {
-        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
-        UI_CustomScene customUI = backSceneUI.CustomUI;
+        public override void Init()
+        {
+            Bind<Image>(typeof(Images));
 
-        if (customUI.gameObject.activeSelf)
-        {
-            customUI.gameObject.SetActive(false);
-            gameObject.SetActive(true);
-        }
-        else
-        {
-            customUI.gameObject.SetActive(true);
-            gameObject.SetActive(false);
-        }
-    }
+            GetImage((int)Images.Chat_mButton).gameObject.BindEvent(OpenChat);
+            GetImage((int)Images.Custom_mButton).gameObject.BindEvent(OpenCustom);
+            GetImage((int)Images.InGame_mButton).gameObject.BindEvent(OpenInGame);
 
-    public void OpenInGame(PointerEventData evt)
-    {
-        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
-        UI_InGameScene ingameUI = backSceneUI.InGameUI;
-
-        if (ingameUI.gameObject.activeSelf)
-        {
-            ingameUI.gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            GetImage((int)Images.Custom_mButton).gameObject.SetActive(false);
+            GetImage((int)Images.InGame_mButton).gameObject.SetActive(false);
         }
-        else
+
+        public void OpenChat(PointerEventData evt)
         {
-            ingameUI.gameObject.SetActive(true);
-            gameObject.SetActive(false);
+            UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+            UI_ChatScene chatUI = backSceneUI.ChatUI;
+
+            if (chatUI.gameObject.activeSelf)
+            {
+                chatUI.gameObject.SetActive(false);
+                gameObject.SetActive(true);
+                //GetImage((int)Images.Chat_mButton).gameObject.SetActive(true);
+            }
+            else
+            {
+                chatUI.gameObject.SetActive(true);
+                gameObject.SetActive(false);
+                //GetImage((int)Images.Chat_mButton).gameObject.SetActive(false);
+            }
+        }
+
+        public void OpenCustom(PointerEventData evt)
+        {
+            UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+            UI_CustomScene customUI = backSceneUI.CustomUI;
+
+            if (customUI.gameObject.activeSelf)
+            {
+                customUI.gameObject.SetActive(false);
+                gameObject.SetActive(true);
+            }
+            else
+            {
+                customUI.gameObject.SetActive(true);
+                gameObject.SetActive(false);
+            }
+        }
+
+        public void OpenInGame(PointerEventData evt)
+        {
+            UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+            UI_InGameScene ingameUI = backSceneUI.InGameUI;
+
+            if (ingameUI.gameObject.activeSelf)
+            {
+                ingameUI.gameObject.SetActive(false);
+                gameObject.SetActive(true);
+            }
+            else
+            {
+                ingameUI.gameObject.SetActive(true);
+                gameObject.SetActive(false);
+            }
         }
     }
 }

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_Scene : UI_Base
+namespace Minseok
 {
-	public override void Init()
-	{
-		Managers.UI.SetCanvas(gameObject, false);
-	}
+    public class UI_Scene : UI_Base
+    {
+        public override void Init()
+        {
+            Managers.UI.SetCanvas(gameObject, false);
+        }
+    }
 }

@@ -1,26 +1,31 @@
+using Minseok;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoginScene : BaseScene
+namespace Minseok
 {
-    UI_LoginScene _sceneUI;
-
-    protected override void Init()
+    public class LoginScene : BaseScene
     {
-        base.Init();
+        UI_LoginScene _sceneUI;
 
-        SceneType = Define.Scene.Login;
+        protected override void Init()
+        {
+            base.Init();
 
-        Managers.Web.BaseUrl = "https://localhost:5001/api";
+            SceneType = Define.Scene.Login;
 
-        Screen.SetResolution(1280, 720, false);
+            Managers.Web.BaseUrl = "https://localhost:5001/api";
 
-        _sceneUI = Managers.UI.ShowSceneUI<UI_LoginScene>("UI_Login");
-    }
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            Screen.SetResolution(1280, 720, false);
 
-    public override void Clear()
-    {
+            _sceneUI = Managers.UI.ShowSceneUI<UI_LoginScene>("UI_Login");
+        }
 
+        public override void Clear()
+        {
+
+        }
     }
 }

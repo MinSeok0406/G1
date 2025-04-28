@@ -4,33 +4,37 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_CustomScene : UI_Base
+namespace Minseok
 {
-    enum Images
+    public class UI_CustomScene : UI_Base
     {
-        Cancle,
-    }
-
-    public override void Init()
-    {
-        Bind<Image>(typeof(Images));
-        GetImage((int)Images.Cancle).gameObject.BindEvent(Cancle);
-    }
-
-    public void Cancle(PointerEventData evt)
-    {
-        UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
-        UI_LobbyScene lobbyUI = backSceneUI.mLobbyUI;
-
-        if (lobbyUI.gameObject.activeSelf)
+        enum Images
         {
-            lobbyUI.gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            Cancle,
         }
-        else
+
+        public override void Init()
         {
-            lobbyUI?.gameObject.SetActive(true);
-            gameObject.SetActive(false);
+            Bind<Image>(typeof(Images));
+            GetImage((int)Images.Cancle).gameObject.BindEvent(Cancle);
+        }
+
+        public void Cancle(PointerEventData evt)
+        {
+            UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+            UI_LobbyScene lobbyUI = backSceneUI.mLobbyUI;
+
+            if (lobbyUI.gameObject.activeSelf)
+            {
+                lobbyUI.gameObject.SetActive(false);
+                gameObject.SetActive(true);
+            }
+            else
+            {
+                lobbyUI?.gameObject.SetActive(true);
+                gameObject.SetActive(false);
+            }
         }
     }
+
 }

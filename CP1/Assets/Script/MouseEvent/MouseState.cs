@@ -3,63 +3,66 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MouseState
+namespace Minseok
 {
-    protected MouseStateMachine stateMachine;
-    protected PointerEventData eventData;
-    protected MouseStateController mouseStateController;
-
-    public MouseState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine)
+    public class MouseState
     {
-        this.mouseStateController = mouseStateController;
-        this.eventData = eventData;
-        this.stateMachine = mouseStateMachine;
-    }
+        protected MouseStateMachine stateMachine;
+        protected PointerEventData eventData;
+        protected MouseStateController mouseStateController;
 
-    public virtual void Enter()
-    {
-        
-    }
-
-    public virtual void Update()
-    {
-
-    }
-
-    public virtual void Exit()
-    {
-
-    }
-
-    protected void UpdateEventDataPosition()
-    {
-        eventData.position = Input.mousePosition;
-    }
-
-    protected bool GetFirstRayCastHit()
-    {
-        List<RaycastResult> raycastResult = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, raycastResult);
-
-        if (raycastResult.Count > 0)
+        public MouseState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine)
         {
-            raycastResult.OrderBy(hit => hit.depth);
-            
-            foreach(RaycastResult raycast in raycastResult)
-            {
-                if(raycast.gameObject.GetComponentInParent<MouseInteractiveObject>() != null)
-                {
-                    eventData.pointerCurrentRaycast = raycast;
-                    return true;
-                }
-            }
+            this.mouseStateController = mouseStateController;
+            this.eventData = eventData;
+            this.stateMachine = mouseStateMachine;
         }
 
-        return false;
-    }
+        public virtual void Enter()
+        {
 
-    protected MouseInteractiveObject GetInterectiveObject()
-    {
-        return eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<MouseInteractiveObject>();
+        }
+
+        public virtual void Update()
+        {
+
+        }
+
+        public virtual void Exit()
+        {
+
+        }
+
+        protected void UpdateEventDataPosition()
+        {
+            eventData.position = Input.mousePosition;
+        }
+
+        protected bool GetFirstRayCastHit()
+        {
+            List<RaycastResult> raycastResult = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, raycastResult);
+
+            if (raycastResult.Count > 0)
+            {
+                raycastResult.OrderBy(hit => hit.depth);
+
+                foreach (RaycastResult raycast in raycastResult)
+                {
+                    if (raycast.gameObject.GetComponentInParent<MouseInteractiveObject>() != null)
+                    {
+                        eventData.pointerCurrentRaycast = raycast;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        protected MouseInteractiveObject GetInterectiveObject()
+        {
+            return eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<MouseInteractiveObject>();
+        }
     }
 }

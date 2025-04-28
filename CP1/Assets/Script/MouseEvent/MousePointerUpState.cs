@@ -2,35 +2,37 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MousePointerUpState : MouseState
+namespace Minseok
 {
-    public MousePointerUpState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
+    public class MousePointerUpState : MouseState
     {
-
-    }
-
-    public override void Enter()
-    {
-        base.Enter();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-
-        if (!Input.GetMouseButton(0))
+        public MousePointerUpState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
         {
-            stateMachine.ChangeState(mouseStateController.idleState);
+
+        }
+
+        public override void Enter()
+        {
+            base.Enter();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (!Input.GetMouseButton(0))
+            {
+                stateMachine.ChangeState(mouseStateController.idleState);
+            }
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            GetInterectiveObject().mouseInteractiveEvent.CallPointerUpEvent();
+
+            eventData.pointerCurrentRaycast = new RaycastResult();
         }
     }
-
-    public override void Exit()
-    {
-        base.Exit();
-
-        GetInterectiveObject().mouseInteractiveEvent.CallPointerUpEvent();
-
-        eventData.pointerCurrentRaycast = new RaycastResult();
-    }
 }
-

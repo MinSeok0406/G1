@@ -2,50 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractiveObject : MonoBehaviour
+namespace Minseok
 {
-    private MyPlayerControl MyPlayer;
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    public class InteractiveObject : MonoBehaviour
     {
-        MyPlayer = collision.gameObject.GetComponent<MyPlayerControl>();
+        private MyPlayerControl MyPlayer;
 
-        if (MyPlayer != null)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (gameObject.tag == "Custom")
-            {
-                UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-                UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+            MyPlayer = collision.gameObject.GetComponent<MyPlayerControl>();
 
-                lobbyUI.GetImage((int)UI_LobbyScene.Images.Custom_mButton).gameObject.SetActive(true);
-            }
-            else if (gameObject.tag == "InGame")
+            if (MyPlayer != null)
             {
-                UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-                UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+                if (gameObject.tag == "Custom")
+                {
+                    UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
+                    UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
 
-                lobbyUI.GetImage((int)UI_LobbyScene.Images.InGame_mButton).gameObject.SetActive(true);
+                    lobbyUI.GetImage((int)UI_LobbyScene.Images.Custom_mButton).gameObject.SetActive(true);
+                }
+                else if (gameObject.tag == "InGame")
+                {
+                    UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
+                    UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+
+                    lobbyUI.GetImage((int)UI_LobbyScene.Images.InGame_mButton).gameObject.SetActive(true);
+                }
             }
         }
-    }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (MyPlayer != null)
+        private void OnTriggerExit2D(Collider2D collision)
         {
-            if (gameObject.tag == "Custom")
+            if (MyPlayer != null)
             {
-                UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-                UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+                if (gameObject.tag == "Custom")
+                {
+                    UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
+                    UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
 
-                lobbyUI.GetImage((int)UI_LobbyScene.Images.Custom_mButton).gameObject.SetActive(false);
-            }
-            else if (gameObject.tag == "InGame")
-            {
-                UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-                UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
+                    lobbyUI.GetImage((int)UI_LobbyScene.Images.Custom_mButton).gameObject.SetActive(false);
+                }
+                else if (gameObject.tag == "InGame")
+                {
+                    UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
+                    UI_LobbyScene lobbyUI = gameSceneUI.mLobbyUI;
 
-                lobbyUI.GetImage((int)UI_LobbyScene.Images.InGame_mButton).gameObject.SetActive(false);
+                    lobbyUI.GetImage((int)UI_LobbyScene.Images.InGame_mButton).gameObject.SetActive(false);
+                }
             }
         }
     }

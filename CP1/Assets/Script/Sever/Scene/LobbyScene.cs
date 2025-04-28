@@ -2,25 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LobbyScene : BaseScene
+namespace Minseok
 {
-    UI_BackGround _backScene;
-
-    protected override void Init()
+    public class LobbyScene : BaseScene
     {
-        base.Init();
+        UI_BackGround _backScene;
 
-        SceneType = Define.Scene.Lobby;
+        protected override void Init()
+        {
+            base.Init();
 
-        Screen.SetResolution(640, 480, false);
+            SceneType = Define.Scene.Lobby;
 
-        Application.runInBackground = true;
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            Screen.SetResolution(1280, 720, false);
 
-        _backScene = Managers.UI.ShowSceneUI<UI_BackGround>("UI_BackGround");
-    }
+            Application.runInBackground = true;
 
-    public override void Clear()
-    {
-        
+            _backScene = Managers.UI.ShowSceneUI<UI_BackGround>("UI_BackGround");
+        }
+
+        public override void Clear()
+        {
+
+        }
     }
 }

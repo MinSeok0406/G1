@@ -6,94 +6,97 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_LoginScene : UI_Scene
+namespace Minseok
 {
-    public ServerInfo Info { get; set; }
-
-    enum GameObjects
+    public class UI_LoginScene : UI_Scene
     {
-        AccountName
-    }
+        public ServerInfo Info { get; set; }
 
-    enum Images
-    {
-        CreateBtn,
-        LoginBtn
-    }
-
-    public override void Init()
-    {
-        base.Init();
-
-        Bind<GameObject>(typeof(GameObjects));
-        Bind<Image>(typeof(Images));
-
-        GetImage((int)Images.CreateBtn).gameObject.BindEvent(OnClickCreateButton);
-        GetImage((int)Images.LoginBtn).gameObject.BindEvent(OnClickLoginButton);
-    }
-
-    public void OnClickCreateButton(PointerEventData evt)
-    {
-        string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text;
-
-        if (account == null)
+        enum GameObjects
         {
-            Debug.Log("실패");
-            return;
+            AccountName
         }
 
-        CreateAccountPacketReq packet = new CreateAccountPacketReq()
+        enum Images
         {
-            AccountName = account,
-        };
+            CreateBtn,
+            LoginBtn
+        }
 
-        Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
+        public override void Init()
         {
-            Debug.Log(res.CreateOk);
+            base.Init();
 
-            Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text = "";
-        });
-    }
+            Bind<GameObject>(typeof(GameObjects));
+            Bind<Image>(typeof(Images));
 
-    public void OnClickLoginButton(PointerEventData evt)
-    {
-        string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text;
+            GetImage((int)Images.CreateBtn).gameObject.BindEvent(OnClickCreateButton);
+            GetImage((int)Images.LoginBtn).gameObject.BindEvent(OnClickLoginButton);
+        }
 
-        LoginAccountPacketReq packet = new LoginAccountPacketReq()
+        public void OnClickCreateButton(PointerEventData evt)
         {
-            AccountName = account,
-        };
+            string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text;
 
-        Managers.Web.SendPostRequest<LoginAccountPacketRes>("account/login", packet, (res) =>
-        {
-            Debug.Log(res.LoginOk);
-
-            Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text = "";
-
-            if (res.LoginOk)
+            if (account == null)
             {
-                Managers.Network.AccountId = res.AccountId;
-                Managers.Network.Token = res.Token;
-
-
-                for (int i = 0; i < res.ServerList.Count; i++)
-                {
-                    Info = res.ServerList[i];
-                }
-
-                Managers.Network.ConnectToGame(Info);
-                Managers.Scene.LoadScene(Define.Scene.Lobby);
+                Debug.Log("실패");
+                return;
             }
 
-            /*if (res.LoginOk)
+            CreateAccountPacketReq packet = new CreateAccountPacketReq()
             {
-                Managers.Network.AccountId = res.AccountId;
-                Managers.Network.Token = res.Token;
+                AccountName = account,
+            };
 
-                UI_SelectServerPopup popup = Managers.UI.ShowPopupUI<UI_SelectServerPopup>();
-                popup.SetServers(res.ServerList);
-            }*/
+            Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
+            {
+                Debug.Log(res.CreateOk);
 
-        });
+                Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text = "";
+            });
+        }
+
+        public void OnClickLoginButton(PointerEventData evt)
+        {
+            string account = Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text;
+
+            LoginAccountPacketReq packet = new LoginAccountPacketReq()
+            {
+                AccountName = account,
+            };
+
+            Managers.Web.SendPostRequest<LoginAccountPacketRes>("account/login", packet, (res) =>
+            {
+                Debug.Log(res.LoginOk);
+
+                Get<GameObject>((int)GameObjects.AccountName).GetComponent<TMP_InputField>().text = "";
+
+                if (res.LoginOk)
+                {
+                    Managers.Network.AccountId = res.AccountId;
+                    Managers.Network.Token = res.Token;
+
+
+                    for (int i = 0; i < res.ServerList.Count; i++)
+                    {
+                        Info = res.ServerList[i];
+                    }
+
+                    Managers.Network.ConnectToGame(Info);
+                    Managers.Scene.LoadScene(Define.Scene.Lobby);
+                }
+
+                /*if (res.LoginOk)
+                {
+                    Managers.Network.AccountId = res.AccountId;
+                    Managers.Network.Token = res.Token;
+
+                    UI_SelectServerPopup popup = Managers.UI.ShowPopupUI<UI_SelectServerPopup>();
+                    popup.SetServers(res.ServerList);
+                }*/
+
+            });
+        }
     }
 }

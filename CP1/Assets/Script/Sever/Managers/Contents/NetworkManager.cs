@@ -5,45 +5,48 @@ using System.Net;
 using UnityEngine;
 using Google.Protobuf;
 
-public class NetworkManager
+namespace Minseok
 {
-    public int AccountId { get; set; }
-    public int Token { get; set; }
-
-    ServerSession _session = new ServerSession();
-
-    public void Send(IMessage packet)
+    public class NetworkManager
     {
-        _session.Send(packet);
+        public int AccountId { get; set; }
+        public int Token { get; set; }
+
+        ServerSession _session = new ServerSession();
+
+        public void Send(IMessage packet)
+        {
+            _session.Send(packet);
+        }
+
+        public void ConnectToGame(ServerInfo info)
+        {
+            // DNS (Domain Name System)
+            /*string host = Dns.GetHostName();
+            IPHostEntry ipHost = Dns.GetHostEntry(host);
+            IPAddress ipAddr = ipHost.AddressList[1];
+            IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);*/
+
+            IPAddress ipAddr = IPAddress.Parse(info.IpAddress);
+            IPEndPoint endPoint = new IPEndPoint(ipAddr, info.Port);
+
+            Connector connector = new Connector();
+
+            connector.Connect(endPoint,
+                () => { return _session; },
+                1);
+        }
+
+        public void Update()
+        {
+            List<PacketMessage> list = PacketQueue.Instance.PopAll();
+            foreach (PacketMessage packet in list)
+            {
+                Action<PacketSession, IMessage> handler = PacketManager.Instance.GetPacketHandler(packet.Id);
+                if (handler != null)
+                    handler.Invoke(_session, packet.Message);
+            }
+        }
+
     }
-
-    public void ConnectToGame(ServerInfo info)
-	{
-		// DNS (Domain Name System)
-		/*string host = Dns.GetHostName();
-		IPHostEntry ipHost = Dns.GetHostEntry(host);
-		IPAddress ipAddr = ipHost.AddressList[1];
-		IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);*/
-
-        IPAddress ipAddr = IPAddress.Parse(info.IpAddress);
-        IPEndPoint endPoint = new IPEndPoint(ipAddr, info.Port);
-
-        Connector connector = new Connector();
-
-		connector.Connect(endPoint,
-			() => { return _session; },
-			1);
-	}
-
-	public void Update()
-	{
-		List<PacketMessage> list = PacketQueue.Instance.PopAll();
-		foreach (PacketMessage packet in list)
-		{
-			Action<PacketSession, IMessage> handler = PacketManager.Instance.GetPacketHandler(packet.Id);
-			if (handler != null)
-				handler.Invoke(_session, packet.Message);
-		}
-	}
-
 }

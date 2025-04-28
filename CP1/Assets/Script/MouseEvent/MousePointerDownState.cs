@@ -2,62 +2,64 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MousePointerDownState: MouseState
+namespace Minseok
 {
-    private Vector2 previousPosition;
-    MouseInteractiveObject mouseInteractiveObject;
-
-    public MousePointerDownState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
+    public class MousePointerDownState : MouseState
     {
-    }
+        private Vector2 previousPosition;
+        MouseInteractiveObject mouseInteractiveObject;
 
-    public override void Enter()
-    {
-        base.Enter();
-
-        Vector2 previousPosition = eventData.position;
-
-        mouseInteractiveObject = GetInterectiveObject();
-        mouseInteractiveObject?.mouseInteractiveEvent.CallPointerDownEvent();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-
-        if (Input.GetMouseButton(0))
+        public MousePointerDownState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
         {
-            if(mouseInteractiveObject.mouseInteractive == MouseInteractive.Drag)
+        }
+
+        public override void Enter()
+        {
+            base.Enter();
+
+            Vector2 previousPosition = eventData.position;
+
+            mouseInteractiveObject = GetInterectiveObject();
+            mouseInteractiveObject?.mouseInteractiveEvent.CallPointerDownEvent();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (Input.GetMouseButton(0))
             {
-                DetectDrag();
+                if (mouseInteractiveObject.mouseInteractive == MouseInteractive.Drag)
+                {
+                    DetectDrag();
+                }
+                else
+                {
+                    stateMachine.ChangeState(mouseStateController.pointerUpState);
+                    return;
+                }
             }
             else
             {
                 stateMachine.ChangeState(mouseStateController.pointerUpState);
-                return;
             }
         }
-        else
+
+        public override void Exit()
         {
-            stateMachine.ChangeState(mouseStateController.pointerUpState);
+            base.Exit();
+
+            mouseInteractiveObject = null;
         }
-    }
 
-    public override void Exit()
-    {
-        base.Exit();
-
-        mouseInteractiveObject = null;
-    }
-
-    private void DetectDrag()
-    {
-        UpdateEventDataPosition();
-
-        if(Vector2.Distance(previousPosition, eventData.position) > 0.5f)
+        private void DetectDrag()
         {
-            stateMachine.ChangeState(mouseStateController.dragState);
+            UpdateEventDataPosition();
+
+            if (Vector2.Distance(previousPosition, eventData.position) > 0.5f)
+            {
+                stateMachine.ChangeState(mouseStateController.dragState);
+            }
         }
     }
 }
-

@@ -4,129 +4,132 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectManager
+namespace Minseok
 {
-    public MyPlayerControl MyPlayer { get; set; }
-    public Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
-
-    public static GameObjectType GetObjectTypeById(int id)
+    public class ObjectManager
     {
-        int type = (id >> 24) & 0x7F;
-        return (GameObjectType)type;
-    }
+        public MyPlayerControl MyPlayer { get; set; }
+        public Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
 
-    public void Add(ObjectInfo info, bool myPlayer = false)
-    {
-        if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
-            return;
-
-        if (_objects.ContainsKey(info.ObjectId))
-            return;
-
-        GameObjectType objectType = GetObjectTypeById(info.ObjectId);
-
-        if (myPlayer)
+        public static GameObjectType GetObjectTypeById(int id)
         {
-            GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
-            go.name = info.Name;
-            _objects.Add(info.ObjectId, go);
-
-            MyPlayer = go.GetComponent<MyPlayerControl>();
-            MyPlayer.Id = info.ObjectId;
-            MyPlayer.PosInfo = info.PosInfo;
-            MyPlayer.SyncPos();
-        }
-        else
-        {
-            GameObject go = Managers.Resource.Instantiate("Creature/Player");
-            go.name = info.Name;
-            _objects.Add(info.ObjectId, go);
-
-            PlayerControl pc = go.GetComponent<PlayerControl>();
-            pc.Id = info.ObjectId;
-            pc.PosInfo = info.PosInfo;
-            pc.SyncPos();
-        }
-    }
-
-    public void Remove(int id)
-    {
-        if (MyPlayer != null && MyPlayer.Id == id)
-            return;
-
-        if (_objects.ContainsKey(id) == false)
-            return;
-
-        GameObject go = FindById(id);
-        if (go == null)
-            return;
-
-        _objects.Remove(id);
-        Managers.Resource.Destroy(go);
-    }
-
-    public GameObject FindById(int id)
-    {
-        GameObject go = null;
-        _objects.TryGetValue(id, out go);
-        return go;
-    }
-
-    public GameObject FindCreature(Vector3 cellPos)
-    {
-        foreach (GameObject obj in _objects.Values)
-        {
-            PlayerControl player = obj.GetComponent<PlayerControl>();
-            if (player == null)
-                continue;
-
-            if (player.CellPos == cellPos)
-                return obj;
+            int type = (id >> 24) & 0x7F;
+            return (GameObjectType)type;
         }
 
-        return null;
-    }
-
-    public GameObject Find(Vector3 cellPos)
-    {
-        foreach (GameObject obj in _objects.Values)
+        public void Add(ObjectInfo info, bool myPlayer = false)
         {
-            PlayerControl p = obj.GetComponent<PlayerControl>();
-            if (p == null)
-                continue;
+            if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
+                return;
 
-            if (p.CellPos == cellPos)
-                return obj;
+            if (_objects.ContainsKey(info.ObjectId))
+                return;
+
+            GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+
+            if (myPlayer)
+            {
+                GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
+                go.name = info.Name;
+                _objects.Add(info.ObjectId, go);
+
+                MyPlayer = go.GetComponent<MyPlayerControl>();
+                MyPlayer.Id = info.ObjectId;
+                MyPlayer.PosInfo = info.PosInfo;
+                MyPlayer.SyncPos();
+            }
+            else
+            {
+                GameObject go = Managers.Resource.Instantiate("Creature/Player");
+                go.name = info.Name;
+                _objects.Add(info.ObjectId, go);
+
+                PlayerControl pc = go.GetComponent<PlayerControl>();
+                pc.Id = info.ObjectId;
+                pc.PosInfo = info.PosInfo;
+                pc.SyncPos();
+            }
         }
 
-        return null;
-    }
-
-    public GameObject Find(Func<GameObject, bool> condition)
-    {
-        foreach (GameObject obj in _objects.Values)
+        public void Remove(int id)
         {
-            if (condition.Invoke(obj))
-                return obj;
+            if (MyPlayer != null && MyPlayer.Id == id)
+                return;
+
+            if (_objects.ContainsKey(id) == false)
+                return;
+
+            GameObject go = FindById(id);
+            if (go == null)
+                return;
+
+            _objects.Remove(id);
+            Managers.Resource.Destroy(go);
         }
 
-        return null;
-    }
+        public GameObject FindById(int id)
+        {
+            GameObject go = null;
+            _objects.TryGetValue(id, out go);
+            return go;
+        }
 
-    public void RemoveMyPlayer()
-    {
-        if (MyPlayer == null)
-            return;
+        public GameObject FindCreature(Vector3 cellPos)
+        {
+            foreach (GameObject obj in _objects.Values)
+            {
+                PlayerControl player = obj.GetComponent<PlayerControl>();
+                if (player == null)
+                    continue;
 
-        Remove(MyPlayer.Id);
-        MyPlayer = null;
-    }
+                if (player.CellPos == cellPos)
+                    return obj;
+            }
 
-    public void Clear()
-    {
-        foreach (GameObject obj in _objects.Values)
-            Managers.Resource.Destroy(obj);
-        _objects.Clear();
-        MyPlayer = null;
+            return null;
+        }
+
+        public GameObject Find(Vector3 cellPos)
+        {
+            foreach (GameObject obj in _objects.Values)
+            {
+                PlayerControl p = obj.GetComponent<PlayerControl>();
+                if (p == null)
+                    continue;
+
+                if (p.CellPos == cellPos)
+                    return obj;
+            }
+
+            return null;
+        }
+
+        public GameObject Find(Func<GameObject, bool> condition)
+        {
+            foreach (GameObject obj in _objects.Values)
+            {
+                if (condition.Invoke(obj))
+                    return obj;
+            }
+
+            return null;
+        }
+
+        public void RemoveMyPlayer()
+        {
+            if (MyPlayer == null)
+                return;
+
+            Remove(MyPlayer.Id);
+            MyPlayer = null;
+        }
+
+        public void Clear()
+        {
+            foreach (GameObject obj in _objects.Values)
+                Managers.Resource.Destroy(obj);
+            _objects.Clear();
+            MyPlayer = null;
+        }
     }
 }

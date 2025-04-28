@@ -1,19 +1,21 @@
 ﻿
-public class MouseStateMachine
+namespace Minseok
 {
-    public MouseState currentState { get; private set; }
-
-    public void Initialize(MouseState startState)
+    public class MouseStateMachine
     {
-        currentState = startState;
-        currentState.Enter();
-    }
+        public MouseState currentState { get; private set; }
 
-    public void ChangeState(MouseState newState)
-    {
-        currentState.Exit();
-        currentState = newState;
-        currentState.Enter();
+        public void Initialize(MouseState startState)
+        {
+            currentState = startState;
+            currentState.Enter();
+        }
+
+        public void ChangeState(MouseState newState)
+        {
+            currentState.Exit();
+            currentState = newState;
+            currentState.Enter();
+        }
     }
 }
-

@@ -3,24 +3,26 @@ using System;
 using UnityEngine;
 
 //[DisallowMultipleComponent]
-public class MovementByVelocityEvent : MonoBehaviour
-{
-    public event Action<MovementByVelocityEvent, MovementByVelocityEventArgs> OnMovementByVelocity;
 
-    public void CallMovementByVelocity(MoveDir moveDirection, float moveSpeed)
+namespace Minseok
+{
+    public class MovementByVelocityEvent : MonoBehaviour
     {
-        OnMovementByVelocity?.Invoke(this, new MovementByVelocityEventArgs()
+        public event Action<MovementByVelocityEvent, MovementByVelocityEventArgs> OnMovementByVelocity;
+
+        public void CallMovementByVelocity(MoveDir moveDirection, float moveSpeed)
         {
-            moveDirection = moveDirection,
-            moveSpeed = moveSpeed
-        });
+            OnMovementByVelocity?.Invoke(this, new MovementByVelocityEventArgs()
+            {
+                moveDirection = moveDirection,
+                moveSpeed = moveSpeed
+            });
+        }
+    }
+
+    public class MovementByVelocityEventArgs : EventArgs
+    {
+        public MoveDir moveDirection;
+        public float moveSpeed;
     }
 }
-
-public class MovementByVelocityEventArgs : EventArgs
-{
-    public MoveDir moveDirection;
-    public float moveSpeed;
-}
-
-

@@ -2,20 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameScene : BaseScene
+namespace Minseok
 {
-    protected override void Init()
+    public class GameScene : BaseScene
     {
-        base.Init();
-        SceneType = Define.Scene.Game;
+        protected override void Init()
+        {
+            base.Init();
+            SceneType = Define.Scene.Game;
 
-        Screen.SetResolution(640, 480, false);
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            Screen.SetResolution(1280, 720, false);
 
-        Application.runInBackground = true;
-    }
+            Application.runInBackground = true;
+        }
 
-    public override void Clear()
-    {
-        
+        public override void Clear()
+        {
+
+        }
     }
 }

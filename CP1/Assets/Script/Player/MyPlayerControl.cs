@@ -1,109 +1,112 @@
 using Google.Protobuf.Protocol;
 using UnityEngine;
 
-public class MyPlayerControl : PlayerControl
+namespace Minseok
 {
-    private Vector3 moveDirection;
-
-    protected override void Init()
+    public class MyPlayerControl : PlayerControl
     {
-        base.Init();
-    }
+        private Vector3 moveDirection;
 
-    protected override void UpdateController()
-    {
-        GetUIKeyInput();
-
-        switch (State)
+        protected override void Init()
         {
-            case CreatureState.Idle:
-                GetDirInput();
-                break;
-            case CreatureState.Moving:
-                GetDirInput();
-                break;
+            base.Init();
         }
 
-        base.UpdateController();
-    }
-
-    void LateUpdate()
-    {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-    }
-
-    // 키보드 입력
-    private void GetDirInput()
-    {
-        float horizontalMovement = Input.GetAxisRaw("Horizontal");
-        float verticalMovement = Input.GetAxisRaw("Vertical");
-
-        moveDirection = new Vector3(horizontalMovement, verticalMovement, 0);
-
-        if (horizontalMovement != 0f && verticalMovement != 0f)
+        protected override void UpdateController()
         {
-            moveDirection = moveDirection.normalized;
-        }
+            GetUIKeyInput();
 
-        if(moveDirection != Vector3.zero)
-        {
-            float angle = HelperUtilities.GetAngleFromVector(moveDirection);
-            Dir = HelperUtilities.GetMoveDirection(angle);
-        }
-        else
-        {
-            Dir = MoveDir.None;
-        }
-    }
-
-    void GetUIKeyInput()
-    {
-        if (Input.GetKeyUp(KeyCode.Return))
-        {
-            UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
-            UI_ChatScene chatUI = gameSceneUI.ChatUI;
-
-            if (chatUI.gameObject.activeSelf)
+            switch (State)
             {
-                chatUI.gameObject.SetActive(false);
+                case CreatureState.Idle:
+                    GetDirInput();
+                    break;
+                case CreatureState.Moving:
+                    GetDirInput();
+                    break;
+            }
+
+            base.UpdateController();
+        }
+
+        void LateUpdate()
+        {
+            Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+        }
+
+        // 키보드 입력
+        private void GetDirInput()
+        {
+            float horizontalMovement = Input.GetAxisRaw("Horizontal");
+            float verticalMovement = Input.GetAxisRaw("Vertical");
+
+            moveDirection = new Vector3(horizontalMovement, verticalMovement, 0);
+
+            if (horizontalMovement != 0f && verticalMovement != 0f)
+            {
+                moveDirection = moveDirection.normalized;
+            }
+
+            if (moveDirection != Vector3.zero)
+            {
+                float angle = HelperUtilities.GetAngleFromVector(moveDirection);
+                Dir = HelperUtilities.GetMoveDirection(angle);
             }
             else
             {
-                chatUI.gameObject.SetActive(true);
+                Dir = MoveDir.None;
             }
         }
-    }
 
-    protected override void MoveToNextPos()
-    {
-        if (Dir == MoveDir.None)
+        void GetUIKeyInput()
         {
-            State = CreatureState.Idle;
+            if (Input.GetKeyUp(KeyCode.Return))
+            {
+                UI_BackGround gameSceneUI = Managers.UI.SceneUI as UI_BackGround;
+                UI_ChatScene chatUI = gameSceneUI.ChatUI;
+
+                if (chatUI.gameObject.activeSelf)
+                {
+                    chatUI.gameObject.SetActive(false);
+                }
+                else
+                {
+                    chatUI.gameObject.SetActive(true);
+                }
+            }
+        }
+
+        protected override void MoveToNextPos()
+        {
+            if (Dir == MoveDir.None)
+            {
+                State = CreatureState.Idle;
+                CheckUpdatedFlag();
+                return;
+            }
+
+            Vector3 destPos = CellPos;
+
+            //destPos += moveDirection * moveSpeed * Time.unscaledDeltaTime;
+            destPos += moveDirection * Speed * Time.unscaledDeltaTime;
+
+            if (Managers.Object.Find(destPos) == null)
+            {
+                CellPos = destPos;
+            }
+
             CheckUpdatedFlag();
-            return;
         }
 
-        Vector3 destPos = CellPos;
-
-        //destPos += moveDirection * moveSpeed * Time.unscaledDeltaTime;
-        destPos += moveDirection * Speed * Time.unscaledDeltaTime;
-
-        if (Managers.Object.Find(destPos) == null)
+        protected override void CheckUpdatedFlag()
         {
-            CellPos = destPos;
-        }
-
-        CheckUpdatedFlag();
-    }
-
-    protected override void CheckUpdatedFlag()
-    {
-        if (_updated)
-        {
-            C_Move movePacket = new C_Move();
-            movePacket.PosInfo = PosInfo;
-            Managers.Network.Send(movePacket);
-            _updated = false;
+            if (_updated)
+            {
+                C_Move movePacket = new C_Move();
+                movePacket.PosInfo = PosInfo;
+                Managers.Network.Send(movePacket);
+                _updated = false;
+            }
         }
     }
 }

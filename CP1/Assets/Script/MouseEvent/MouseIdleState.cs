@@ -1,35 +1,37 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MouseIdleState : MouseState
+namespace Minseok
 {
-    public MouseIdleState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
+    public class MouseIdleState : MouseState
     {
-    }
-
-    public override void Enter()
-    {
-        base.Enter();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-
-        if (Input.GetMouseButtonDown(0))
+        public MouseIdleState(MouseStateController mouseStateController, PointerEventData eventData, MouseStateMachine mouseStateMachine) : base(mouseStateController, eventData, mouseStateMachine)
         {
-            UpdateEventDataPosition();
+        }
 
-            if (GetFirstRayCastHit())
+        public override void Enter()
+        {
+            base.Enter();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (Input.GetMouseButtonDown(0))
             {
-                stateMachine.ChangeState(mouseStateController.pointerDownState);
+                UpdateEventDataPosition();
+
+                if (GetFirstRayCastHit())
+                {
+                    stateMachine.ChangeState(mouseStateController.pointerDownState);
+                }
             }
         }
-    }
 
-    public override void Exit()
-    {
-        base.Exit();
+        public override void Exit()
+        {
+            base.Exit();
+        }
     }
 }
-
