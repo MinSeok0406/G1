@@ -68,7 +68,7 @@ namespace ColorPicker.InGame
         {
             base.OnJoinedRoom();
 
-            PhotonNetwork.LoadLevel("Lobby");
+            PhotonNetwork.LoadLevel("InLobby");
         }
 
     }
