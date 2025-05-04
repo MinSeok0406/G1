@@ -12,7 +12,7 @@ namespace ColorPicker
             {
                 if (instance == null)
                 {
-                    instance = Resources.Load<GameResources>("GameResources");
+                    instance = Resources.Load<GameResources>("InGameResources");
                 }
                 return instance;
             }
