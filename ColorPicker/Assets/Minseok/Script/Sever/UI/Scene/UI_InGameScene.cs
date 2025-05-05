@@ -28,6 +28,7 @@ namespace Minseok
         {
             // TODO Minseok
             Debug.Log("로컬로 고우~~");
+            Managers.Scene.LoadScene(Define.Scene.InLocal);
         }
 
         public void InOnline(PointerEventData evt)
