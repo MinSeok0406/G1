@@ -11,6 +11,7 @@ namespace Minseok
             Unknown,
             Login,
             Lobby,
+            InLocal,
             Game,
         }
 
