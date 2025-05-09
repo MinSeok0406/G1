@@ -7,6 +7,7 @@ namespace Minseok
 {
     class PacketHandler
     {
+        private static int count = 0;
         public static void S_PingHandler(PacketSession session, IMessage packet)
         {
             C_Pong pongPacket = new C_Pong();
@@ -76,7 +77,7 @@ namespace Minseok
             if (loginPacket.Players == null || loginPacket.Players.Count == 0)
             {
                 C_CreatePlayer createPacket = new C_CreatePlayer();
-                createPacket.Name = $"Player_{Random.Range(0, 10000).ToString("0000")}";
+                createPacket.Name = $"Player_{count++}";
                 Managers.Network.Send(createPacket);
             }
             else
@@ -97,7 +98,7 @@ namespace Minseok
             if (createOkPacket.Player == null)
             {
                 C_CreatePlayer createPacket = new C_CreatePlayer();
-                createPacket.Name = $"Player_{Random.Range(0, 10000).ToString("0000")}";
+                createPacket.Name = $"Player_{count++}";
                 Managers.Network.Send(createPacket);
             }
             else

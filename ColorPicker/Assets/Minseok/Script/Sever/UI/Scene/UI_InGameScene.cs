@@ -27,6 +27,10 @@ namespace Minseok
         public void InLocal(PointerEventData evt)
         {
             // TODO Minseok
+            UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
+            UI_LobbyScene lobbyUI = backSceneUI.mLobbyUI;
+            lobbyUI.gameObject.SetActive(false);
+
             Debug.Log("로컬로 고우~~");
             Managers.Scene.LoadScene(Define.Scene.InLocal);
         }
