@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -32,6 +33,8 @@ namespace Minseok
             lobbyUI.gameObject.SetActive(false);
 
             Debug.Log("로컬로 고우~~");
+            //PhotonNetwork.LoadLevel("InLocal");
+            Managers.Object.RemoveMyPlayer();
             Managers.Scene.LoadScene(Define.Scene.InLocal);
         }
 
