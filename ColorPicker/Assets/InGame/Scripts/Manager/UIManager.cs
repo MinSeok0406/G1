@@ -36,8 +36,7 @@ namespace ColorPicker.InGame
 
         public void InitalizedMafiaUI()
         {
-           Dictionary<int, PlayerData> playerDictionary = NetworkManager.Instance.GetPlayerDictionary();
-
+           //Dictionary<int, PlayerData> playerDictionary = NetworkManager.Instance.GetPlayerDictionary();
 
         }
 
@@ -67,7 +66,7 @@ namespace ColorPicker.InGame
 
         public void UesInteractiveButton()
         {
-            NetworkManager.Instance.MyPlayer.playerControl.UseInteractive();
+            //NetworkManager.Instance.MyPlayer.playerControl.UseInteractive();
         }
 
         public void UpdatePlayerCooldownUI(float remainingTime)

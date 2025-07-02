@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ColorPicker.InGame;
+using UnityEngine;
 
 namespace ColorPicker
 {
@@ -22,8 +23,11 @@ namespace ColorPicker
         [Space(10)]
         [Header("Base Ref")]
         #endregion
+        public GameObject lobbyPlayerPrefab;
         public GameObject playerPrefab;
         public GameObject playerDeathBodyPrefab;
+
+        public GameObject mainCameraPrefab;
 
         #region Header Others Ref
         [Space(10)]
@@ -31,6 +35,7 @@ namespace ColorPicker
         #endregion
         public GameObject chatContentPrefab;
         public GameObject myChatContentPrefab;
+
 
     }
 }

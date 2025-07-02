@@ -27,11 +27,13 @@ namespace Minseok
         PoolManager _pool = new PoolManager();
         SceneManagerEx _scene = new SceneManagerEx();
         UI_Manager _ui = new UI_Manager();
+        GameManager _gm = new GameManager();
 
         public static PoolManager Pool { get { return Instance._pool; } }
         public static SceneManagerEx Scene { get { return Instance._scene; } }
         public static ResourceManager Resource { get { return Instance._resource; } }
         public static UI_Manager UI { get { return Instance._ui; } }
+        public static GameManager Game { get { return Instance._gm; } }
         #endregion
 
         void Start()

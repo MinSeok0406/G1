@@ -9,7 +9,7 @@ namespace ColorPicker.InGame
     {
         public event Action<PlayerDataChangedEvent, PlayerDataChangedEventArgs> OnPlayerDataChangeEvent;
 
-        public void CallPlayerDataChanageEvent(PlayerData playerData)
+        public void CallPlayerDataChanageEvent(PublicPlayerData playerData)
         {
             OnPlayerDataChangeEvent?.Invoke(this, new PlayerDataChangedEventArgs() { playerData = playerData });
         }
@@ -17,6 +17,6 @@ namespace ColorPicker.InGame
 
     public class PlayerDataChangedEventArgs : EventArgs
     {
-        public PlayerData playerData;
+        public PublicPlayerData playerData;
     }
 }

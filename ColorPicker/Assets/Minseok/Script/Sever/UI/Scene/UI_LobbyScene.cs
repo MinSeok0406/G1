@@ -34,17 +34,11 @@ namespace Minseok
             UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
             UI_ChatScene chatUI = backSceneUI.ChatUI;
 
-            if (chatUI.gameObject.activeSelf)
-            {
-                chatUI.gameObject.SetActive(false);
-                gameObject.SetActive(true);
-                //GetImage((int)Images.Chat_mButton).gameObject.SetActive(true);
-            }
-            else
+            if (!chatUI.gameObject.activeSelf)
             {
                 chatUI.gameObject.SetActive(true);
+                Managers.UI.ClosePopupUI();
                 gameObject.SetActive(false);
-                //GetImage((int)Images.Chat_mButton).gameObject.SetActive(false);
             }
         }
 
@@ -53,14 +47,10 @@ namespace Minseok
             UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
             UI_CustomScene customUI = backSceneUI.CustomUI;
 
-            if (customUI.gameObject.activeSelf)
-            {
-                customUI.gameObject.SetActive(false);
-                gameObject.SetActive(true);
-            }
-            else
+            if (!customUI.gameObject.activeSelf)
             {
                 customUI.gameObject.SetActive(true);
+                Managers.UI.ClosePopupUI();
                 gameObject.SetActive(false);
             }
         }
@@ -70,14 +60,10 @@ namespace Minseok
             UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
             UI_InGameScene ingameUI = backSceneUI.InGameUI;
 
-            if (ingameUI.gameObject.activeSelf)
-            {
-                ingameUI.gameObject.SetActive(false);
-                gameObject.SetActive(true);
-            }
-            else
+            if (!ingameUI.gameObject.activeSelf)
             {
                 ingameUI.gameObject.SetActive(true);
+                Managers.UI.ClosePopupUI();
                 gameObject.SetActive(false);
             }
         }

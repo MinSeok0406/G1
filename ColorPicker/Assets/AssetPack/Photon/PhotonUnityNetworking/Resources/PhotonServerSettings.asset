@@ -19,7 +19,7 @@ MonoBehaviour:
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: kr
     Server: 
     Port: 0
     ProxyServer: 
@@ -57,6 +57,39 @@ MonoBehaviour:
   - S_UnRegisterPlayerFromReadyList
   - S_UpdatePlayerReadyStatus
   - S_UpdatePlayerStateUI
+  - ApplyCustomizationToAll
+  - RequestCustomizationUpdate
+  - RPC_ConfirmKillResult
+  - RPC_HandleKillRequest
+  - RPC_NotifyStateChanged
+  - RPC_ReceiveBackup
+  - RPC_RequestOwnership
+  - RPC_TeleportToTarget
+  - RPC_UpdateCooldownUI
+  - TryRegisterPlayer
+  - ReceiveAESKey
+  - RPC_ApplyCustomizationToAll
+  - RPC_HandleCustomizationRequest
+  - RPC_RequestPhaseChange
+  - RPC_RequestSetPlayerAliveState
+  - RPC_RequestSetPlayerVoted
+  - RequestRegisterLobbyPlayer
+  - RequestAllClientsToResendData
+  - RequestClientsToResendRegisterData
+  - ClientCacheAndSendAck
+  - ReceiveClientCacheAck
+  - RequestAllClientsToCacheDataWithAck
+  - Rpc_CacheMyDataAndSendAck
+  - Rpc_ReceiveClientDataAck
+  - Rpc_RequestClientsToResendData
+  - Rpc_RequestRegisterLobbyPlayer
+  - Rpc_BroadcastAllLobbyPlayerData
+  - Rpc_OnLobbyPlayerListUpdateRequested
+  - Rpc_ReceiveUpdatedLobbyPlayerList
+  - Rpc_ReceiveUpdatedLobbyPlayerSlot
+  - Rpc_RequestReadyUpdate
+  - Rpc_ReceivePlayerReadyState
+  - Rpc_StartGame
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

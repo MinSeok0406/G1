@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -30,8 +31,11 @@ namespace Minseok
             UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
             UI_LobbyScene lobbyUI = backSceneUI.mLobbyUI;
             lobbyUI.gameObject.SetActive(false);
+            Managers.UI.ClosePopupUI();
 
             Debug.Log("로컬로 고우~~");
+            //PhotonNetwork.LoadLevel("InLocal");
+            Managers.Object.RemoveMyPlayer();
             Managers.Scene.LoadScene(Define.Scene.InLocal);
         }
 
@@ -46,14 +50,10 @@ namespace Minseok
             UI_BackGround backSceneUI = Managers.UI.SceneUI as UI_BackGround;
             UI_LobbyScene lobbyUI = backSceneUI.mLobbyUI;
 
-            if (lobbyUI.gameObject.activeSelf)
+            if (!lobbyUI.gameObject.activeSelf)
             {
-                lobbyUI.gameObject.SetActive(false);
-                gameObject.SetActive(true);
-            }
-            else
-            {
-                lobbyUI?.gameObject.SetActive(true);
+                lobbyUI.gameObject.SetActive(true);
+                Managers.UI.ShowPopupUI<UI_Joystick>("UI_Joystick");
                 gameObject.SetActive(false);
             }
         }

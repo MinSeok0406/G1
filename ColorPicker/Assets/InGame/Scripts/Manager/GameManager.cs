@@ -1,229 +1,118 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Photon.Realtime;
 using UnityEngine;
 
-namespace ColorPicker.InGame {
+namespace ColorPicker.InGame
+{
     public class GameManager : SingletonNetworkBehaviour<GameManager>
-    { 
-        #region GameState
-        public GameStateMachine stateMachine { get; private set; }
+    {
+        public GameStateMachine StateMachine { get; private set; }
+        public PlayerClassAssigner playerClassAssigner { get; private set; }
 
-        public GameStartedState startedState { get; private set; }
-        public PlayingGameState playingGameState { get; private set; }
-        public MeetingState meetingState { get; private set; }
-        public VotingState votingState { get; private set; }
+        #region Property
+        public GameStartedState GameStartedState { get; private set; }
+        public PlayingGameState PlayingGameState { get; private set; }
+        public MeetingState MeetingState { get; private set; }
+        public VotingState VotingState { get; private set; }
         #endregion
 
         protected override void Awake()
         {
             base.Awake();
+            DontDestroyOnLoad(gameObject);
 
-            stateMachine = GetComponent<GameStateMachine>();
+            // 상태 초기화
+            StateMachine = new GameStateMachine();
+            playerClassAssigner = new PlayerClassAssigner();
 
-            startedState = new GameStartedState(stateMachine);
-            playingGameState = new PlayingGameState(stateMachine);
-            meetingState = new MeetingState(stateMachine);
-            votingState = new VotingState(stateMachine);
-        }
-
-        private void Start()
-        {
-            stateMachine.Initialize(startedState);
+            GameStartedState = new GameStartedState(StateMachine);
+            PlayingGameState = new PlayingGameState(StateMachine);
+            MeetingState = new MeetingState(StateMachine);
+            VotingState = new VotingState(StateMachine);
         }
 
         private void Update()
         {
-            stateMachine.currentState.Update();
-
+            StateMachine.CurrentState?.Update();
         }
 
-        public void AssignPlayerClasses()
+        /// <summary>
+        /// Room Custom Properties가 변경되었을 때 호출됨 (모든 클라이언트 상태 동기화)
+        /// </summary>
+        public override void OnRoomPropertiesUpdate(Hashtable changedProps)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            InitializePlayerClasses();
-            AssignMafias();
-
-            AssignColor();
-
-            SetPlayerClassAbility();
-
-            NetworkManager.Instance.SyncPlayerData();
-        }
-
-        private void InitializePlayerClasses()
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            Dictionary<int, PlayerData> playerDataDict = NetworkManager.Instance.GetPlayerDictionary();
-
-            foreach (int playerId in playerDataDict.Keys)
+            if (changedProps.TryGetValue("GamePhase", out object value))
             {
-                if(NetworkManager.Instance.TryGetPlayerData(playerId, out PlayerData playerData))
+                var newPhase = (GameStateType)(int)value;
+                var currentPhase = HelperUtilities.ToPhase(StateMachine.CurrentState);
+
+                if (newPhase != currentPhase)
                 {
-                    playerData.playerClass = (int)PlayerClassType.citizen;
+                    ChangeStateFromPhase(newPhase);
                 }
                 else
                 {
-                    Debug.Log($"PlayerData for playerId {playerId} not found.");
+                    Debug.Log($"[GameManager] 이미 현재 상태와 동일한 Phase({newPhase})입니다. 상태 전이 생략.");
                 }
             }
-
         }
 
-        private void AssignMafias()
+        /// <summary>
+        /// [호스트 전용] Room Custom Properties에 현재 게임 상태를 기록하여 모든 클라이언트에게 전파한다.
+        /// </summary>
+        public void SetPhase(GameStateType phase)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            GameRuleSettings gameRules = GameDataManager.Instance.S_GetGameRules();
-
-            Dictionary<int, PlayerData> playerDataDict = NetworkManager.Instance.GetPlayerDictionary();
-
-            List<PlayerData> playerList = new List<PlayerData>(playerDataDict.Values);
-            HelperUtilities.Shuffle(playerList);
-
-            int mafiaCount = 0;
-            foreach (PlayerData player in playerList)
-            {
-                if (mafiaCount >= gameRules.mafiaAmount)
-                    break;
-
-                if (NetworkManager.Instance.TryGetPlayerData(player.playerId, out PlayerData playerData))
-                {
-                    if (playerData.playerClass == (int)PlayerClassType.citizen)
-                    {
-                        Debug.Log(playerData.playerId);
-                        playerData.playerClass = (int)PlayerClassType.mafia;
-                        mafiaCount++;
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"PlayerData for playerId {player.playerId} not found.");
-                }
-            }
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable{{ "GamePhase", (int)phase }});
         }
 
-        private void SetPlayerClassAbility()
+        /// <summary>
+        /// [클라이언트 전용] Room Custom Properties로 전달받은 상태 값을 기반으로 현재 로컬 상태를 전환한다.
+        /// </summary>
+        public void ChangeStateFromPhase(GameStateType phase)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            var newState = HelperUtilities.ToState(phase);
 
-            foreach (PlayerData player in NetworkManager.Instance.GetPlayerDictionary().Values)
+            if (newState != null)
             {
-                int targetPlayerId = player.playerId;
-                int playerClass = player.playerClass;
-
-                Photon.Realtime.Player targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(targetPlayerId);
-
-                if (targetPlayer != null)
-                {
-                    photonView.RPC("PRC_SetPlayerClass", targetPlayer, playerClass);
-                }
-                else
-                {
-                    Debug.Log($"{targetPlayerId} class not define");
-                }
-            }
-        }
-
-        [PunRPC]
-        private void PRC_SetPlayerClass(int playerClass)
-        {
-            Type componentType = GetAbilityComponentType(playerClass);
-
-            if (componentType == null)
-            {
-                Debug.LogError($"Player class {playerClass} not found");
-                return;
-            }
-
-            GameObject myPlayerObj = NetworkManager.Instance.MyPlayer.gameObject;
-
-            if (myPlayerObj.GetComponent(componentType) == null)
-            {
-                myPlayerObj.AddComponent(componentType);
+                StateMachine.ChangeState(newState);
             }
             else
             {
-                Debug.Log($"{componentType.Name} already added");
+                Debug.LogError($"[GameManager] 상태 전이 실패: {phase}");
             }
         }
 
-        private Type GetAbilityComponentType(int playerClass)
+        /// <summary>
+        /// [RPC][호스트 전용] 일반 클라이언트가 마스터에게 상태 변경을 요청할 때 호출 (ex: 회의 호출)
+        /// </summary>
+        [PunRPC]
+        private void RPC_RequestPhaseChange(int phaseInt, PhotonMessageInfo info)
         {
-            string componentName;
-
-            switch ((PlayerClassType)playerClass)
-            {
-                case PlayerClassType.mafia:
-                    componentName = Settings.mafiaAbilityComponentName;
-                    break;
-
-                case PlayerClassType.citizen:
-                    componentName = Settings.citizenAbilityComponentName;
-                    break;
-
-                default:
-                    Debug.Log($"Validation Error : {playerClass}");
-                    return null;
-            }
-
-            Type componentType = Type.GetType(componentName);
-
-            if (componentType == null)
-            {
-                Debug.LogError($"Player component {componentName} not found");
-            }
-
-            return componentType;
-        }
-
-        private void AssignColor()
-        {
-
             if (!PhotonNetwork.IsMasterClient) return;
 
-            var playerDict = NetworkManager.Instance.GetPlayerDictionary();
+            GameStateType requestedPhase = (GameStateType)phaseInt;
 
-            // 사용 가능한 색상 리스트 생성. 형변환 후 검정, 흰색이아닌 색상을 리스트에 저장
-            List<ColorType> availableColors = Enum.GetValues(typeof(ColorType))
-                .Cast<ColorType>()
-                .Where(color => color != ColorType.Black && color != ColorType.White)
-                .ToList();
+            Debug.Log($"[GameManager] {info.Sender.NickName} 요청으로 상태 변경 시도: {requestedPhase}");
 
-            HelperUtilities.Shuffle(availableColors); // 무작위 순서로 셔플
-
-            int colorIndex = 0;
-
-            foreach (int playerId in playerDict.Keys)
-            {
-                InGameData gameData = new InGameData(); 
-
-                gameData.playerId = playerId;
-
-                var playerData = playerDict[playerId];
-
-                // 마피아는 검정색
-                if (playerData.playerClass == (int)PlayerClassType.mafia)
-                {
-                    gameData.colorType = (int)ColorType.Black;
-                }
-                else
-                {
-                    gameData.colorType = (int)availableColors[colorIndex];
-                    colorIndex++;
-                }
-
-                GameDataManager.Instance.UpdateInGameData(playerId, gameData); 
-            }
+            SetPhase(requestedPhase);
         }
 
-
-        public void ChangeMeetingStateButton()
+        /// <summary>
+        /// 클라이언트가 마스터에게 상태 변경을 요청
+        /// </summary>
+        public void RequestPhaseChange(GameStateType requestedPhase)
         {
-            stateMachine.ChangeState(meetingState);           
+            if (PhotonNetwork.IsMasterClient)
+{
+                SetPhase(requestedPhase);
+            }
+            else
+            {
+                photonView.RPC(nameof(RPC_RequestPhaseChange), RpcTarget.MasterClient, (int)requestedPhase);
+            }
         }
     }
 }

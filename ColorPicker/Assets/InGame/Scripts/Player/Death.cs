@@ -38,9 +38,11 @@ namespace ColorPicker.InGame
 
             if (!PhotonNetwork.IsMasterClient) return;
 
-            GameDataManager.Instance.TryGetInGameData(player.photonView.Owner.ActorNumber, out InGameData data);
+            //GameDataManager.Instance.TryGetPlayerDataByActorId(player.photonView.Owner.ActorNumber, out PlayerData playerData);
 
-            data.alive = false;
+            //InGameData data = GameDataManager.Instance.GetInGameData(player.photonView);
+
+            //data.isAlive = false;
         }
     }
 }

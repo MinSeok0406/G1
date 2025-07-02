@@ -108,7 +108,7 @@ namespace ColorPicker.InGame
 
         public void C_DisablePlayerControl(bool disableControl)
         {
-            NetworkManager.Instance.MyPlayer.GetComponent<PlayerControl>().DisablePlayerControl(disableControl);
+            PlayerManager.Instance.GetMyPlayer().GetComponent<PlayerControl>().DisablePlayerControl(disableControl);
         }
     }
 

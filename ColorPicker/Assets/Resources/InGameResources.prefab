@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738758b09a2a6be45865facea7ee0c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyPlayerPrefab: {fileID: 6269680581958123269, guid: 80a276fba664aa34fa9a929af5ca8377, type: 3}
   playerPrefab: {fileID: 6269680581958123269, guid: 4f81a54423e7cda47bdbbcf4cc3680b3, type: 3}
   playerDeathBodyPrefab: {fileID: 4839968478936894869, guid: 5a826561f548b944886c882cdab52864, type: 3}
+  mainCameraPrefab: {fileID: 5754435587332718804, guid: a9159b49e09d3d049a553e02661ac671, type: 3}
   chatContentPrefab: {fileID: 7677321529951086244, guid: aac86813caa34f844a259034ba0b6345, type: 3}
   myChatContentPrefab: {fileID: 7677321529951086244, guid: 5a4213bea56df3b48b88440dc1ec37d7, type: 3}

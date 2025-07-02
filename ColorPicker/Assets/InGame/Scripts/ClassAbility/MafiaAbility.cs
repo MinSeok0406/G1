@@ -51,7 +51,7 @@ namespace ColorPicker.InGame
 
         private void KillEvent_OnKill(KillEvent killEvent, KillEventArgs killEventArgs)
         {
-            AbilityManager.Instance.TryPlayerKill(killEventArgs.playerId);
+            AbilityManager.Instance.TryRequestKill(killEventArgs.playerId, this.photonView.ViewID);
         }
 
 

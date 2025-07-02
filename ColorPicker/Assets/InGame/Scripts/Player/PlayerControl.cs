@@ -67,33 +67,33 @@ namespace ColorPicker.InGame
             currentInteractiveObject.Interactive();
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (!photonView.IsMine) return;
+        //private void OnTriggerEnter2D(Collider2D collision)
+        //{
+        //    if (!photonView.IsMine) return;
 
 
-            collision.TryGetComponent<IInteractive>(out IInteractive interactiveItem);
+        //    collision.TryGetComponent<IInteractive>(out IInteractive interactiveItem);
 
-            if (interactiveItem != null)
-            {
-                interactiveObjects.Add(interactiveItem);
-            }
-
-
-        }
-
-        private void OnTriggerStay2D(Collider2D collision)
-        {
-            if (!photonView.IsMine) return;
+        //    if (interactiveItem != null)
+        //    {
+        //        interactiveObjects.Add(interactiveItem);
+        //    }
 
 
-            currentInteractiveObject = FindClosestInteractive();
+        //}
 
-            if (currentInteractiveObject != null)
-            {
-                currentInteractiveObject.SetUI(true);
-            }
-        }
+        //private void OnTriggerStay2D(Collider2D collision)
+        //{
+        //    if (!photonView.IsMine) return;
+
+
+        //    currentInteractiveObject = FindClosestInteractive();
+
+        //    if (currentInteractiveObject != null)
+        //    {
+        //        currentInteractiveObject.SetUI(true);
+        //    }
+        //}
 
         private IInteractive FindClosestInteractive()
         {
@@ -116,24 +116,24 @@ namespace ColorPicker.InGame
             return closestItem;
         }
 
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            if (!photonView.IsMine) return;
+        //private void OnTriggerExit2D(Collider2D collision)
+        //{
+        //    if (!photonView.IsMine) return;
 
-            collision.TryGetComponent<IInteractive>(out IInteractive interactiveItem);
+        //    collision.TryGetComponent<IInteractive>(out IInteractive interactiveItem);
 
-            if (interactiveItem != null)
-            {
-                interactiveObjects.Remove(interactiveItem);
-            }
+        //    if (interactiveItem != null)
+        //    {
+        //        interactiveObjects.Remove(interactiveItem);
+        //    }
 
-            if (interactiveObjects.Count == 0) currentInteractiveObject = null;
+        //    if (interactiveObjects.Count == 0) currentInteractiveObject = null;
 
-            if (currentInteractiveObject == null)
-            {
-                UIManager.Instance.InitializedInteractiveItemUI();
-            }
+        //    if (currentInteractiveObject == null)
+        //    {
+        //        UIManager.Instance.InitializedInteractiveItemUI();
+        //    }
 
-        }
+        //}
     }
 }

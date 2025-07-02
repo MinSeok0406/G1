@@ -16,16 +16,16 @@ namespace Minseok
 
         private void OnEnable()
         {
-            player.idleEvent.OnIdle += IdleEvent_OnIdle;
+            //player.idleEvent.OnIdle += IdleEvent_OnIdle;
 
-            player.movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
+            //player.movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
         }
 
         private void OnDisable()
         {
-            player.idleEvent.OnIdle -= IdleEvent_OnIdle;
+            //player.idleEvent.OnIdle -= IdleEvent_OnIdle;
 
-            player.movementByVelocityEvent.OnMovementByVelocity -= MovementByVelocityEvent_OnMovementByVelocity;
+            //player.movementByVelocityEvent.OnMovementByVelocity -= MovementByVelocityEvent_OnMovementByVelocity;
         }
 
         private void IdleEvent_OnIdle(IdleEvent idleEvent)

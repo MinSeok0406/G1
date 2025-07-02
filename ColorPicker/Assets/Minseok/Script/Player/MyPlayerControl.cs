@@ -1,12 +1,13 @@
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Minseok
 {
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Collider2D))]
     public class MyPlayerControl : PlayerControl
     {
-        private Vector3 moveDirection;
-
         protected override void Init()
         {
             base.Init();
@@ -37,19 +38,13 @@ namespace Minseok
         // 키보드 입력
         private void GetDirInput()
         {
-            float horizontalMovement = Input.GetAxisRaw("Horizontal");
-            float verticalMovement = Input.GetAxisRaw("Vertical");
+            Vector2 dir = Managers.Game.JoystickDir;
+            Vector2 moveDir = new Vector2(dir.x, dir.y);
+            moveDir = moveDir.normalized;
 
-            moveDirection = new Vector3(horizontalMovement, verticalMovement, 0);
-
-            if (horizontalMovement != 0f && verticalMovement != 0f)
+            if (moveDir != Vector2.zero)
             {
-                moveDirection = moveDirection.normalized;
-            }
-
-            if (moveDirection != Vector3.zero)
-            {
-                float angle = HelperUtilities.GetAngleFromVector(moveDirection);
+                float angle = HelperUtilities.GetAngleFromVector(moveDir);
                 Dir = HelperUtilities.GetMoveDirection(angle);
             }
             else
@@ -85,10 +80,13 @@ namespace Minseok
                 return;
             }
 
-            Vector3 destPos = CellPos;
+            Vector2 dir = Managers.Game.JoystickDir;
+            Vector2 moveDir = new Vector2(dir.x, dir.y);
+            moveDir = moveDir.normalized;
 
-            //destPos += moveDirection * moveSpeed * Time.unscaledDeltaTime;
-            destPos += moveDirection * Speed * Time.unscaledDeltaTime;
+            Vector2 destPos = CellPos;
+
+            destPos += moveDir * Speed * Time.unscaledDeltaTime;
 
             if (Managers.Object.Find(destPos) == null)
             {

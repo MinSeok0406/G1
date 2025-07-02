@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Photon.Realtime;
@@ -6,72 +6,88 @@ using TMPro;
 
 namespace ColorPicker.InGame
 {
-    // ¸¶½ºÅÍ ¼­¹ö¿Í ·ë Á¢¼Ó ´ã´ç
     public class OnlineManager : MonoBehaviourPunCallbacks
     {
         [SerializeField] private Button joinButton;
         [SerializeField] private TMP_Text connectionText;
 
-        // °ÔÀÓ ½ÇÇà°ú µ¿½Ã¿¡ ¸¶½ºÅÍ ¼­¹ö Á¢¼Ó ½Ãµµ
+        private const string roomName = "MainLobby";
         private void Start()
         {
-            PhotonNetwork.GameVersion = Settings.gameVersion;
+            // í…ŒìŠ¤íŠ¸ ì½”ë“œ
+            PhotonNetwork.OfflineMode = false;
+            PhotonNetwork.GameVersion = "1.0.0";
+            PhotonNetwork.PhotonServerSettings.DevRegion = "kr";
+            PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "kr";
+            // í…ŒìŠ¤íŠ¸ ì½”ë“œ
+
             PhotonNetwork.ConnectUsingSettings();
 
+            if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+            {
+                Debug.Log("a");
+                PhotonNetwork.ConnectUsingSettings();
+            }
+
             joinButton.interactable = false;
-            connectionText.text = "Á¢¼Ó Áß...."; 
+            connectionText.text = "Connecting...";
         }
 
-        // ¸¶½ºÅÍ ¼­¹ö Á¢¼Ó ¼º°ø ½Ã ÀÚµ¿ ½ÇÇà
         public override void OnConnectedToMaster()
         {
             base.OnConnectedToMaster();
-
+            Debug.Log($"[PHOTON] Connected to Master. Region: {PhotonNetwork.CloudRegion}");
             joinButton.interactable = true;
-            connectionText.text = "¿¬°áµÊ";
+            connectionText.text = "Connected";
         }
 
-        // ¸¶½ºÅÍ ¼­¹ö Á¢¼Ó ½ÇÆÐ ½Ã ÀÚµ¿ ½ÇÇà
         public override void OnDisconnected(DisconnectCause cause)
         {
             base.OnDisconnected(cause);
 
             joinButton.interactable = false;
-            connectionText.text = "¿ÀÇÁ¶óÀÎ : Á¢¼Ó Àç½Ãµµ Áß...";
+            connectionText.text = "Offline: Reconnecting...";
+
+            if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+            {
+                PhotonNetwork.ConnectUsingSettings();
+            }
+
+            Debug.LogWarning($"[PHOTON] Disconnected. Cause: {cause}");
 
             PhotonNetwork.ConnectUsingSettings();
         }
 
-        // ·ë Á¢¼Ó ½Ãµµ
         public void Connect()
         {
             joinButton.interactable = false;
 
             if (PhotonNetwork.IsConnected)
             {
-                connectionText.text = "¹æ¿¡ ÀÔÀå....";
-                PhotonNetwork.JoinRandomRoom();
+                connectionText.text = "Joining room...";
+                PhotonNetwork.JoinRoom(roomName);
             }
             else
             {
-                connectionText.text = "¿ÀÇÁ¶óÀÎ : Á¢¼Ó Àç½Ãµµ Áß...";
-
+                connectionText.text = "Offline: Reconnecting...";
                 PhotonNetwork.ConnectUsingSettings();
             }
         }
 
-        // ºó ¹æÀÌ ¾ø¾î ·£´ý ·ë Âü°¡¿¡ ½ÇÆÐÇÑ °æ¿ì ÀÚµ¿ ½ÇÇà
-        public override void OnJoinRandomFailed(short returnCode, string message)
+        public override void OnJoinRoomFailed(short returnCode, string message)
         {
-            base.OnJoinRandomFailed(returnCode, message);
+            connectionText.text = "Room not found. Creating...";
 
-            connectionText.text = "ºó ¹æ ¾øÀ½, »õ·Î¿î ¹æ »ý¼º";
+            RoomOptions options = new RoomOptions
+            {
+                MaxPlayers = 10,
+                IsOpen = true,
+                IsVisible = true
+            };
 
-            // ¸®½¼ ¼­¹ö
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 10});
+            PhotonNetwork.CreateRoom(roomName, options);
         }
 
-        // ·ë¿¡ Âü°¡ ¿Ï·áµÈ °æ¿ì ÀÚµ¿ ½ÇÇà
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();

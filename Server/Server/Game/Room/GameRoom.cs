@@ -51,6 +51,7 @@ namespace Server.Game
                 enterPacket.Player = player.Info;
                 player.Session.Send(enterPacket);
 
+                // Temp
                 S_Spawn spawnPacket = new S_Spawn();
                 foreach (Player p in _players.Values)
                 {
@@ -58,6 +59,7 @@ namespace Server.Game
                         spawnPacket.Objects.Add(p.Info);
                 }
                 player.Session.Send(spawnPacket);
+
 
                 // List에 사용
                 /*S_EnterGame enterPacket = new S_EnterGame();

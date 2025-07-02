@@ -10,12 +10,6 @@ namespace ColorPicker.InGame
         public override void Enter()
         {
             base.Enter();
-
-            GameManager.Instance.AssignPlayerClasses();
-
-            NetworkManager.Instance.MyPlayer.transform.position = Settings.playerSpawnPointInGame;
-
-            GameManager.Instance.stateMachine.ChangeState(GameManager.Instance.playingGameState);
         }
 
         public override void Exit()

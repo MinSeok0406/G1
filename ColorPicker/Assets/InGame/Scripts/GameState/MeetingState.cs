@@ -10,14 +10,14 @@
         {
             base.Enter();
 
-            NetworkManager.Instance.MyPlayer.playerControl.DisablePlayerControl(true);
+            //NetworkManager.Instance.MyPlayer.playerControl.DisablePlayerControl(true);
         }
 
         public override void Exit()
         {
             base.Exit();
 
-            NetworkManager.Instance.MyPlayer.playerControl.DisablePlayerControl(false);
+            //NetworkManager.Instance.MyPlayer.playerControl.DisablePlayerControl(false);
         }
 
         public override void Update()

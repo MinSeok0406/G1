@@ -3,17 +3,16 @@ using UnityEngine;
 
 namespace Minseok
 {
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Collider2D))]
     public class PlayerControl : MonoBehaviour
     {
         public static PlayerControl Instance { get; } = new PlayerControl();
 
-        [HideInInspector] public Rigidbody2D rb;
-        [HideInInspector] public IdleEvent idleEvent;
-        [HideInInspector] public MovementByVelocityEvent movementByVelocityEvent;
         [HideInInspector] public Animator animator;
-
-        [SerializeField]
-        public float moveSpeed;
+        [HideInInspector] public SpriteRenderer sprite;
+        private Rigidbody2D _rb;
+        private Collider2D _co;
 
         private PositionInfo _positionInfo = new PositionInfo();
         protected bool _updated = false;
@@ -114,14 +113,13 @@ namespace Minseok
         protected virtual void Init()
         {
             #region GetComponet
-            rb = GetComponent<Rigidbody2D>();
-            idleEvent = GetComponent<IdleEvent>();
-            movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
+
+            _rb = GetComponent<Rigidbody2D>();
+            _co = GetComponent<Collider2D>();
             animator = GetComponent<Animator>();
+            sprite = GetComponent<SpriteRenderer>();
             #endregion
 
-            //moveSpeed = Settings.playerMoveSpeed;
-            //Speed = Settings.playerMoveSpeed;
             State = CreatureState.Idle;
             Dir = MoveDir.None;
             CellPos = new Vector3(0, 0, 0);
@@ -145,6 +143,9 @@ namespace Minseok
 
         protected virtual void UpdateIdle()
         {
+            if (animator == null)
+                return;
+
             // 이동 상태로 갈지 확인
             if (Dir != MoveDir.None)
             {
@@ -152,31 +153,35 @@ namespace Minseok
                 return;
             }
 
-            if (animator == null || rb == null || idleEvent == null || movementByVelocityEvent == null)
-                return;
-
-            idleEvent.CallIdleEvent();
+            _rb.velocity = Vector2.zero;
         }
 
         protected virtual void UpdateMoving()
         {
+            if (animator == null)
+                return;
+
             if (Dir == MoveDir.None)
             {
                 State = CreatureState.Idle;
             }
 
-            if (animator == null || rb == null || idleEvent == null || movementByVelocityEvent == null)
-                return;
+            Vector2 dir = Managers.Game.JoystickDir;
+            Vector2 moveDir = new Vector2(dir.x, dir.y);
+            moveDir = moveDir.normalized;
 
-            //movementByVelocityEvent.CallMovementByVelocity(Dir, moveSpeed);
-            movementByVelocityEvent.CallMovementByVelocity(Dir, Speed);
+            if (moveDir != Vector2.zero)
+            {
+                _rb.velocity = moveDir * Time.deltaTime * Speed;
+                State = CreatureState.Moving;
+            }
 
             MoveToNextPos();
         }
 
         protected virtual void UpdateDead()
         {
-            if (animator == null || rb == null || idleEvent == null || movementByVelocityEvent == null)
+            if (animator == null)
                 return;
 
 

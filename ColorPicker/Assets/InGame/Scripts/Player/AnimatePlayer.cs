@@ -3,31 +3,39 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
+    [RequireComponent(typeof(Animator))]
+    [DisallowMultipleComponent]
     public class AnimatePlayer : MonoBehaviour
     {
-        private Player player;
+        private IdleEvent idleEvent;
+        private MovementByVelocityEvent movementByVelocityEvent;
+        private DeathEvent deathEvent;
+        private Animator animator;
 
         private void Awake()
         {
-            player = GetComponent<Player>();
+            idleEvent = GetComponent<IdleEvent>();
+            movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
+            animator = GetComponent<Animator>();
+            deathEvent = GetComponent<DeathEvent>();
         }
 
         private void OnEnable()
         {
-            player.idleEvent.OnIdle += IdleEvent_OnIdle;
+            idleEvent.OnIdle += IdleEvent_OnIdle;
 
-            player.movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
+            movementByVelocityEvent.OnMovementByVelocity += MovementByVelocityEvent_OnMovementByVelocity;
 
-            player.deathEvent.OnDeathEvent += DeathEvent_OnDeathEvent;
+            deathEvent.OnDeathEvent += DeathEvent_OnDeathEvent;
         }
 
         private void OnDisable()
         {
-            player.idleEvent.OnIdle -= IdleEvent_OnIdle;
+            idleEvent.OnIdle -= IdleEvent_OnIdle;
 
-            player.movementByVelocityEvent.OnMovementByVelocity -= MovementByVelocityEvent_OnMovementByVelocity;
+            movementByVelocityEvent.OnMovementByVelocity -= MovementByVelocityEvent_OnMovementByVelocity;
 
-            player.deathEvent.OnDeathEvent -= DeathEvent_OnDeathEvent;
+            deathEvent.OnDeathEvent -= DeathEvent_OnDeathEvent;
         }
 
         private void IdleEvent_OnIdle(IdleEvent idleEvent)
@@ -44,36 +52,36 @@ namespace ColorPicker.InGame
 
         private void DeathEvent_OnDeathEvent(DeathEvent deathEvent)
         {
-            player.animator.SetBool(Settings.isDead, true);
+            animator.SetBool(Settings.isDead, true);
         }
 
         private void InitializedAnimationParameters()
         {
-            player.animator.SetBool(Settings.isMoving, false);
-            player.animator.SetBool(Settings.isIdle, false);
+            animator.SetBool(Settings.isMoving, false);
+            animator.SetBool(Settings.isIdle, false);
         }
 
         private void SetIdleAnimationParameters()
         {
-            player.animator.SetBool(Settings.isMoving, false);
-            player.animator.SetBool(Settings.isIdle, true);
+            animator.SetBool(Settings.isMoving, false);
+            animator.SetBool(Settings.isIdle, true);
 
         }
 
         private void SetMovementAnimationParameters(MovementByVelocityArgs movementByVelocityEventArgs)
         {
-            player.animator.SetBool(Settings.isMoving, true);
-            player.animator.SetBool(Settings.isIdle, false);
+            animator.SetBool(Settings.isMoving, true);
+            animator.SetBool(Settings.isIdle, false);
 
             if (movementByVelocityEventArgs.moveDirection.x < 0)
             {
-                player.animator.SetBool(Settings.isRight, false);
-                player.animator.SetBool(Settings.isLeft, true);
+                animator.SetBool(Settings.isRight, false);
+                animator.SetBool(Settings.isLeft, true);
             }
             else if (movementByVelocityEventArgs.moveDirection.x > 0)
             {
-                player.animator.SetBool(Settings.isRight, true);
-                player.animator.SetBool(Settings.isLeft, false);
+                animator.SetBool(Settings.isRight, true);
+                animator.SetBool(Settings.isLeft, false);
             }
         }
 

@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,8 +9,20 @@ namespace ColorPicker.InGame
     {
         #region Base Parameters
         public const string gameVersion = "1";
+        public const string inGameLobbyScene = "InLobby";
+        public const string inGameScene = "InGame";
+        public const string testMainScene = "InMainMenu";
+        public const string InGameScene = "InGame";
+
+        public const int maxPlayer = 10;
 
         public static Vector3 playerSpawnPointInGame = Vector3.zero;
+
+        #endregion
+
+        #region Network Parameters
+        public const float RoomJoinTimeoutSeconds = 8f;
+        public const float RoomJoinRetryIntervalSeconds = 0.2f;
         #endregion
 
         #region Player Parameters

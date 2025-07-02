@@ -1,126 +1,175 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+using System;
+using System.Collections;
 
 namespace ColorPicker.InGame
 {
     public class NetworkManager : SingletonNetworkBehaviour<NetworkManager>
     {
-        [HideInInspector] public PlayerData currentPlayerData;
-       
-        public Player MyPlayer { get; private set; }
-
-        private Dictionary<int, PlayerData> playerDictionary = new Dictionary<int, PlayerData>();
-        private Dictionary<int, Player> playerObjectDictionary = new Dictionary<int, Player>();
+        private HostMigrationHandler hostMigration; // 마스터 클라이언트 승계시 사용하는 클래스
 
         protected override void Awake()
         {
             base.Awake();
 
             DontDestroyOnLoad(gameObject);
+
+            hostMigration = new HostMigrationHandler();
         }
 
         private void Start()
         {
-            SpawnPlayer();
+            CheckAndInitializeRoomJoin();
         }
 
-        // 플레이어를 서버에 등록/스폰하는 함수
-        public void SpawnPlayer()
+        private void CheckAndInitializeRoomJoin()
         {
-            string prefabName = GameResources.Instance.playerPrefab.name;
+            StartCoroutine(VerifyRoomJoinAndSetup());
+        }
 
-            // 클라이언트가 서버에 접속시 자신 소유의 캐릭터를 서버에 등록
-            Player player = PhotonNetwork.Instantiate(prefabName, Vector3.zero, Quaternion.identity).GetComponent<Player>();
+        private IEnumerator VerifyRoomJoinAndSetup()
+        {
+            float connectStartTime = Time.time;
 
-            if (player.photonView.IsMine)
+            while (Time.time < connectStartTime + Settings.RoomJoinTimeoutSeconds)
             {
-                // 자신 소유의 캐릭터를 참조하기 쉽도록 등록
-                MyPlayer = player;
+                if (PhotonNetwork.InRoom)
+                {
+                    InitializeAfterJoin();
+                    yield break;
+                }
+
+                yield return new WaitForSeconds(Settings.RoomJoinRetryIntervalSeconds);
             }
+
+            HandleRoomJoinTimeout();
         }
 
-        // 플레이어 오브젝트를 등록 (for 플레이어 데이터 정보를 최신화)
-        public void RegisterPlayer(int playerId, Player player)
+        /// <summary>
+        /// 자신의 GoogleUID와 ActorNumber를 마스터 클라이언트에게 전달하여 등록을 요청.
+        /// </summary>
+        private void InitializeAfterJoin()
         {
-            if (!playerObjectDictionary.ContainsKey(playerId))
-                playerObjectDictionary.Add(playerId, player);
+            // GooglePlay에서 Id를 가져옴 // **** 추후 데디케이트 서버에서 받아오도록 설계 **** 
+            //sting googleUID = GooglePlayService.GetUserId(); 
+            string googleUID = System.Guid.NewGuid().ToString(); // 임시코드
+            int actorId = PhotonNetwork.LocalPlayer.ActorNumber;
 
+            photonView.RPC(nameof(TryRegisterPlayer), RpcTarget.MasterClient, googleUID, actorId);           
+        }
+
+        private void HandleRoomJoinTimeout()
+        {
+            PhotonNetwork.LeaveRoom();
+
+            PhotonNetwork.LoadLevel(Settings.testMainScene);
+        }
+
+        /// <summary>
+        /// 호스트 마이그레이션 핸들러를 통해 호스트 위임시 동작.
+        /// </summary>
+        public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+        {
+            base.OnMasterClientSwitched(newMasterClient);
+            hostMigration.OnHostChanged(newMasterClient); // 호스트 변경
+        }
+
+        /// <summary>
+        /// [RPC][호스트 전용] 플레이어 등록 또는 재접속 처리를 수행하는 함수
+        /// </summary>
+        /// <param name="googleUID"> 플레이어 고유 식별자(Google UID) </param>
+        /// <param name="actorId"> ActorNumber </param>
+        [PunRPC]
+        private void TryRegisterPlayer(string googleUID, int actorId)
+        {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            // 새로운 플레이어가 방에 입장할 경우 방의 모든 플레이어의 데이터 갱신
-            SyncPlayerData();
+            bool isRejoin = GameDataManager.Instance.TryGetPublicPlayerData(googleUID, out var data);
 
-        }
-
-        public void UnregisterPlayerObject(int playerId)
-        {
-            if (playerObjectDictionary.ContainsKey(playerId))
-                playerObjectDictionary.Remove(playerId);
-        }
-
-        public void SyncPlayerData()
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            List<PlayerData> clone = new List<PlayerData>(playerDictionary.Values);
-
-            foreach (PlayerData player in clone)
+            if (isRejoin)
             {
-                PacketHandler.Instance.SendPlayerData(player);
-            }
-        }
-
-        // 만약 플레이어가 딕셔너리에 없다면 플레이어를 추가 이미 있다면 데이터를 업데이트하는 함수
-        public void AddOrUpdatePlayerData(PlayerData playerData)
-        {
-            if (!playerDictionary.ContainsKey(playerData.playerId))
-            {
-                playerDictionary.Add(playerData.playerId, playerData);
+                HandleRejoinPlayer(data, actorId);
             }
             else
             {
-                playerDictionary[playerData.playerId] = playerData;
-
+                SpawnPlayer(googleUID, actorId);
             }
-
-            playerObjectDictionary[playerData.playerId].playerDataChangedEvent.CallPlayerDataChanageEvent(playerData);
         }
 
-        public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+        /// <summary>
+        /// [호스트 전용] 재접속한 플레이어의 데이터를 갱신하고 기존 오브젝트의 소유권을 새 Actor에게 이전하는 함수
+        /// </summary>
+        /// <param name="publicData">재접속한 플레이어의 PublicPlayerData</param>
+        /// <param name="newActorId">재접속 시점의 새로운 ActorNumber</param>
+        private void HandleRejoinPlayer(PublicPlayerData publicData, int newActorId)
         {
-            base.OnPlayerLeftRoom(otherPlayer);
+            if (!PhotonNetwork.IsMasterClient) return;
 
-            // 플레이어가 방을 떠나면 딕셔너리에서 해당 플레이어 데이터를 제거
-            RemovePlayerData(otherPlayer);
-        }
+            Debug.Log($"[NetworkManager] 재접속 처리 : {publicData.googleUID}");
 
-        // 딕셔너리에서 playerId를 사용하여 플레이어 데이터를 제거
-        public void RemovePlayerData(Photon.Realtime.Player player)
-        {
-            int playerId = player.ActorNumber;
+            publicData.currentActorId = newActorId;
+            GameDataManager.Instance.UpdatePublicPlayerData(publicData);
 
-            if (playerDictionary.ContainsKey(playerId))
+            if (GameDataManager.Instance.TryGetPrivatePlayerData(publicData.googleUID, out var privateData))
             {
-                playerDictionary.Remove(playerId);
+                privateData.currentActorId = newActorId;
+                GameDataManager.Instance.UpdatePrivatePlayerData(privateData);
+            }
+
+            ReassignOwnershipToPlayer(publicData.googleUID, newActorId);
+        }
+
+        /// <summary>
+        /// 새로 입장한 플레이어의 오브젝트를 스폰하고 ViewID 포함 데이터를 등록하는 함수
+        /// </summary>
+        /// <param name="googleUID"></param>
+        public void SpawnPlayer(string googleUID, int actorId)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            string prefabName = GameResources.Instance.playerPrefab.name;
+            GameObject playerObj = PhotonNetwork.Instantiate(prefabName, Vector3.zero, Quaternion.identity);
+            Player player = playerObj.GetComponent<Player>();
+            int viewID = player.photonView.ViewID;
+
+            GameDataManager.Instance.CreateNewPlayerData(googleUID, actorId, viewID);
+
+            ReassignOwnershipToPlayer(googleUID, actorId);
+        }
+
+        /// <summary>
+        /// 특정 UID를 가진 플레이어의 오브젝트에 대해 소유권을 새 Actor에게 이전하는 함수
+        /// 내부적으로 ViewID를 기반으로 매핑된 객체에서 PhotonView를 조회해 소유권 이전 수행.
+        /// </summary>
+        /// <param name="googleUID">플레이어의 UID</param>
+        /// <param name="newActorId">이전할 대상의 ActorNumber</param>
+        public void ReassignOwnershipToPlayer(string googleUID, int newActorId)
+        {
+            if (!GameDataManager.Instance.TryGetViewIDByUID(googleUID, out int viewID)) return;
+
+            Player player = PhotonView.Find(viewID).gameObject.GetComponent<Player>();
+
+            if (player.photonView.OwnerActorNr != newActorId)
+            {
+                TransferOwnershipSafe(player.photonView, newActorId);
+                Debug.Log($"[Ownership] {googleUID} 소유권 이전 완료 → Actor {newActorId}");
             }
         }
 
-        public Dictionary<int, PlayerData> GetPlayerDictionary()
+        /// <summary>
+        /// 소유권을 이전하는 함수
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="newActorId"></param>
+        public void TransferOwnershipSafe(PhotonView view, int newActorId)
         {
-            return playerDictionary;
-        }
+            if (!PhotonNetwork.IsMasterClient) return;
 
-        // out 키워드로 다른 클래스에서 호출하고 변경할 수 있도록 설정
-        public bool TryGetPlayerData(int playerId, out PlayerData data)
-        {
-            return playerDictionary.TryGetValue(playerId, out data);
-        }
-
-        public Player GetPlayerObject(int playerId)
-        {
-            playerObjectDictionary.TryGetValue(playerId, out var player);
-            return player;
+            view.TransferOwnership(newActorId);
+            Debug.Log($"[Ownership] 소유권을 {newActorId} 에게 이전함");
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
 
 namespace ColorPicker.InGame

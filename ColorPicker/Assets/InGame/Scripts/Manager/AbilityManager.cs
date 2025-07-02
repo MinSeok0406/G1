@@ -1,137 +1,111 @@
 ﻿using Photon.Pun;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace ColorPicker.InGame
 {
     public class AbilityManager : SingletonNetworkBehaviour<AbilityManager>
     {
-        private Dictionary<int, float> playerCooldowns = new Dictionary<int, float>(); // 플레이어별 쿨타임
-        private Dictionary<int, bool> isOnCooldown = new Dictionary<int, bool>(); // 플레이어별 쿨타임 상태
+        private Dictionary<int, float> cooldownEndTimes = new Dictionary<int, float>();
+        private float defaultCooldownTime => Settings.defaultCooldown;
 
-        private float defaultCooldownTime = Settings.defaultCooldown; // 기본 쿨타임 설정 *추후 방 데이터를 가져와서 적용하도록 수정예정
+        #region Cooldown Handling
 
-        #region about Cooldown
-        // 플레이어의 쿨타임을 시작하는 함수
-        public void StartCooldown(int playerId)
+        /// <summary>
+        /// 현재 플레이어가 쿨타임 중인지 확인하는 함수
+        /// </summary>
+        public bool IsOnCooldown(int viewID)
+        {
+            return cooldownEndTimes.TryGetValue(viewID, out float endTime) && Time.time < endTime;
+        }
+
+        /// <summary>
+        /// [호스트 전용] 스킬을 사용했을 때 해당 플레이어의 쿨타임을 시작하는 함수
+        /// </summary>
+        /// <param name="viewID"> Player View ID </param>
+        /// <param name="skillCooldownDuration"> 클래스별 쿨타임 </param>
+        public void StartCooldown(int viewID, float skillCooldownDuration)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            // 플레이어의 쿨타임을 설정 (if.존재하지 않으면 새로 추가)
-            if (!playerCooldowns.ContainsKey(playerId))
-                playerCooldowns[playerId] = 0f;
-
-            if (!isOnCooldown.ContainsKey(playerId))
-                isOnCooldown[playerId] = false;
-
-            // 쿨타임 설정
-            playerCooldowns[playerId] = defaultCooldownTime;
-            isOnCooldown[playerId] = true;
-
-            // 쿨타임 코루틴 시작
-            StartCoroutine(CooldownRoutine(playerId));
+            float duration = skillCooldownDuration;
+            cooldownEndTimes[viewID] = Time.time + duration;
         }
 
-        // 쿨타임 진행을 위한 코루틴
-        private IEnumerator CooldownRoutine(int playerId)
+        /// <summary>
+        /// [호스트 전용]남은 쿨타임을 초 단위로 반환하는 함수
+        /// 재접속 하는 유저에게 남은 쿨타임을 반환해주기 위해서 사용
+        /// </summary>
+        /// <param name="viewID"> view ID </param>
+        /// <returns> 남은 쿨타임 시간 반환 </returns>
+        public float GetRemainingCooldown(int viewID)
         {
-            Photon.Realtime.Player targetPlayer = PhotonNetwork.PlayerList.FirstOrDefault(p => p.ActorNumber == playerId);
-
-            // playerId와 매칭되는 플레이어가 없으면 종료
-            if (targetPlayer == null)
-            {
-                Debug.LogError($"Player with ID {playerId} not found.");
-                yield break;
-            }
-
-            // 쿨타임 동안 대기
-            while (playerCooldowns[playerId] > 0)
-            {
-                playerCooldowns[playerId] -= Time.deltaTime;
-
-                // 쿨타임 UI 업데이트
-                photonView.RPC("RPC_UpdatePlayerCooldown", targetPlayer, playerCooldowns[playerId]);
-                yield return null;
-            }
-
-            isOnCooldown[playerId] = false;
-            photonView.RPC("RPC_UpdatePlayerCooldown", targetPlayer, 0f); // 쿨타임 종료
-
-            // 버튼 재활성화 로직 추가 예정*************
+            return cooldownEndTimes.TryGetValue(viewID, out float endTime)? Mathf.Max(0f, endTime - Time.time) : 0f;
         }
 
-        // 각 클라이언트의 쿨타임 상태를 업데이트
-        [PunRPC]
-        public void RPC_UpdatePlayerCooldown(float remainingTime)
-        {
-            // UI에 쿨타임 시간 업데이트
-            UIManager.Instance.UpdatePlayerCooldownUI(remainingTime);
-        }
-
-        // 플레이어의 쿨타임 상태 확인
-        public bool IsOnCooldown(int playerId)
-        {
-            // player가 딕셔너리 안에 존재하고, 남은 쿨타임이 0초가 아닐 때 true
-            return isOnCooldown.ContainsKey(playerId) && isOnCooldown[playerId]; 
-        }
         #endregion
 
         #region Kill Event
-        public void TryPlayerKill(int targetPlayerId)
+
+        public void TryRequestKill(int targetViewID, int killerViewID)
         {
-            photonView.RPC("RPC_RequestKill", RpcTarget.MasterClient, targetPlayerId);
+            photonView.RPC(nameof(RPC_RequestKill), RpcTarget.MasterClient, targetViewID, killerViewID);
         }
 
         [PunRPC]
-        private void RPC_RequestKill(int targetId, PhotonMessageInfo info)
+        private void RPC_RequestKill(int targetViewID, int killerViewID)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            int killerId = info.Sender.ActorNumber;
+            GameDataManager.Instance.TryGetUIDByViewID(targetViewID, out string targetID);
+            GameDataManager.Instance.TryGetUIDByViewID(killerViewID, out string killerID);
 
-            if (!NetworkManager.Instance.TryGetPlayerData(killerId, out PlayerData killerData) ||
-                !NetworkManager.Instance.TryGetPlayerData(targetId, out PlayerData targetData)) return;
-
-            if (targetData.playerClass == (int)PlayerClassType.ghost) return; // 이미 죽은 플레이어라면 실패
-            if (killerData.playerClass != (int)PlayerClassType.mafia) return; // 마피아가 아닌 플레이어가 킬 하려고 할 시 실패
-
-            // 킬 확정
-            targetData.playerClass = (int)PlayerClassType.ghost;
-
-            Photon.Realtime.Player killerRpcPlayer = PhotonNetwork.CurrentRoom.GetPlayer(killerId);
-
-            photonView.RPC("RPC_TeleportTo", killerRpcPlayer, killerId, targetId);
-
-            // 킬 결과 전체 동기화
-            photonView.RPC("RPC_ConfirmKill", RpcTarget.All, targetId, killerId);
-
-            StartCooldown(killerId);
-
-            // PlayerData 동기화
-            NetworkManager.Instance.SyncPlayerData();
-        }
-
-        [PunRPC]
-        private void RPC_TeleportTo(int killerId, int targetId)
-        {
-            Player killerPlayer = NetworkManager.Instance.GetPlayerObject(killerId);
-            Player targetPlayer = NetworkManager.Instance.GetPlayerObject(targetId);
-
-            killerPlayer.transform.position = targetPlayer.transform.position;
-        }
-
-        [PunRPC]
-        private void RPC_ConfirmKill(int targetId, int killerId)
-        {
-            if (NetworkManager.Instance.TryGetPlayerData(targetId, out PlayerData targetData))
-            {
-                targetData.playerClass = (int)PlayerClassType.ghost;
-                NetworkManager.Instance.GetPlayerObject(targetId).deathEvent.CallDeathEvent();
+            if (!IsKillValid(targetID, killerID))
+            {   
+                return;
             }
-            else { return; } // Kill 실패
+
+            ApplyKill(killerID, targetID);
+        }
+
+        private bool IsKillValid(string targetID, string killerID)
+        {
+            if (!GameDataManager.Instance.TryGetPrivatePlayerData(killerID, out var killerData) ||
+                !GameDataManager.Instance.TryGetPrivatePlayerData(targetID, out var targetData))
+                return false;
+
+            if (killerData.classType != (int)PlayerClassType.mafia) return false;
+            if (targetData.classType == (int)PlayerClassType.ghost) return false;
+
+            return true;
+        }
+
+        private void ApplyKill(string targetID, string killerID)
+        {
+            if (!GameDataManager.Instance.TryGetPrivatePlayerData(targetID, out var targetData)) return;
+            
+            targetData.classType = (int)PlayerClassType.ghost;
+
+            GameDataManager.Instance.UpdatePrivatePlayerData(targetData);
+
+            GameDataManager.Instance.TryGetViewIDByUID(targetID, out int targetViewID);
+
+            photonView.RPC(nameof(RPC_ConfirmKillResult), RpcTarget.All, targetViewID);
+
+            StartCooldown(targetViewID, Settings.defaultCooldown);
+        }
+
+        [PunRPC]
+        private void RPC_ConfirmKillResult(int targetViewID)
+        {
+            PhotonView view = PhotonView.Find(targetViewID);
+
+            if (view != null)
+            {
+                Player player = view.GetComponent<Player>();
+                //플레이어 사망 이벤트 발생 추가 *****
+            }
         }
 
         #endregion

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class GameState : MonoBehaviour
+    public class GameState
     {
         protected GameStateMachine stateMachine;
 

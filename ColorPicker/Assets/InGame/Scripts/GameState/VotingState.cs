@@ -11,14 +11,12 @@ namespace ColorPicker.InGame
         {
             base.Enter();
 
-            NetworkManager.Instance.MyPlayer.playerControl.DisablePlayerControl(true);
         }
 
         public override void Exit()
         {
             base.Exit();
 
-            NetworkManager.Instance.MyPlayer.playerControl.DisablePlayerControl(false);
         }
 
         public override void Update()

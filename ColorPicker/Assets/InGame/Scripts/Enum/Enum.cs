@@ -42,4 +42,19 @@ namespace ColorPicker.InGame
         Brown
     }
 
+    public enum GameStateType
+    {
+        None = -1,
+        GameStarted = 0,
+        Playing = 1,
+        Meeting = 2,
+        Voting = 3
+    }
+
+    public enum GameEventCode : byte
+    {
+        RequestMeetingState = 10,
+        RequestVotingState = 11,
+        RequestPlayingState = 12
+    }
 }
