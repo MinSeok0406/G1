@@ -10,14 +10,14 @@ namespace ColorPicker.InGame
         protected Action<MiniGameReport> onComplete;
         public void SetCallback(Action<MiniGameReport> callback) => onComplete = callback;
 
-        public abstract void Initialize(MiniGameType miniGameType);
+        public abstract void Initialize();
         public abstract void StartGame();
     }
 
     [System.Serializable]
     public class MiniGameReport
     {
-        public string playerId;
+        public int playerId;
         public MiniGameType miniGameType;
         public bool success;
     }

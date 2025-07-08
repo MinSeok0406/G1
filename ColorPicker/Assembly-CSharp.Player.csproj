@@ -114,8 +114,8 @@
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\UI\UITextScale.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Occlusion\LightTilemapOcclusion2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Lighting2DMaterials.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\ClickableObject.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Lighting2DMaterials.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\IMiniGameInteractable.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\NetworkManager.cs" />
     <Compile Include="Assets\InGame\Scripts\ClassAbility\MafiaAbility.cs" />
@@ -143,6 +143,7 @@
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Hexagon.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Mask\Grid.cs" />
     <Compile Include="Assets\InGame\Scripts\GameState\GameState.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanableObject.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\LightSettings.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\MiniGameManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Masks\SpriteRenderer2D.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="Assets\Minseok\Script\Mission\MissionDetailsSO.cs" />
     <Compile Include="Assets\Minseok\Script\Player\AnimatePlayer.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\ParticleRenderer.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanMiniGame.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Isometric.cs" />
     <Compile Include="Assets\InGame\Scripts\AES\AESCrypto.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Data\Data.Contents.cs" />
@@ -382,6 +384,7 @@
     <Compile Include="Assets\InGame\Scripts\Manager\LobbyManager.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\GameManager\PlayerClassAssigner.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\GameDataManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\DragTriggerSensor.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpriteShape.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Manager\LightingManager2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Sorted.cs" />

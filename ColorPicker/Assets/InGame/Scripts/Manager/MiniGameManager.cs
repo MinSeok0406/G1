@@ -8,6 +8,7 @@ namespace ColorPicker.InGame
     public class MiniGameManager : SingletonMonobehaviour<MiniGameManager>
     {
         public Transform uiRoot;
+        public RectTransform dragArea;
 
         public GameObject currentUI;
         private Dictionary<MiniGameType, GameObject> minigameDictionary = new Dictionary<MiniGameType, GameObject>();
@@ -41,7 +42,6 @@ namespace ColorPicker.InGame
             currentUI = minigameDictionary[miniGameType];
             var game = currentUI.GetComponent<MiniGameBase>();
             game.SetCallback(OnComplete);
-            game.Initialize(miniGameType);
             game.StartGame();
 
             game.gameObject.SetActive(true);
