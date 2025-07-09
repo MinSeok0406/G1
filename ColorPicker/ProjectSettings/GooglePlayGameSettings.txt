@@ -1,2 +1,9 @@
 lastUpgrade=20000
 proj.pluginVersion=2.0.0
+proj.AppId=70085515371
+and.BundleId=com.Minseok.ColorPicker
+proj.classDir=Assets
+proj.ConstantsClassName=GPGSIds
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--Google+Play+game+services+IDs.+Save+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--app_id--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e70085515371%3c%2fstring%3e%0d%0a++%3c%21--package_name--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.Minseok.ColorPicker%3c%2fstring%3e%0d%0a++%3c%21--achievement+%eb%a1%9c%ea%b7%b8%ec%9d%b8+%ec%84%b1%ea%b3%b5--%3e%0d%0a++%3cstring+name%3d%22achievement%22+translatable%3d%22false%22%3eCgkI67Cwi4UCEAIQAw%3c%2fstring%3e%0d%0a++%3c%21--leaderboard+coin--%3e%0d%0a++%3cstring+name%3d%22leaderboard_coin%22+translatable%3d%22false%22%3eCgkI67Cwi4UCEAIQBA%3c%2fstring%3e%0d%0a%3c%2fresources%3e
+and.ClientId=70085515371-o022ikomq0h6uvpfsqq6ghl0oudadaj7.apps.googleusercontent.com
+android.SetupDone=true
