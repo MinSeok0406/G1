@@ -48,7 +48,7 @@ namespace ColorPicker.InGame
 
             dragOffset = (Vector2)rectTransform.localPosition - pointerLocalPos;
 
-            Debug.Log($"[{name}] µå·¡±× ½ÃÀÛ");
+            Debug.Log($"[{name}] ë“œëž˜ê·¸ ì‹œìž‘");
         }
 
         public void OnDrag(Vector2 pointerPosition)
@@ -69,7 +69,7 @@ namespace ColorPicker.InGame
 
         public void OnEndDrag()
         {
-            Debug.Log($"[{name}] µå·¡±× ³¡");
+            Debug.Log($"[{name}] ë“œëž˜ê·¸ ì¢…ë£Œ");
         }
     }
 }

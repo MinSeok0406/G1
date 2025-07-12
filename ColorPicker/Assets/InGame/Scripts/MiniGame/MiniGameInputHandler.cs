@@ -14,7 +14,7 @@ namespace ColorPicker.InGame
 
             Vector2 pointerPos = GetPosition();
 
-            // Å¬¸¯/µå·¡±× ½ÃÀÛ
+            // Å¬ï¿½ï¿½/ï¿½å·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (IsDown())
             {
                 GameObject target = RaycastUI(pointerPos);

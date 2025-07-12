@@ -10,6 +10,7 @@ namespace ColorPicker.InGame
     {
         public System.Action<Collider2D> OnTriggerEntered;
         public System.Action<Collider2D> OnTriggerStayed;
+        public System.Action<Collider2D> OnTriggerExited;
 
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -19,6 +20,11 @@ namespace ColorPicker.InGame
         private void OnTriggerStay2D(Collider2D other)
         {
             OnTriggerStayed?.Invoke(other);
+        }
+        
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            OnTriggerExited?.Invoke(other);
         }
     }
 }

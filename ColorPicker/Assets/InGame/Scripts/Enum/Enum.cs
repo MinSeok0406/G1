@@ -15,7 +15,9 @@ namespace ColorPicker.InGame
     public enum MiniGameType
     {
         DragTest,
-        ClickTest
+        ClickTest,
+        BookOrganizing,
+        OrigamiFolding
     }
 
     public enum ColorType
