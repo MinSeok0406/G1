@@ -79,7 +79,7 @@ namespace Minseok
             }
         }
 
-        public void ConnectWire(RightWire rightWire)
+        public void ConnectWire(RightWire rightWire, List<LeftWire> leftWires)
         {
             if (mConnectedWire != null && mConnectedWire != rightWire)
             {
@@ -93,6 +93,14 @@ namespace Minseok
                 mLightImage.color = mWireImages[0].color;
                 IsConnected = true;
             }
+            else
+            {
+                foreach (var left in leftWires)
+                {
+                    left.ResetTarget();
+                    left.DisconnectWire();
+                }
+            }
         }
 
         public void DisconnectWire()
@@ -103,7 +111,7 @@ namespace Minseok
                 mConnectedWire = null;
             }
 
-            mLightImage.color = Color.gray;
+            mLightImage.color = Color.black;
             IsConnected = false;
         }
     }

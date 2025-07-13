@@ -66,7 +66,7 @@ namespace Minseok
             }
             else
             {
-                mLightImage.color = Color.gray;
+                mLightImage.color = Color.black;
                 IsConnected = false;
             }
         }
@@ -82,7 +82,7 @@ namespace Minseok
             }
             else
             {
-                mLightImage.color = Color.gray;
+                mLightImage.color = Color.black;
                 IsConnected = false;
             }
         }

@@ -80,7 +80,7 @@ namespace Minseok
 
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetMouseButtonUp(0))
             {
-                if (mSelectedWire != null)
+                if (mSelectedWire != null && !mSelectedWire.IsConnected)
                 {
                     RaycastHit2D[] hits = Physics2D.RaycastAll(pointerPos, Vector2.right, 1f);
                     foreach (var hit in hits)
@@ -91,7 +91,7 @@ namespace Minseok
                             if (right != null)
                             {
                                 mSelectedWire.SetTarget(hit.transform.position, -50f);
-                                mSelectedWire.ConnectWire(right);
+                                mSelectedWire.ConnectWire(right, mLeftWires);
                                 right.ConnectWire(mSelectedWire);
                                 mSelectedWire = null;
                                 CheckCompleteTast();
@@ -107,7 +107,7 @@ namespace Minseok
                 }
             }
 
-            if (mSelectedWire != null)
+            if (mSelectedWire != null && !mSelectedWire.IsConnected)
             {
                 mSelectedWire.SetTarget(pointerPos, -15f);
             }
