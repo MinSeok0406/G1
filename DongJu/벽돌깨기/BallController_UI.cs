@@ -14,23 +14,22 @@ public class BallController_UI : MonoBehaviour
     [Tooltip("PaddleController_UI 스크립트가 붙은 오브젝트")]
     [SerializeField] private PaddleController_UI paddleController;
 
-    [Header("🧱 [Block 관련]")]
-    [Tooltip("BlockGroupManager 오브젝트")]
-    [SerializeField] private BlockGroupManager blockGroupManager;
+    [Tooltip("게임 내 유일한 Block 오브젝트 (인스펙터에서 연결)")]
+    [SerializeField] private Block targetBlock;
 
     [Header("⚙️ [공 기본 속도 설정]")]
     [Tooltip("공의 기준 속도 (초당 픽셀)")]
     [SerializeField] private float baseSpeed = 300f;
 
     [Header("🌀 [감속 설정]")]
-    [Tooltip("X 방향 감속 속도 (값이 클수록 더 빨리 원래 속도로 복귀)")]
+    [Tooltip("X 방향 감속 속도")]
     [SerializeField] private float xDecayRate = 2f;
 
     [Tooltip("Y 방향 감속 속도")]
     [SerializeField] private float yDecayRate = 2f;
 
     [Header("🏹 [시작 방향 설정]")]
-    [Tooltip("공이 시작할 때 방향을 랜덤으로 할지, 수동으로 각도를 줄지 설정")]
+    [Tooltip("공 시작 방향 설정 (랜덤 또는 수동)")]
     [SerializeField] private StartDirectionMode startMode = StartDirectionMode.Random;
 
     [Tooltip("시작 각도 (0° = 오른쪽, 90° = 위쪽)")]
@@ -50,8 +49,7 @@ public class BallController_UI : MonoBehaviour
     private RectTransform paddleRect;
 
     private Vector2 currentVelocity;
-    private Vector2 initialDirection;
-    private bool isStarted = false;
+    private bool isLaunched = false;
 
     void Awake()
     {
@@ -62,6 +60,30 @@ public class BallController_UI : MonoBehaviour
 
     void Start()
     {
+        // 초기 위치는 고정, 터치로 시작
+        isLaunched = false;
+    }
+
+    void Update()
+    {
+        if (!isLaunched)
+        {
+            if (Input.touchCount > 0 || Input.GetMouseButtonDown(0))
+            {
+                LaunchBall();
+            }
+            return;
+        }
+
+        ApplyDecay();
+        MoveBall();
+        CheckWallCollision();
+        CheckPaddleCollision();
+        CheckBlockCollision();
+    }
+
+    private void LaunchBall()
+    {
         Vector2 dir = (startMode == StartDirectionMode.Random)
             ? Random.insideUnitCircle.normalized
             : AngleToVector2(startAngleDeg);
@@ -69,34 +91,24 @@ public class BallController_UI : MonoBehaviour
         if (dir.y < 0f)
             dir.y *= -1f;
 
-        initialDirection = dir;
-        currentVelocity = Vector2.zero;
+        currentVelocity = dir * baseSpeed;
+        isLaunched = true;
     }
 
-    void Update()
+    private void ApplyDecay()
     {
-        if (!isStarted)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                isStarted = true;
-                currentVelocity = initialDirection * baseSpeed;
-            }
-            return;
-        }
-
         float targetX = currentVelocity.normalized.x * baseSpeed;
         float targetY = currentVelocity.normalized.y * baseSpeed;
 
         float newX = Mathf.Lerp(currentVelocity.x, targetX, Time.deltaTime * xDecayRate);
         float newY = Mathf.Lerp(currentVelocity.y, targetY, Time.deltaTime * yDecayRate);
+
         currentVelocity = new Vector2(newX, newY);
+    }
 
+    private void MoveBall()
+    {
         ballRect.anchoredPosition += currentVelocity * Time.deltaTime;
-
-        CheckWallCollision();
-        CheckPaddleCollision();
-        CheckBlockCollision();
     }
 
     private void CheckPaddleCollision()
@@ -106,7 +118,6 @@ public class BallController_UI : MonoBehaviour
             currentVelocity.y *= -1f;
 
             float paddleSpeedX = paddleController.CurrentVelocityX;
-
             currentVelocity.x += paddleSpeedX * paddleInfluenceX;
             currentVelocity.y += Mathf.Abs(paddleSpeedX) * paddleInfluenceY;
         }
@@ -114,34 +125,23 @@ public class BallController_UI : MonoBehaviour
 
     private void CheckBlockCollision()
     {
-        if (blockGroupManager == null) return;
-
-        var blocks = blockGroupManager.GetActiveBlocks();
-
-        foreach (var block in blocks)
+        if (targetBlock != null && targetBlock.TryHit(ballRect))
         {
-            if (block.CheckCollision(ballRect))
-            {
-                block.DestroyBlock();
+            Rect ballWorld = GetWorldRect(ballRect);
+            Rect blockWorld = GetWorldRect(targetBlock.GetComponent<RectTransform>());
 
-                Rect ballWorld = GetWorldRect(ballRect);
-                Rect blockWorld = GetWorldRect(block.GetComponent<RectTransform>());
+            float overlapLeft   = ballWorld.xMax - blockWorld.xMin;
+            float overlapRight  = blockWorld.xMax - ballWorld.xMin;
+            float overlapTop    = blockWorld.yMax - ballWorld.yMin;
+            float overlapBottom = ballWorld.yMax - blockWorld.yMin;
 
-                float overlapLeft   = ballWorld.xMax - blockWorld.xMin;
-                float overlapRight  = blockWorld.xMax - ballWorld.xMin;
-                float overlapTop    = blockWorld.yMax - ballWorld.yMin;
-                float overlapBottom = ballWorld.yMax - blockWorld.yMin;
+            float minHorizontal = Mathf.Min(overlapLeft, overlapRight);
+            float minVertical   = Mathf.Min(overlapTop, overlapBottom);
 
-                float minHorizontal = Mathf.Min(overlapLeft, overlapRight);
-                float minVertical   = Mathf.Min(overlapTop, overlapBottom);
-
-                if (minHorizontal < minVertical)
-                    currentVelocity.x *= -1f;
-                else
-                    currentVelocity.y *= -1f;
-
-                break;
-            }
+            if (minHorizontal < minVertical)
+                currentVelocity.x *= -1f;
+            else
+                currentVelocity.y *= -1f;
         }
     }
 

@@ -7,16 +7,14 @@ public class BlockGroupManager : MonoBehaviour
     private const int cols = 5;
 
     private Block[,] blockGrid = new Block[rows, cols];
-    private List<int[,]> blockPatterns = new List<int[,]>();
+    private Block targetBlock; // 유일하게 남는 블록
 
     void Awake()
     {
         CacheBlocksFromChildren();
-        InitPatterns();
-        ApplyRandomPattern();
+        SetRandomTargetBlock();
     }
 
-    // 자식 오브젝트에서 Block 자동 수집
     private void CacheBlocksFromChildren()
     {
         Block[] blocks = GetComponentsInChildren<Block>();
@@ -34,53 +32,32 @@ public class BlockGroupManager : MonoBehaviour
         }
     }
 
-    // 미리 정의된 블록 배치 템플릿들
-    private void InitPatterns()
+    private void SetRandomTargetBlock()
     {
-        blockPatterns.Add(new int[3, 5] {
-            {1, 1, 1, 1, 1},
-            {1, 1, 0, 1, 1},
-            {1, 0, 0, 0, 1}
-        });
-
-        blockPatterns.Add(new int[3, 5] {
-            {1, 0, 0, 1, 1},
-            {1, 1, 0, 1, 1},
-            {1, 1, 0, 0, 1}
-        });
-
-        blockPatterns.Add(new int[3, 5] {
-            {0, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 1}
-        });
-    }
-
-    // 랜덤 템플릿 적용
-    private void ApplyRandomPattern()
-    {
-        int[,] pattern = blockPatterns[Random.Range(0, blockPatterns.Count)];
-
-        for (int row = 0; row < rows; row++)
-        {
-            for (int col = 0; col < cols; col++)
-            {
-                bool active = pattern[row, col] == 1;
-                if (blockGrid[row, col] != null)
-                    blockGrid[row, col].gameObject.SetActive(active);
-            }
-        }
-    }
-
-    // 현재 활성화된 블록 리스트 반환
-    public List<Block> GetActiveBlocks()
-    {
-        List<Block> active = new List<Block>();
+        // 전체 블록을 일단 비활성화
         foreach (var block in blockGrid)
         {
-            if (block != null && block.gameObject.activeSelf)
-                active.Add(block);
+            if (block != null)
+                block.gameObject.SetActive(false);
         }
-        return active;
+
+        // 하나만 랜덤으로 활성화
+        int randomRow = Random.Range(0, rows);
+        int randomCol = Random.Range(0, cols);
+
+        targetBlock = blockGrid[randomRow, randomCol];
+        if (targetBlock != null)
+            targetBlock.gameObject.SetActive(true);
     }
+
+    // 현재 살아있는 블록 반환 (항상 하나일 것)
+    public List<Block> GetActiveBlocks()
+    {
+        List<Block> list = new List<Block>();
+        if (targetBlock != null && targetBlock.gameObject.activeSelf)
+            list.Add(targetBlock);
+        return list;
+    }
+
+    public Block GetTargetBlock() => targetBlock;
 }

@@ -5,10 +5,10 @@ using System.Collections.Generic;
 public class DrawingInputHandler_Line : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [Header("References")]
-    [SerializeField] private Camera drawingCamera;             // (Overlay라면 null 무방)
-    [SerializeField] private LineRenderer lineRenderer;        // 선 그리기용
-    [SerializeField] private RectTransform drawingDisplay;     // RawImage 기준
-    [SerializeField] private CorrectJudgeManager judgeManager; // 판정 매니저
+    [SerializeField] private Camera drawingCamera;
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private RectTransform drawingDisplay;
+    [SerializeField] private CorrectJudgeManager judgeManager;
 
     [Header("Settings")]
     [SerializeField] private float minDistance = 0.05f;
@@ -46,11 +46,21 @@ public class DrawingInputHandler_Line : MonoBehaviour, IPointerDownHandler, IDra
     {
         Debug.Log("[Input] PointerUp – Drawing End");
 
-        // 드로잉 완료 후 자동 판정 호출
         if (judgeManager != null)
-            judgeManager.JudgeFromRenderTexture(drawnPoints);
+        {
+            bool success = judgeManager.JudgeFromRenderTexture(drawnPoints);
+
+            if (!success)
+            {
+                lineRenderer.positionCount = 0;
+                drawnPoints.Clear();
+                Debug.Log("[InputHandler] 실패 판정 → 선 제거");
+            }
+        }
         else
+        {
             Debug.LogWarning("[InputHandler] 판정 매니저가 연결되지 않았습니다.");
+        }
     }
 
     private void AddPoint(Vector3 worldPos)
@@ -68,7 +78,7 @@ public class DrawingInputHandler_Line : MonoBehaviour, IPointerDownHandler, IDra
     private Vector3 ScreenToWorldOnDisplay(Vector2 screenPosition)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            drawingDisplay, screenPosition, null, out Vector2 localPos); // Overlay 모드에서는 camera null
+            drawingDisplay, screenPosition, null, out Vector2 localPos);
 
         Vector3 worldPos = drawingDisplay.TransformPoint(localPos);
         return worldPos;
