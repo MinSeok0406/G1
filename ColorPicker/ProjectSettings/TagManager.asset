@@ -8,6 +8,8 @@ TagManager:
   - Custom
   - InGame
   - task-wire
+  - AIGoal
+  - PlayerGoal
   layers:
   - Default
   - TransparentFX

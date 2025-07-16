@@ -85,6 +85,7 @@
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\LightingMonobehavior.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocityEvent.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\Tiled\SpriteTiledMesh.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\AirMiniGame\ScoreScript.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\LightCollider\LightTilemapCollider2D.cs" />
     <Compile Include="Assets\Minseok\Script\Player\InteractiveControl.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\MaterialSystem.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\LightTilemapTransform.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithmUtility.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Profile.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\AirMiniGame\Boundary.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_InGameScene.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\VirtualSpriteRenderer.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Graphics\Max2D.cs" />
@@ -247,6 +249,7 @@
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\PolygonUtility.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\LightingPosition.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightCollider2D\LayerManager.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\AirMiniGame\AIScript.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Managers.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Base.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\LobbyUIManager.cs" />
@@ -412,6 +415,7 @@
     <Compile Include="Assets\Minseok\Script\Sever\UI\UI_Base.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\IdleEvent.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\Light2D\LightTransform.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\AirMiniGame\PlayerMovement.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Debug\LightingDebug.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DListCollider2D.cs" />
@@ -431,6 +435,7 @@
     <Compile Include="Assets\InGame\Scripts\Manager\UIManager.cs" />
     <Compile Include="Assets\InGame\Scripts\Utilities\HelperUtilities.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpritePhysicsShape.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\AirMiniGame\PuckScript.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Texture.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Room.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Shadow\Grid.cs" />
