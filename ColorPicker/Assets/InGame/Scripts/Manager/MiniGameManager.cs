@@ -11,7 +11,7 @@ namespace ColorPicker.InGame
         public RectTransform dragArea;
 
         public GameObject currentUI;
-        private Dictionary<MiniGameType, GameObject> minigameDictionary = new Dictionary<MiniGameType, GameObject>();
+        private Dictionary<MiniGameType, MiniGameTag> miniGameDictionary = new Dictionary<MiniGameType, MiniGameTag>();
 
         protected override void Awake()
         {
@@ -22,12 +22,7 @@ namespace ColorPicker.InGame
         {
             MiniGameInputContext.EnableInput(); // 테스트 코드
 
-            List<MiniGameTag> miniGames = GetComponentsInChildren<MiniGameTag>().ToList();
-
-            foreach(MiniGameTag miniGame in miniGames)
-            {
-                minigameDictionary.Add(miniGame.miniGameType, miniGame.gameObject);
-            }
+            Initialized();
         }
 
         void Update()
@@ -37,9 +32,24 @@ namespace ColorPicker.InGame
             MiniGameInputHandler.ProcessInput();
         }
 
+        private void Initialized()
+        {
+            List<MiniGameTag> miniGames = uiRoot.GetComponentsInChildren<MiniGameTag>().ToList();
+
+            miniGames.Clear();
+
+            foreach(MiniGameTag tag in miniGames)
+            {
+                if(!miniGameDictionary.ContainsKey(tag.miniGameType))
+                {
+                    miniGameDictionary.Add(tag.miniGameType, tag);
+                }
+            }
+        }
+
         public void StartMiniGame(MiniGameType miniGameType)
         {
-            currentUI = minigameDictionary[miniGameType];
+            currentUI = miniGameDictionary[miniGameType].gameObject;
             var game = currentUI.GetComponent<MiniGameBase>();
             game.SetCallback(OnComplete);
             game.StartGame();

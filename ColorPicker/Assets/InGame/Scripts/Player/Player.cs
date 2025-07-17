@@ -65,7 +65,6 @@ namespace ColorPicker.InGame
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
-
         public void OnOwnershipRequest(PhotonView targetView, Photon.Realtime.Player requestingPlayer)
         {
         }

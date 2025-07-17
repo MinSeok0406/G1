@@ -62,35 +62,35 @@
   <ItemGroup>
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightTilemapRoom2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\Light2DEditor.cs" />
-    <Compile Include="Assets\Retro Shaders Pro\Editor\CRTEffectEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Occlusion\LightTilemapOcclusion2DEditor.cs" />
-    <Compile Include="Assets\Retro Shaders Pro\Editor\Installer\RetroInstaller.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\ProjectSettingsEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightRoom2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Occlusion\LightOcclusion2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Editor\Mesh2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\Light2DWindow.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightTexture2DEditor.cs" />
-    <Compile Include="Assets\Retro Shaders Pro\Editor\Shaders\RetroLitShaderGUI.cs" />
+    <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\Shaders\CRTMeshShaderGUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\DebuggingEditor.cs" />
-    <Compile Include="Assets\Retro Shaders Pro\Editor\Shaders\CRTMeshShaderGUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Shaders\PassShader.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Misc\MoveGizmos.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\LightTilemapCollider2DEditor.cs" />
-    <Compile Include="Assets\Retro Shaders Pro\Editor\Shaders\RetroTerrainLitShaderGUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\LightCollider2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\Shaders\RetroLitShaderGUI.cs" />
+    <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\Installer\RetroInstallerWindow.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\Editor\ChatEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightSprite2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\Shaders\RetroTerrainLitShaderGUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Misc\GUIExtensions.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\ProfileEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Manager\LightingManager2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Day\DayLightTilemapCollider2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightParticleSystem2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\CRTEffectEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Misc\EditorGameObjects.cs" />
+    <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\Installer\RetroInstaller.cs" />
     <Compile Include="Assets\Editor\MultiplayersBuildAndRun.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\ProfileEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Day\DayLightCollider2DEditor.cs" />
-    <Compile Include="Assets\Retro Shaders Pro\Editor\Installer\RetroInstallerWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\PackageCache\com.unity.collab-proxy@2.7.1\Lib\Editor\Localization\differences.ja.txt" />

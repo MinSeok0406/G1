@@ -16,7 +16,6 @@ namespace ColorPicker.InGame
         [SerializeField] private List<MiniGameTemplate> availableMissions;
         [SerializeField] private int missionsPerPlayer = 3; // 추후 룸세팅으로 할당 예정
 
-
         protected override void Awake()
         {
             base.Awake();   

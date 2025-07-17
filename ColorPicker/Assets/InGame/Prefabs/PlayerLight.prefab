@@ -74,8 +74,8 @@ MonoBehaviour:
     materials:
     - {fileID: 0}
     sortingLayer:
-      name: Default
-      Order: 0
+      name: FrontDecoration
+      Order: 1000
   bumpMap:
     intensity: 1
     depth: 1
