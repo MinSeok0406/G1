@@ -14,7 +14,7 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
+  - CRTLayer
   - 
   - 
   - 
@@ -61,4 +61,7 @@ TagManager:
     locked: 0
   - name: FrontDecoration
     uniqueID: 1192120731
+    locked: 0
+  - name: UI
+    uniqueID: 4072510325
     locked: 0

@@ -11,6 +11,7 @@ namespace ColorPicker.InGame
         private Dictionary<string, PublicPlayerData> publicPlayerDataDict = new Dictionary<string, PublicPlayerData>(); // UID로 맵핑된 playerData
         private Dictionary<string, PrivatePlayerData> privatePlayerDataDict = new Dictionary<string, PrivatePlayerData>(); // UID로 맵핑된 playerData
         private Dictionary<string, InGameData> inGameDataDict = new Dictionary<string, InGameData>(); // UID로 맵핑된 InGameData
+        private Dictionary<string, PlayerMissionData> missionBackup;
 
         private Dictionary<string, int> viewIDByGoogleUID = new Dictionary<string, int>();
         private Dictionary<int, string> googleUIDByViewID = new Dictionary<int, string>();
@@ -436,5 +437,11 @@ namespace ColorPicker.InGame
         }
 
         #endregion
+
+
+        public void SetMissionBackup(Dictionary<string, PlayerMissionData> backup)
+        {
+            missionBackup = backup;
+        }
     }
 }

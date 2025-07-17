@@ -16,28 +16,16 @@ namespace ColorPicker.InGame
         {
             killEvent = gameObject.AddComponent<KillEvent>();
 
-            IniatializedKillAblity();
+ 
         }
 
         protected override void Start()
         {
             base.Start();
 
-            UIManager.Instance.SetMafiaUI(true);
         }
 
-        private void IniatializedKillAblity()
-        {
-            Button killButton = UIManager.Instance.GetKillButton();
 
-            if (!killButton.interactable) // 비활성화된 상태라면 활성화 시킴
-            {
-                killButton.interactable = true;
-            }
-            killButton.onClick.AddListener(OnKillButtonPressed);
-
-            killButton.interactable = false;
-        }
 
         private void OnEnable()
         {
@@ -72,22 +60,6 @@ namespace ColorPicker.InGame
         public Player GetCurrentPlayer()
         {
             return currentPlayer;
-        }
-
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            currentPlayer = collision.GetComponent<Player>();
-
-            if (currentPlayer != null && !UIManager.Instance.CheckCooldown())
-            {
-                UIManager.Instance.GetKillButton().interactable = true;
-            }
-        }
-
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            currentPlayer = null;
-            UIManager.Instance.GetKillButton().interactable = false;
         }
 
     }

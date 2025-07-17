@@ -45,15 +45,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a34663ca705a54eac3205e225a6d45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightType: 1
+  lightType: 0
   lightPresetId: 0
   eventPresetId: 0
   lightLayer: 0
   occlusionLayer: 0
   translucentLayer: 0
   translucentPresetId: 0
-  color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  size: 30
+  color: {r: 1, g: 1, b: 1, a: 1}
+  size: 8
   spotAngleInner: 360
   spotAngleOuter: 360
   coreSize: 0.5

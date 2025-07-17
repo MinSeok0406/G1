@@ -1,95 +1,46 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
     public class UIManager : SingletonNetworkBehaviour<UIManager>
     {
-        #region ref playerUI
-        [Space(10)]
-        [Header("PlayerUI")]
-        #endregion
-        public GameObject interactiveUI;
 
-        #region Ref Class Ability UI
-        [Space(10)]
-        [Header("Class Ability UI")]
-        #endregion
-        public GameObject mafiaUI;
-        public GameObject killUI;
-
-        #region Func UI
-        public GameObject meetingButtonUI;
-        #endregion
-
-        private bool isCooldown;
+        [SerializeField] private GameObject interactButton;
+        private Button button;
 
         protected override void Awake()
         {
             base.Awake();
+            button = interactButton.GetComponent<Button>();
+            button.onClick.AddListener(OnClickInteraction);
+           
         }
 
-        public void InitalizedMafiaUI()
+        public void ShowInteractionButton(bool show, UnityAction onClick = null)
         {
-           //Dictionary<int, PlayerData> playerDictionary = NetworkManager.Instance.GetPlayerDictionary();
+            button.interactable = show;
+        }
+        private void OnClickInteraction()
+        {
+            PlayerControl localPlayer;
+            
+            localPlayer = PlayerManager.Instance.GetMyPlayer().GetComponent<PlayerControl>();
 
+            localPlayer?.TryInteract(); 
         }
 
-        public void SetPlayerUI(bool isActive)
+        public void UpdateMissionStatusUI(PlayerMissionData mission)
         {
-            interactiveUI.SetActive(isActive);
-
         }
 
-        public void SetMafiaUI(bool isActive)
+        public void UpdateMissionStatusBarUI(float percent)
         {
-            mafiaUI.SetActive(isActive);
-            killUI.SetActive(isActive);
-        }
 
-        public Button GetKillButton()
-        {
-            return killUI.GetComponent<Button>();
-        }
-
-        public void InitializedInteractiveItemUI()
-        {
-            interactiveUI.GetComponent<Button>().interactable = false;  
-
-            meetingButtonUI.SetActive(false);
-        }
-
-        public void UesInteractiveButton()
-        {
-            //NetworkManager.Instance.MyPlayer.playerControl.UseInteractive();
-        }
-
-        public void UpdatePlayerCooldownUI(float remainingTime)
-        {
-            if (!killUI.activeSelf) return;
-
-            TMP_Text cooldownText = killUI.GetComponentInChildren<TMP_Text>();
-
-            if(remainingTime > 0)
-            {
-                cooldownText.text = ((int)remainingTime).ToString();
-                isCooldown = true;
-            }
-            else
-            {
-                cooldownText.text = "";
-                isCooldown = false;
-            }
-        }
-
-        public bool CheckCooldown()
-        {
-            return isCooldown;
         }
     }
 }

@@ -13,7 +13,9 @@ public static class Settings
     public static int isMoving = Animator.StringToHash("isMoving");
     public static int isRight = Animator.StringToHash("isRight");
     public static int isLeft = Animator.StringToHash("isLeft");
-    #endregion 
+    #endregion
+
+    internal static byte currentSceneKey;
 
     #region Tag
     public const string interactable = "Interactable";

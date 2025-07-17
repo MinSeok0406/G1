@@ -192,7 +192,12 @@ namespace ColorPicker.InGame
             LobbyManager.Instance.UpdateReadyState(actorId, isReady);
 
             photonView.RPC(nameof(Rpc_ReceivePlayerReadyState), RpcTarget.All, actorId, isReady);
+            
+            ReadyCheckProcess();
+        }
 
+        public void ReadyCheckProcess()
+        {
             if (AreAllPlayersReady())
             {
                 Debug.Log("[Lobby] 전체 플레이어 준비 완료!");
@@ -238,13 +243,16 @@ namespace ColorPicker.InGame
         {
             if (!PhotonNetwork.IsMasterClient || !AreAllPlayersReady()) return;
 
+            CacheDataManager.Instance.SaveAll(LobbyManager.Instance.GetLobbyPlayerList());
+
             photonView.RPC(nameof(Rpc_StartGame), RpcTarget.All);
         }
 
         [PunRPC]
         public void Rpc_StartGame()
         {
-            SceneManager.LoadScene(Settings.InGameScene);
+            HelperUtilities.SetCurrentScene(Settings.inGameScene);
+            SceneManager.LoadScene(Settings.inGameScene);
         }
     }
 }

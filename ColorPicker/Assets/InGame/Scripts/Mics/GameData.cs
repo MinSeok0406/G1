@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -89,5 +90,20 @@ namespace ColorPicker.InGame
     {
         public string googleUID;
         public int viewID;
+    }
+
+    [Serializable]
+    public class MissionInstance
+    {
+        public string missionId;  
+        public MiniGameType missionType;    
+        public bool isCompleted;           
+    }
+
+    [Serializable]
+    public class PlayerMissionData
+    {
+        public string playerUID; 
+        public List<MissionInstance> missionList = new List<MissionInstance>();
     }
 }

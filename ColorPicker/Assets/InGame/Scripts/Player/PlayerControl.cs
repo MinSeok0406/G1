@@ -13,19 +13,26 @@ namespace ColorPicker.InGame
         private bool disableControl;
         private float moveSpeed;
 
+        public InteractionDetector interactionDetector;
+
+        public IInteractive currentInteractive;
+
         [HideInInspector] public CircleCollider2D circleCollider2D;
 
         private void Awake()
         {
             player = GetComponent<Player>();
             circleCollider2D = GetComponentInChildren<CircleCollider2D>();
+            interactionDetector = GetComponentInChildren<InteractionDetector>();
 
             moveSpeed = Settings.moveSpeed;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (!photonView.IsMine || disableControl) return;
+
+            if (player.ownerActNum != PhotonNetwork.LocalPlayer.ActorNumber) return;
 
             MoveInput();
         }
@@ -62,9 +69,9 @@ namespace ColorPicker.InGame
             }
         }
 
-        public void UseInteractive()
+        public void TryInteract()
         {
-            currentInteractiveObject.Interactive();
+            currentInteractive?.OnInteract();
         }
 
         //private void OnTriggerEnter2D(Collider2D collision)

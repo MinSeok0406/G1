@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,12 @@ namespace ColorPicker.InGame
         protected override void Awake()
         {
             base.Awake();
+
+            TryHandleSceneMismatchOrLeave();
+
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            HelperUtilities.SetCurrentScene(Settings.inGameLobbyScene);
         }
 
         private void Start()
@@ -26,13 +33,10 @@ namespace ColorPicker.InGame
         /// </summary>
         private void CheckAndInitializeRoomJoin()
         {
-            StartCoroutine(VerifyRoomJoinAndSetup());
+            StartCoroutine(WaitForJoinAndInitialize());
         }
 
-        /// <summary>
-        /// 일정 시간 동안 InRoom 여부 확인 후 초기화 또는 타임아웃 처리하는 함수
-        /// </summary>
-        private IEnumerator VerifyRoomJoinAndSetup()
+        private IEnumerator WaitForJoinAndInitialize()
         {
             float connectStartTime = Time.time;
 
@@ -43,10 +47,37 @@ namespace ColorPicker.InGame
                     InitializeAfterJoin();
                     yield break;
                 }
+
                 yield return new WaitForSeconds(Settings.RoomJoinRetryIntervalSeconds);
             }
 
             HandleRoomJoinTimeout();
+        }
+
+        /// <summary>
+        /// 커스텀 룸 프로퍼티의 CurrentScene과 현재 씬이 일치하지 않으면 씬 이동 처리
+        /// </summary>
+        /// <returns>씬 이동이 발생하면 true, 아니면 false</returns>
+        private bool TryHandleSceneMismatchOrLeave()
+        {
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(Settings.currentSceneKey, out object sceneObj))
+            {
+                string roomSceneName = sceneObj as string;
+
+                if (roomSceneName == null) roomSceneName = Settings.inGameLobbyScene;
+
+                string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+                if (roomSceneName != currentScene)
+                {
+                    PhotonNetwork.IsMessageQueueRunning = false;
+                    PhotonNetwork.LoadLevel(roomSceneName);
+                    Destroy(gameObject);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -97,6 +128,8 @@ namespace ColorPicker.InGame
             var dynamicData = JsonUtility.FromJson<LobbyPlayerDynamicData>(dynamicJson);
             RegisterLobbyPlayer(googleUID, nickname, actorId, dynamicData);
             SpawnLobbyPlayer(actorId);
+
+            LobbyUIManager.Instance.ReadyCheckProcess();
         }
 
         /// <summary>
@@ -119,13 +152,20 @@ namespace ColorPicker.InGame
             LobbyUIManager.Instance.RequestLobbySlotRefreshFromHost();
         }
 
+        public void SpawnLobbyPlayer(int actorId)
+        {
+            StartCoroutine(SpawnLobbyPlayerDelayed(actorId));
+        }
+
         /// <summary>
         /// 마스터가 LobbyPlayer RoomObject를 생성하고 소유권 이전 처리하는 함수
         /// </summary>
         /// <param name="actorId">Photon Actor 번호</param>
-        public void SpawnLobbyPlayer(int actorId)
+        private IEnumerator SpawnLobbyPlayerDelayed(int actorId)
         {
-            if (!lobbyPlayers.ContainsKey(actorId)) return;
+            yield return null; // 한 프레임 대기
+
+            if (!lobbyPlayers.ContainsKey(actorId)) yield break;
 
             string prefabName = GameResources.Instance.lobbyPlayerPrefab.name;
             Vector2 pos = new(lobbyPlayers[actorId].dynamicData.posX, lobbyPlayers[actorId].dynamicData.posY);
@@ -138,6 +178,8 @@ namespace ColorPicker.InGame
                 ReassignOwnershipToPlayer(viewId, actorId);
             }
         }
+
+        
 
         /// <summary>
         /// 지정된 ViewId의 객체 소유권을 해당 actor에게 넘기고 초기화 호출하는 함수
@@ -186,6 +228,8 @@ namespace ColorPicker.InGame
             RemoveLobbyPlayer(otherPlayer.ActorNumber);
 
             LobbyUIManager.Instance.RequestLobbySlotRefreshFromHost();
+
+            LobbyUIManager.Instance.ReadyCheckProcess();
         }
 
         /// <summary>
@@ -214,14 +258,14 @@ namespace ColorPicker.InGame
         public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
         {
             base.OnMasterClientSwitched(newMasterClient);
+
+ 
             if (!PhotonNetwork.IsMasterClient) return;
 
             foreach (var view in FindObjectsOfType<PhotonView>())
             {
-                if (view.IsRoomView() && view.OwnerActorNr == 0)
-                {
-                    view.TransferOwnership(PhotonNetwork.LocalPlayer);
-                }
+
+                view.TransferOwnership(PhotonNetwork.LocalPlayer);
             }
 
             RequestAllClientsToCacheDataWithAck();
@@ -242,7 +286,7 @@ namespace ColorPicker.InGame
         [PunRPC]
         private void Rpc_CacheMyDataAndSendAck()
         {
-            var myPlayer = PlayerManager.Instance.GetMyLobbyPlayer();
+            LobbyPlayer myPlayer = PlayerManager.Instance.GetMyLobbyPlayer();
             PlayerManager.Instance.UpdateLobbyPlayerPos(myPlayer.transform.position);
 
             int actorId = PhotonNetwork.LocalPlayer.ActorNumber;
