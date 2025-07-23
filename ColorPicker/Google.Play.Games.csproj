@@ -77,8 +77,8 @@
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\Platforms\Android\AndroidJavaConverter.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\ISocialPlatform\PlayGamesScore.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\BasicApi\PlayerProfile.cs" />
-    <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\BasicApi\SavedGame\ISavedGameClient.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\BasicApi\IPlayGamesClient.cs" />
+    <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\BasicApi\SavedGame\ISavedGameClient.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\BasicApi\SavedGame\ISavedGameMetadata.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\Platforms\PlayGamesClientFactory.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Runtime\Scripts\OurUtils\Misc.cs" />
