@@ -14,6 +14,9 @@ namespace ColorPicker.InGame
         protected override void Awake()
         {
             base.Awake();
+
+            GenerateAndDistributeAESKey();
+
             DontDestroyOnLoad(gameObject);
         }
 
@@ -27,7 +30,7 @@ namespace ColorPicker.InGame
             aesKeyBytes = GenerateRandomKeyBytes(32); // 32byte -> 256-bit key
             string keyBase64 = Convert.ToBase64String(aesKeyBytes); //이진데이터 문자열로 인코딩
 
-            photonView.RPC(nameof(ReceiveAESKey), RpcTarget.Others, keyBase64);
+            photonView.RPC(nameof(RPC_ReceiveAESKey), RpcTarget.Others, keyBase64);
 
             keyDistributed = true;
             Debug.Log("[AESKeyManager] AES 키가 모든 클라이언트에 평문으로 전송됨");
@@ -43,13 +46,13 @@ namespace ColorPicker.InGame
             string keyBase64 = Convert.ToBase64String(aesKeyBytes);
             var target = PhotonNetwork.CurrentRoom.GetPlayer(actorId);
             if (target != null)
-                photonView.RPC(nameof(ReceiveAESKey), target, keyBase64);
+                photonView.RPC(nameof(RPC_ReceiveAESKey), target, keyBase64);
 
             Debug.Log($"[AESKeyManager] 새 클라이언트 {actorId} 에게 AES 키 전송 완료");
         }
 
         [PunRPC]
-        private void ReceiveAESKey(string keyBase64)
+        private void RPC_ReceiveAESKey(string keyBase64)
         {
             aesKeyBytes = Convert.FromBase64String(keyBase64);
             Debug.Log("[AESKeyManager] AES 키 수신 완료");

@@ -1,3 +1,4 @@
+Ôªøusing Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,26 @@ namespace ColorPicker.InGame
     {
         public Transform uiRoot;
         public RectTransform dragArea;
+        [SerializeField] private GameObject miniGameSet;
+        [SerializeField] private GameObject miniGameScreenUI;
+        [SerializeField] private RectTransform rowImage_RT;
+        [SerializeField] private RectTransform targetRect;
+        [SerializeField] private Camera CRTCamera;
 
-        public GameObject currentUI;
+        private GameObject currentUI;
         private Dictionary<MiniGameType, MiniGameTag> miniGameDictionary = new Dictionary<MiniGameType, MiniGameTag>();
 
         protected override void Awake()
         {
             base.Awake();
+
+            MiniGameInputHandler.rawImageRect = rowImage_RT;
+            MiniGameInputHandler.targetRect = targetRect;
+            MiniGameInputHandler.rtCamera = CRTCamera;
         }
 
         private void Start()
         {
-            MiniGameInputContext.EnableInput(); // ≈◊Ω∫∆Æ ƒ⁄µÂ
-
             Initialized();
         }
 
@@ -34,17 +42,20 @@ namespace ColorPicker.InGame
 
         private void Initialized()
         {
-            List<MiniGameTag> miniGames = uiRoot.GetComponentsInChildren<MiniGameTag>().ToList();
+            miniGameDictionary.Clear();
 
-            miniGames.Clear();
+            List<MiniGameTag> miniGames = miniGameSet.GetComponentsInChildren<MiniGameTag>().ToList();
 
             foreach(MiniGameTag tag in miniGames)
             {
                 if(!miniGameDictionary.ContainsKey(tag.miniGameType))
                 {
                     miniGameDictionary.Add(tag.miniGameType, tag);
+                    tag.gameObject.SetActive(false);
                 }
             }
+            
+            miniGameSet.gameObject.SetActive(false);
         }
 
         public void StartMiniGame(MiniGameType miniGameType)
@@ -54,6 +65,11 @@ namespace ColorPicker.InGame
             game.SetCallback(OnComplete);
             game.StartGame();
 
+            miniGameSet.SetActive(true);
+            miniGameScreenUI.SetActive(true);
+
+            MiniGameInputContext.EnableInput();
+
             game.gameObject.SetActive(true);
         }
 
@@ -62,9 +78,19 @@ namespace ColorPicker.InGame
             currentUI.SetActive(false);
             currentUI = null;
 
+            miniGameSet.SetActive(false);
+            miniGameScreenUI.SetActive(false);
+
             MiniGameInputContext.DisableInput();
 
-            // ≥◊∆Æøˆ≈©∑Œ ∞·∞˙ ∫∏∞Ì 
+            if (report.success)
+            {
+                MissionManager.Instance.RequestMissionComplete(report.playerId, (int)report.miniGameType);
+            }
+            else
+            {
+                Debug.Log($"[MiniGame] {report.miniGameType} Ïã§Ìå® - Î≥¥ÏÉÅ ÏóÜÏùå");
+            }
         }
     }
 }

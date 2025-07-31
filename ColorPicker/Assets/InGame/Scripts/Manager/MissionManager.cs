@@ -1,6 +1,6 @@
+using Google.Protobuf.Protocol;
 using Photon.Pun;
-using Photon.Realtime;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,13 +12,30 @@ namespace ColorPicker.InGame
         private Dictionary<string, PlayerMissionData> allPlayerMissions = new Dictionary<string, PlayerMissionData>();
 
         private List<MissionInstance> myMissions = new List<MissionInstance>(); // cache data
+        private Dictionary<MiniGameType, MiniGameTag> missionObjectMap = new Dictionary<MiniGameType, MiniGameTag>();
 
         [SerializeField] private List<MiniGameTemplate> availableMissions;
         [SerializeField] private int missionsPerPlayer = 3; // 추후 룸세팅으로 할당 예정
+        [SerializeField] private GameObject rootMissionObjects;
 
         protected override void Awake()
         {
-            base.Awake();   
+            base.Awake();
+
+            InitializedMissionObject();
+        }
+
+        public void InitializedMissionObject()
+        {
+            var miniGameTags = rootMissionObjects.GetComponentsInChildren<MiniGameTag>();
+
+            foreach (MiniGameTag tag in miniGameTags)
+            {
+                MiniGameType type = tag.miniGameType;
+                missionObjectMap[type] = tag;
+
+                tag.gameObject.SetActive(false);
+            }
         }
 
         public void InitializePlayerMissions(List<PublicPlayerData> playerDatas)
@@ -33,9 +50,9 @@ namespace ColorPicker.InGame
                 int actorId = playerData.currentActorId;
 
                 if (!GameDataManager.Instance.GetInGameData(uid).isAlive) continue;
-               
+
                 var assignedMissions = GetUniqueMissionsForPlayer(uid, missionsPerPlayer);
-                
+
                 var missionData = new PlayerMissionData
                 {
                     playerUID = uid,
@@ -46,7 +63,7 @@ namespace ColorPicker.InGame
 
                 Photon.Realtime.Player target = PhotonNetwork.CurrentRoom.Players[playerData.currentActorId];
 
-                photonView.RPC(nameof(RPC_AssignMissionList),target,
+                photonView.RPC(nameof(RPC_AssignMissionList), target,
                     JsonUtility.ToJson(missionData));
             }
 
@@ -55,7 +72,7 @@ namespace ColorPicker.InGame
 
         private List<MissionInstance> GetUniqueMissionsForPlayer(string playerUID, int count)
         {
-            if(allPlayerMissions.Count < count)
+            if (availableMissions.Count < count)
             {
                 Debug.Log("할당가능한 미션 부족");
                 return null;
@@ -80,11 +97,50 @@ namespace ColorPicker.InGame
 
             myMissions = playerMissionData.missionList;
 
+            ApplyMyMissionList();
         }
 
-        public void UpdateMissionStatus(string playerId, MiniGameType miniGameType)
+        private void ApplyMyMissionList()
+        {
+            foreach (MiniGameTag tag in missionObjectMap.Values)
+            {
+                bool hasMatchingMission = myMissions.Exists(mission => mission.missionType == tag.miniGameType);
+
+                if (hasMatchingMission)
+                {
+                    tag.gameObject.SetActive(true);
+                }
+                else
+                {
+                    tag.gameObject.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        public void RequestMissionComplete(int playerId, int miniGameTypeInt)
+        {
+            photonView.RPC(nameof(RPC_UpdateMissionStatus), RpcTarget.MasterClient, playerId, miniGameTypeInt);
+        }
+
+
+        [PunRPC]
+        public void RPC_UpdateMissionStatus(int actorId, int miniGameTypeInt)
+        {
+            if (GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorId, out PublicPlayerData data))
+            {
+                UpdateMissionStatus(data.googleUID, miniGameTypeInt);
+            }
+            else
+            {
+                Debug.LogWarning($"[MissionManager] ActorID {actorId} 에 해당하는 PublicPlayerData 를 찾을 수 없음");
+            }
+        }
+
+        public void UpdateMissionStatus(string playerId, int miniGameTypeInt)
         {
             if (!PhotonNetwork.IsMasterClient) return;
+
+            MiniGameType miniGameType = (MiniGameType)miniGameTypeInt;
 
             if (!allPlayerMissions.TryGetValue(playerId, out var playerData)) return;
             
@@ -106,9 +162,11 @@ namespace ColorPicker.InGame
 
             photonView.RPC(nameof(Rpc_UpdateMissionStatus), target, json);
 
+            GiveMissionReward(playerId, target);
+
             float percent = GetMissionCompletePercent();
 
-            photonView.RPC(nameof(Rpc_UpdateMissionStatusBar), RpcTarget.All);
+            photonView.RPC(nameof(Rpc_UpdateMissionStatusBar), RpcTarget.All, percent);
 
         }
 
@@ -116,6 +174,15 @@ namespace ColorPicker.InGame
         public void Rpc_UpdateMissionStatus(string json)
         {
            PlayerMissionData mission = JsonUtility.FromJson<PlayerMissionData>(json);
+
+           foreach(var missionInstance in mission.missionList)
+            {
+                if (missionInstance.isCompleted) 
+                    missionObjectMap[missionInstance.missionType].gameObject.SetActive(false);
+                else
+                    missionObjectMap[missionInstance.missionType].gameObject.SetActive(true);
+
+            }
 
            UIManager.Instance.UpdateMissionStatusUI(mission);
         }
@@ -135,6 +202,26 @@ namespace ColorPicker.InGame
         public void Rpc_UpdateMissionStatusBar(float percent)
         {
             UIManager.Instance.UpdateMissionStatusBarUI(percent);
+        }
+
+        private void GiveMissionReward(string playerUID, Photon.Realtime.Player target)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            bool success = GameDataManager.Instance.TryAddMissionReward(playerUID);
+
+            int stickerAmout = GameDataManager.Instance.GetInGameData(playerUID).stickerCount;
+
+            if (success)
+            {
+                photonView.RPC(nameof(Rpc_ReceiveReward), target, stickerAmout);
+            }
+        }
+
+        [PunRPC]
+        private void Rpc_ReceiveReward(int stickerAmout)
+        {
+            //TODO : UI 설정
         }
     }
 }

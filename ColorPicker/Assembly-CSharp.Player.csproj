@@ -201,6 +201,7 @@
     <Compile Include="Assets\Minseok\Script\Movement\MovementByVelocity.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Occlusion\LightOcclusion2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\Light2D\LightTransform.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\ClientAckManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\GUI\LightEventListenerCountGUI.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\MissionManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SpriteExtension\PhysicsShape.cs" />

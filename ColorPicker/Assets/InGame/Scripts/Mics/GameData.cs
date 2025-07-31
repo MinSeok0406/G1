@@ -59,6 +59,7 @@ namespace ColorPicker.InGame
     {
         public bool isAlive = true;            // 생존 여부
         public bool hasVoted = false;          // 투표 여부
+        public int stickerCount = 0;
     }
 
     [System.Serializable]

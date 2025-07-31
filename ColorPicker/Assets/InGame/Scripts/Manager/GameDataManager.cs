@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 using Minseok;
+using System;
 
 namespace ColorPicker.InGame
 {
@@ -19,6 +20,17 @@ namespace ColorPicker.InGame
         private GameRuleSettings currentGameRuleSettings = new GameRuleSettings();  
 
         private GameStateType currentGameState = GameStateType.None; // 데이터 저장을 위한 enum class
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            currentGameRuleSettings = new GameRuleSettings()
+            {
+                mafiaAmount = 1,
+                detectiveAmount = 0
+            };
+        }
 
         #region [호스트 전용] Player Data 생성 및 갱신 
 
@@ -115,6 +127,15 @@ namespace ColorPicker.InGame
             else
             {
                 privatePlayerDataDict[newData.googleUID] = newData;
+            }
+        }
+
+        public void InitializedPlayerInGameData()
+        {
+            foreach(var playerUID in publicPlayerDataDict.Keys)
+            {
+                InGameData data = new InGameData() { hasVoted = false, isAlive = true };
+                inGameDataDict.Add(playerUID, data);
             }
         }
 
@@ -442,6 +463,18 @@ namespace ColorPicker.InGame
         public void SetMissionBackup(Dictionary<string, PlayerMissionData> backup)
         {
             missionBackup = backup;
+        }
+
+        public bool TryAddMissionReward(string playerUID)
+        {
+            if (!inGameDataDict.ContainsKey(playerUID))
+            {
+                Debug.LogWarning($"[TryAddMissionReward] 존재하지 않는 UID: {playerUID}");
+                return false;
+            }
+
+            inGameDataDict[playerUID].stickerCount++;
+            return true;
         }
     }
 }

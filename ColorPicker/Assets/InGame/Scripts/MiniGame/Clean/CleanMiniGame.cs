@@ -22,22 +22,6 @@ namespace ColorPicker.InGame
             Initialize();
         }
 
-        private void OnEnable()
-        {
-            onComplete += CleanMiniGame_OnComplete;
-        }
-
-
-        private void OnDisable()
-        {
-            onComplete -= CleanMiniGame_OnComplete;
-        }
-
-        private void CleanMiniGame_OnComplete(MiniGameReport report)
-        {
-
-        }
-
         public override void Initialize()
         {
             miniGameTag = GetComponent<MiniGameTag>();

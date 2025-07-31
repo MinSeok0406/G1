@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class GameStateMachine : MonoBehaviourPun
+    public class GameStateMachine
     {
         public GameState CurrentState { get; private set; }
 
@@ -25,7 +25,11 @@ namespace ColorPicker.InGame
         /// </summary>
         public void ChangeState(GameState newState)
         {
-            CurrentState.Exit();
+            if (CurrentState != null)
+            {
+                CurrentState.Exit();
+            }
+
             CurrentState = newState;
             CurrentState.Enter();
         }

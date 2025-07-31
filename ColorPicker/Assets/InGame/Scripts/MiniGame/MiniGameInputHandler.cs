@@ -1,4 +1,4 @@
-using UnityEngine.EventSystems;
+ï»¿using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,35 +6,54 @@ namespace ColorPicker.InGame
 {
     public static class MiniGameInputHandler
     {
+        public static RectTransform rawImageRect;
+        public static RectTransform targetRect;
+        public static Camera rtCamera;
+        public static float zDepth = -10f;
+
         private static IDraggable currentDraggable = null;
 
         public static void ProcessInput()
         {
-            if (!MiniGameInputContext.IsInputEnabled) return;
+            if (!MiniGameInputContext.IsInputEnabled || rawImageRect == null)
+                return;
 
             Vector2 pointerPos = GetPosition();
 
-            // Å¬¸¯/µå·¡±× ½ÃÀÛ
+            if (!RectTransformUtility.RectangleContainsScreenPoint(rawImageRect, pointerPos, null)) return;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rawImageRect, pointerPos, null, out Vector2 localPos);
+
+            float normX = localPos.x / rawImageRect.rect.width;
+            float normY = localPos.y / rawImageRect.rect.height;
+
+            Vector2 viewportPos = new Vector2(normX, normY);
+            Vector3 worldPos = rtCamera.ViewportToWorldPoint(new Vector3(viewportPos.x, viewportPos.y, zDepth));
+
+            Vector2 targetPos = targetRect.InverseTransformPoint(worldPos);
+
+            Debug.Log(targetPos);
+
             if (IsDown())
             {
-                GameObject target = RaycastUI(pointerPos);
-                if (target == null) return;
-
-                if (target.TryGetComponent<IDraggable>(out var draggable))
+                Collider2D hit = Physics2D.OverlapPoint(worldPos);
+                if (hit != null)
                 {
-                    currentDraggable = draggable;
-                    draggable.OnBeginDrag();
-                }
-
-                else if (target.TryGetComponent<IClickable>(out var clickable))
-                {
-                    clickable.OnClick();
+                    if (hit.TryGetComponent<IDraggable>(out var drag))
+                    {
+                        currentDraggable = drag;
+                        drag.OnBeginDrag(targetPos);
+                    }
+                    else if (hit.TryGetComponent<IClickable>(out var click))
+                    {
+                        click.OnClick();
+                    }
                 }
             }
 
             if (IsHold() && currentDraggable != null)
             {
-                currentDraggable.OnDrag(pointerPos);
+                currentDraggable.OnDrag(targetPos);
             }
 
             if (IsUp() && currentDraggable != null)
@@ -42,15 +61,6 @@ namespace ColorPicker.InGame
                 currentDraggable.OnEndDrag();
                 currentDraggable = null;
             }
-        }
-
-
-        private static GameObject RaycastUI(Vector2 screenPos)
-        {
-            PointerEventData pointerData = new(EventSystem.current) { position = screenPos };
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerData, results);
-            return results.Count > 0 ? results[0].gameObject : null;
         }
 
         public static bool IsDown()
