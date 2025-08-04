@@ -11,6 +11,8 @@ namespace SharedDB
         public int TokenDbId { get; set; }
         public int AccountDbId { get; set; }
         public int Token { get; set; }
+        public string Name { get; set; }
+        public string GoogleID { get; set; }
         public DateTime Expired { get; set; }
     }
 

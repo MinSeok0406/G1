@@ -4,6 +4,7 @@
 public class CreateAccountPacketReq
 {
     public string AccountName { get; set; }
+    public string GoogleID { get; set; }
 }
 
 // 서버에서 클라로 보냄
@@ -15,6 +16,7 @@ public class CreateAccountPacketRes
 public class LoginAccountPacketReq
 {
     public string AccountName { get; set; }
+    public string GoogleID { get; set; }
 }
 
 public class ServerInfo
@@ -30,5 +32,7 @@ public class LoginAccountPacketRes
     public bool LoginOk { get; set; }
     public int AccountId { get; set; }
     public int Token { get; set; }
+    public string Name { get; set; }
+    public string GoogleID { get; set; }
     public List<ServerInfo> ServerList { get; set; } = new List<ServerInfo>();
 }

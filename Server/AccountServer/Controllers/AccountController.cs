@@ -30,14 +30,15 @@ namespace AccountServer.Controllers
 
             AccountDb account = _context.Accounts
                                     .AsNoTracking()
-                                    .Where(a => a.AccountName == req.AccountName)
+                                    .Where(a => a.GoogleID == req.GoogleID)
                                     .FirstOrDefault();
 
             if (account == null)
             {
                 _context.Accounts.Add(new AccountDb()
                 {
-                    AccountName = req.AccountName
+                    GoogleID = req.GoogleID,
+                    Name = req.AccountName
                 });
 
                 bool success = _context.SaveChangesEx();
@@ -46,6 +47,7 @@ namespace AccountServer.Controllers
             else
             {
                 res.CreateOk = false;
+                Console.WriteLine("already created");
             }
 
             return res;
@@ -59,7 +61,7 @@ namespace AccountServer.Controllers
 
             AccountDb account = _context.Accounts
                                     .AsNoTracking()
-                                    .Where(a => a.AccountName == req.AccountName)
+                                    .Where(a => a.GoogleID == req.GoogleID)
                                     .FirstOrDefault();
 
             if (account == null)
@@ -86,6 +88,8 @@ namespace AccountServer.Controllers
                     tokenDb = new TokenDb()
                     {
                         AccountDbId = account.AccountDbId,
+                        Name = account.Name,
+                        GoogleID = account.GoogleID,
                         Token = new Random().Next(Int32.MinValue, Int32.MaxValue),
                         Expired = expired
                     };
@@ -95,6 +99,8 @@ namespace AccountServer.Controllers
 
                 res.AccountId = account.AccountDbId;
                 res.Token = tokenDb.Token;
+                res.Name = tokenDb.Name;
+                res.GoogleID = tokenDb.GoogleID;
                 res.ServerList = new List<ServerInfo>();
 
                 foreach (ServerDb serverDb in _shared.Servers)

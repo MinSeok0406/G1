@@ -27,6 +27,7 @@ namespace Minseok
                 if (other.tag == "AIGoal")
                 {
                     ScoreScriptInstance.Increment(ScoreScript.Score.PlayerScore);
+                    ScoreScriptInstance.GameOver();
                     WasGoal = true;
                     //audioManager.PlayGoal();
                     StartCoroutine(ResetPuck(false));
@@ -35,6 +36,7 @@ namespace Minseok
                 else if (other.tag == "PlayerGoal")
                 {
                     ScoreScriptInstance.Increment(ScoreScript.Score.AiScore);
+                    ScoreScriptInstance.GameOver();
                     WasGoal = true;
                     //audioManager.PlayGoal();
                     StartCoroutine(ResetPuck(true));

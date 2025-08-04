@@ -7,7 +7,8 @@ namespace Minseok
     // 클라에서 서버로 보냄
     public class CreateAccountPacketReq
     {
-        public string AccountName;
+        public string AccountName { get; set; }
+        public string GoogleID { get; set; }
     }
 
     // 서버에서 클라로 보냄
@@ -18,7 +19,8 @@ namespace Minseok
 
     public class LoginAccountPacketReq
     {
-        public string AccountName;
+        public string AccountName { get; set; }
+        public string GoogleID { get; set; }
     }
 
     public class ServerInfo
@@ -34,6 +36,8 @@ namespace Minseok
         public bool LoginOk;
         public int AccountId;
         public int Token;
+        public string Name;
+        public string GoogleID;
         public List<ServerInfo> ServerList = new List<ServerInfo>();
     }
 }

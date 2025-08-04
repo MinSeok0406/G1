@@ -23,5 +23,17 @@ namespace Minseok
             else
                 PlayerScoreTxt.text = (++playerScore).ToString();
         }
+
+        public void GameOver()
+        {
+            if (AiScoreTxt.text == "3")
+            {
+                Debug.Log("AI ½Â¸®!!");
+            }
+            else if (PlayerScoreTxt.text == "3")
+            {
+                Debug.Log("ÇÃ·¹ÀÌ¾î ½Â¸®!!");
+            }
+        }
     }
 }

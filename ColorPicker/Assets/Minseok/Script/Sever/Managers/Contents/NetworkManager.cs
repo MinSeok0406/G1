@@ -11,6 +11,8 @@ namespace Minseok
     {
         public int AccountId { get; set; }
         public int Token { get; set; }
+        public string GoogleID { get; set; }
+        public string UserName { get; set; }
 
         ServerSession _session = new ServerSession();
 
