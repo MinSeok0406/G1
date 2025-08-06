@@ -290,7 +290,6 @@
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\SceneManagerEx.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Presets\LightPresets.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\UI_Manager.cs" />
-    <Compile Include="Assets\Minseok\GPGS_Manager.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameInputHandler.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapShaders.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\Misc\DestroyTimer.cs" />

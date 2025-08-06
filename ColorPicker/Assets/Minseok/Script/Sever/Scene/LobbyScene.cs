@@ -7,7 +7,6 @@ namespace Minseok
     public class LobbyScene : BaseScene
     {
         UI_BackGround _backScene;
-        UI_Joystick _joystick;
 
         protected override void Init()
         {
@@ -21,7 +20,6 @@ namespace Minseok
             Application.runInBackground = true;
 
             _backScene = Managers.UI.ShowSceneUI<UI_BackGround>("UI_BackGround");
-            _joystick = Managers.UI.ShowPopupUI<UI_Joystick>("UI_Joystick");
         }
 
         public override void Clear()

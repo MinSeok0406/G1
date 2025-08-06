@@ -37,7 +37,6 @@ namespace Minseok
             if (!chatUI.gameObject.activeSelf)
             {
                 chatUI.gameObject.SetActive(true);
-                Managers.UI.ClosePopupUI();
                 gameObject.SetActive(false);
             }
         }
@@ -50,7 +49,6 @@ namespace Minseok
             if (!customUI.gameObject.activeSelf)
             {
                 customUI.gameObject.SetActive(true);
-                Managers.UI.ClosePopupUI();
                 gameObject.SetActive(false);
             }
         }
@@ -63,7 +61,6 @@ namespace Minseok
             if (!ingameUI.gameObject.activeSelf)
             {
                 ingameUI.gameObject.SetActive(true);
-                Managers.UI.ClosePopupUI();
                 gameObject.SetActive(false);
             }
         }

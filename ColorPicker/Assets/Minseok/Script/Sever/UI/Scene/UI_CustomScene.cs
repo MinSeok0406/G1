@@ -27,7 +27,6 @@ namespace Minseok
             if (!lobbyUI.gameObject.activeSelf)
             {
                 lobbyUI.gameObject.SetActive(true);
-                Managers.UI.ShowPopupUI<UI_Joystick>("UI_Joystick");
                 gameObject.SetActive(false);
             }
         }

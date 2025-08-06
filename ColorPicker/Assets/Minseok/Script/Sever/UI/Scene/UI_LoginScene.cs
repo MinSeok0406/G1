@@ -1,8 +1,9 @@
 using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Security.Principal;
-using GooglePlayGames.BasicApi;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,12 +13,25 @@ namespace Minseok
 {
     public class UI_LoginScene : UI_Scene
     {
+        [SerializeField] 
+        private TMP_Text googleID;
+
+        [SerializeField]
+        private TMP_Text Name;
+
+        [SerializeField] 
+        private GameObject Button;
+
+        [SerializeField]
+        private TMP_Text test;
+
         public ServerInfo Info { get; set; }
 
         public override void Init()
         {
             base.Init();
 
+            Button.SetActive(false);
             PlayGamesPlatform.Instance.Authenticate(OnClickCreateButton);
         }
 
@@ -27,6 +41,9 @@ namespace Minseok
             {
                 string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
                 string account = PlayGamesPlatform.Instance.GetUserId();
+
+                googleID.text = account;
+                Name.text = displayName;
 
                 if (account == null)
                 {
@@ -43,7 +60,17 @@ namespace Minseok
                 Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
                 {
                     Debug.Log(res.CreateOk);
+                    test.text = res.CreateOk.ToString();
                 });
+
+                Button.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("로그인 실패");
+                googleID.text = "가져오기 실패";
+                Name.text = "가져오기 실패";
+                test.text = "가져오기 실패";
             }
         }
 
