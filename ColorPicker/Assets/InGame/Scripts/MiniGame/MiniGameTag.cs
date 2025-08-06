@@ -6,6 +6,6 @@ namespace ColorPicker.InGame
 {
     public class MiniGameTag : MonoBehaviour
     {
-        public readonly MiniGameType miniGameType;
+        public MiniGameType miniGameType;
     }
 }

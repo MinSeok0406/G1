@@ -22,6 +22,8 @@ namespace ColorPicker.InGame
         protected override void Awake()
         {
             base.Awake();
+
+            
         }
 
         /// <summary>
@@ -50,8 +52,12 @@ namespace ColorPicker.InGame
         {
             if (cachedDynamicData == null)
             {
-                Debug.LogWarning("[PlayerManager] UpdateLobbyPlayerPos(): dynamicData가 초기화되지 않음");
-                return;
+                cachedDynamicData = new LobbyPlayerDynamicData()
+                {
+                    posX = 0,
+                    posY = 0,
+                    isReady = false
+                };
             }
 
             cachedDynamicData = dynamicData;
@@ -73,8 +79,12 @@ namespace ColorPicker.InGame
         {
             if (cachedDynamicData == null)
             {
-                Debug.LogWarning("[PlayerManager] UpdateReadyState(): dynamicData가 초기화되지 않음");
-                return;
+                cachedDynamicData = new LobbyPlayerDynamicData()
+                {
+                    posX = 0,
+                    posY = 0,
+                    isReady = false
+                };
             }
 
             cachedDynamicData.isReady = isReady;

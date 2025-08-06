@@ -30,6 +30,13 @@ namespace ColorPicker.InGame
             mafiaAbility = GetComponentInChildren<MafiaAbility>();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                Debug.Log(PlayerManager.Instance.GetMyLobbyPlayer().transform.position);
+            }
+        }
+
         private void OnEnable()
         {
             PhotonNetwork.AddCallbackTarget(this);
@@ -48,11 +55,12 @@ namespace ColorPicker.InGame
         {
             if(targetView != photonView) return;
 
-            bool isRealOwner = (photonView.OwnerActorNr == PhotonNetwork.LocalPlayer.ActorNumber);
+            bool isRealOwner = photonView.OwnerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
 
             if (!isRealOwner) return;
 
             if (PhotonNetwork.IsMasterClient) return;
+
             InitializedPlayer();
         }
 
