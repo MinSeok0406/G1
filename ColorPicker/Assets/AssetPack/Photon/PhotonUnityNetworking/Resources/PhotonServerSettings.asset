@@ -98,6 +98,7 @@ MonoBehaviour:
   - RPC_ReceiveAESKey
   - Rpc_ReceiveReward
   - UpdateMissionStatus
+  - RPC_UpdateMissionStatus
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

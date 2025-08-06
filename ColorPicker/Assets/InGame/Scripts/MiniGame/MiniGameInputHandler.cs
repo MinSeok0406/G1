@@ -32,8 +32,6 @@ namespace ColorPicker.InGame
 
             Vector2 targetPos = targetRect.InverseTransformPoint(worldPos);
 
-            Debug.Log(targetPos);
-
             if (IsDown())
             {
                 Collider2D hit = Physics2D.OverlapPoint(worldPos);
