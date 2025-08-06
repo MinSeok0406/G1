@@ -22,12 +22,29 @@ namespace ColorPicker.InGame
 
         private void Start()
         {
+            PhotonNetwork.IsMessageQueueRunning = true;
+
             CheckAndInitializeRoomJoin();
         }
 
         private void CheckAndInitializeRoomJoin()
         {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                SpawnAllPlayersFromCache(CacheDataManager.Instance.GetAll());
+            }
+
             StartCoroutine(VerifyRoomJoinAndSetup());
+        }
+
+        private void SpawnAllPlayersFromCache(List<LobbyPlayerData> cachedPlayerDataList)
+        {
+            foreach(LobbyPlayerData data in cachedPlayerDataList)
+            {
+                SpawnPlayer(data.staticData.googleUID, data.staticData.actorId);
+            }
+
+            CacheDataManager.Instance.Clear();
         }
 
         private IEnumerator VerifyRoomJoinAndSetup()
@@ -95,7 +112,9 @@ namespace ColorPicker.InGame
             }
             else
             {
-                SpawnPlayer(googleUID, actorId);
+                Debug.Log("로그인 정보를 찾지 못했습니다");
+
+                //SpawnPlayer(googleUID, actorId);
             }
         }
 
@@ -131,7 +150,7 @@ namespace ColorPicker.InGame
             if (!PhotonNetwork.IsMasterClient) return;
 
             string prefabName = GameResources.Instance.playerPrefab.name;
-            GameObject playerObj = PhotonNetwork.Instantiate(prefabName, Vector3.zero, Quaternion.identity);
+            GameObject playerObj = PhotonNetwork.InstantiateRoomObject(prefabName, Vector3.zero, Quaternion.identity);
             Player player = playerObj.GetComponent<Player>();
             int viewID = player.photonView.ViewID;
 
@@ -156,6 +175,11 @@ namespace ColorPicker.InGame
             {
                 TransferOwnershipSafe(player.photonView, newActorId);
                 Debug.Log($"[Ownership] {googleUID} 소유권 이전 완료 → Actor {newActorId}");
+            }
+
+            if (player.photonView.OwnerActorNr == newActorId && PhotonNetwork.IsMasterClient)
+            {
+                player.InitializedPlayer();
             }
         }
 

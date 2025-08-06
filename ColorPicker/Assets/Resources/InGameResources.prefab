@@ -50,3 +50,5 @@ MonoBehaviour:
   mainCameraPrefab: {fileID: 5754435587332718804, guid: a9159b49e09d3d049a553e02661ac671, type: 3}
   chatContentPrefab: {fileID: 7677321529951086244, guid: aac86813caa34f844a259034ba0b6345, type: 3}
   myChatContentPrefab: {fileID: 7677321529951086244, guid: 5a4213bea56df3b48b88440dc1ec37d7, type: 3}
+  outlineMaterial: {fileID: 2100000, guid: 8c1d009f0c3bb8a43a98f32266329424, type: 2}
+  interactiveMaterial: {fileID: 2100000, guid: c1d30f7c8a67a784599d244f28ad911d, type: 2}

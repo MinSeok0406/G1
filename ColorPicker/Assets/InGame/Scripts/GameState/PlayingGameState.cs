@@ -1,4 +1,7 @@
 ﻿
+using Photon.Pun;
+using System.Diagnostics;
+
 namespace ColorPicker.InGame
 {
     public class PlayingGameState : GameState
@@ -10,6 +13,10 @@ namespace ColorPicker.InGame
         public override void Enter()
         {
             base.Enter();
+
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            MissionManager.Instance.InitializePlayerMissions(GameDataManager.Instance.GetAllPublicPlayerData());
         }
 
         public override void Exit()

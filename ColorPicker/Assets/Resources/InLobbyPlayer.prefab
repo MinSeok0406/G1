@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7110963307210256841}
   - component: {fileID: 2492633659160182019}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: InteractiveSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 5312474376190671483}
   - component: {fileID: 2017124443614766578}
   - component: {fileID: 4869805244156693485}
-  m_Layer: 8
+  m_Layer: 3
   m_Name: InLobbyPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300000, guid: 9c12ff9ffdf6b7b4c8e6b80b54f6eb20, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4437b063fabb45143906e1dd23cfaf08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -169,7 +169,7 @@ SpriteRenderer:
   m_Size: {x: 0.78, y: 1.03}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &4539763972820695976
@@ -213,7 +213,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6269680581958123269}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -403,7 +403,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.15}
+  m_Offset: {x: 0.0260925, y: -0.15}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -414,7 +414,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.53, y: 0.5}
+  m_Size: {x: 0.582185, y: 0.5}
   m_EdgeRadius: 0
 --- !u!114 &3844880815774564675
 MonoBehaviour:
@@ -519,6 +519,10 @@ PrefabInstance:
     - target: {fileID: 1847930783518447824, guid: 7012b57ff90b3e0429decd049c72ad66, type: 3}
       propertyPath: m_Name
       value: PlayerLight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1847930783518447824, guid: 7012b57ff90b3e0429decd049c72ad66, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1847930783518447824, guid: 7012b57ff90b3e0429decd049c72ad66, type: 3}
       propertyPath: m_IsActive

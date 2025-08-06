@@ -20,9 +20,18 @@ namespace ColorPicker.InGame
             PopupItem.SetActive(!isActive);
         }
 
+        public void OnInteract()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void SetUI(bool isActive)
         {
             interactiveUI.interactable = isActive;
+        }
+
+        public void ToggleHighlight(bool active)
+        {
         }
     }
 }

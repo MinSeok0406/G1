@@ -30,11 +30,25 @@ namespace ColorPicker.InGame
             PlayingGameState = new PlayingGameState(StateMachine);
             MeetingState = new MeetingState(StateMachine);
             VotingState = new VotingState(StateMachine);
+
+        }
+
+        private void Start()
+        {
+            StateMachine.Initialize(GameStartedState);
         }
 
         private void Update()
         {
             StateMachine.CurrentState?.Update();
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                foreach (var data in GameDataManager.Instance.GetAllPrivatePlayerData())
+                {
+                    Debug.Log($"{(ColorType)data.identityColorId} and {(PlayerClassType)data.classType}");
+                }
+            }
         }
 
         /// <summary>

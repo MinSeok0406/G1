@@ -8,7 +8,6 @@ namespace ColorPicker.InGame
 {
     public class PlayerClassAssigner
     {
-
         public void AssignRoles()
         {
             if (!PhotonNetwork.IsMasterClient) return;
@@ -17,11 +16,12 @@ namespace ColorPicker.InGame
             GameRuleSettings gameRules = GameDataManager.Instance.GetGameRules(); //게임 세팅 가져오기
 
             int totalRequired = gameRules.mafiaAmount + gameRules.detectiveAmount;
-            
+
             // 유효성 검사
             if (playerDataList.Count < totalRequired)
             {
                 Debug.LogError("[PlayerClassAssigner] 플레이어 수가 역할 수보다 적습니다. 분배 중단.");
+                Debug.LogError($"{playerDataList.Count} , {totalRequired}");
                 return;
             }
 

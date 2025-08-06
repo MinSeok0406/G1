@@ -36,6 +36,11 @@ namespace ColorPicker
         public GameObject chatContentPrefab;
         public GameObject myChatContentPrefab;
 
-
+        #region Header Material Ref
+        [Space(10)]
+        [Header("Material Ref")]
+        #endregion
+        public Material outlineMaterial;
+        public Material interactiveMaterial;
     }
 }

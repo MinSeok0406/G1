@@ -10,59 +10,27 @@ namespace ColorPicker.InGame
         [SerializeField] private Canvas canvas;
         private RectTransform rectTransform;
         private Vector2 dragOffset;
-        private Vector2 halfSize;
-        private float minX, maxX, minY, maxY;
 
-        private RectTransform dragArea;
 
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
         }
 
-        private void Start()
+        public void OnBeginDrag(Vector2 pointerWorldPos)
         {
-            Initialized();
-        }
+            // RectTransform의 중심 좌표 (world space)
+            Vector2 objectWorldPos = rectTransform.localPosition;
 
-        private void Initialized()
-        {
-            dragArea = MiniGameManager.Instance.dragArea;
+            // 드래그 오프셋 계산 (클릭 위치와 오브젝트 중심 간 거리)
+            dragOffset = objectWorldPos - pointerWorldPos;
 
-            halfSize = new Vector2(
-                    rectTransform.rect.width * rectTransform.lossyScale.x / 2f,
-                    rectTransform.rect.height * rectTransform.lossyScale.y / 2f
-            );
-
-            minX = dragArea.rect.xMin + halfSize.x;
-            maxX = dragArea.rect.xMax - halfSize.x;
-            minY = dragArea.rect.yMin + halfSize.y;
-            maxY = dragArea.rect.yMax - halfSize.y;
-
-        }
-
-        public void OnBeginDrag()
-        {
-            Vector2 pointerLocalPos = HelperUtilities.ScreenToLocalPointInRect(canvas, canvas.transform as RectTransform,
-                MiniGameInputHandler.GetPosition());
-
-            dragOffset = (Vector2)rectTransform.localPosition - pointerLocalPos;
-
-            Debug.Log($"[{name}] 드래그 시작");
+            Debug.Log($"[{name}] 드래그 시작 - dragOffset: {dragOffset}");
         }
 
         public void OnDrag(Vector2 pointerPosition)
         {
-            Vector2 pointerLocalPos = HelperUtilities.ScreenToLocalPointInRect(canvas, canvas.transform as RectTransform, pointerPosition);
-            Vector2 targetLocalPos = pointerLocalPos + dragOffset;
-
-            if (dragArea != null)
-            {
-                Vector2 areaSize = dragArea.rect.size;
-                
-                targetLocalPos.x = Mathf.Clamp(targetLocalPos.x, minX, maxX);
-                targetLocalPos.y = Mathf.Clamp(targetLocalPos.y, minY, maxY);
-            }
+            Vector2 targetLocalPos = pointerPosition + dragOffset;
 
             rectTransform.localPosition = targetLocalPos;
         }

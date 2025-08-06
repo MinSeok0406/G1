@@ -90,6 +90,15 @@ MonoBehaviour:
   - Rpc_RequestReadyUpdate
   - Rpc_ReceivePlayerReadyState
   - Rpc_StartGame
+  - RPC_AssignMissionList
+  - Rpc_UpdateMissionStatus
+  - Rpc_UpdateMissionStatusBar
+  - RPC_RequestAck
+  - RPC_SendAck
+  - RPC_ReceiveAESKey
+  - Rpc_ReceiveReward
+  - UpdateMissionStatus
+  - RPC_UpdateMissionStatus
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

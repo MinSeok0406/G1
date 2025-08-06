@@ -35,6 +35,10 @@ namespace ColorPicker.InGame
         private MafiaAbility mafiaAbility;
         #endregion 
 
+        [HideInInspector] public int ownerActNum = 0;
+
+        [SerializeField] private Light2D playerLight;
+
         private void Awake()
         {
             idleEvent = GetComponent<IdleEvent>();
@@ -51,6 +55,16 @@ namespace ColorPicker.InGame
             DontDestroyOnLoad(gameObject);
         }
 
+        private void OnEnable()
+        {
+            PhotonNetwork.AddCallbackTarget(this);
+        }
+
+        private void OnDisable()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
+        }
+
         public void OnOwnershipRequest(PhotonView targetView, Photon.Realtime.Player requestingPlayer)
         {
         }
@@ -62,6 +76,8 @@ namespace ColorPicker.InGame
 
             PlayerManager.Instance.SetMyPlayer(this);
 
+            if (PhotonNetwork.IsMasterClient) return;
+            
             InitializedPlayer();
         }
 
@@ -71,7 +87,25 @@ namespace ColorPicker.InGame
 
         public void InitializedPlayer()
         {
-            Camera.main.transform.SetParent(transform);
+            GameObject cameraObj;
+
+            if (Camera.main == null)
+            {
+                cameraObj = Instantiate(GameResources.Instance.mainCameraPrefab);
+            }
+            else
+            {
+                cameraObj = Camera.main.gameObject;
+            }
+
+            cameraObj.transform.SetParent(transform, false);
+            cameraObj.transform.localPosition = new Vector3(0,0,-10);
+
+            playerLight.gameObject.SetActive(true);
+
+            ownerActNum = PhotonNetwork.LocalPlayer.ActorNumber;
+
+            PlayerManager.Instance.SetMyPlayer(this);
         }
 
         // 수정 예정

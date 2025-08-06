@@ -11,7 +11,7 @@ namespace ColorPicker.InGame
 
     public interface IDraggable
     {
-        void OnBeginDrag();
+        void OnBeginDrag(Vector2 pointerPosition);
         void OnDrag(Vector2 pointerPosition);
         void OnEndDrag();
     }

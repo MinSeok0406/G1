@@ -1,15 +1,11 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ColorPicker.InGame
 {
     public interface IInteractive
     {
-        public void Interactive();
-
+        public void OnInteract();
         public Vector3 GetPosition();
-
-        public void SetUI(bool isActive);
+        void ToggleHighlight(bool active);
     }
 }

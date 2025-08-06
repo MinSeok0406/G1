@@ -12,7 +12,8 @@ namespace ColorPicker.InGame
         public const string inGameLobbyScene = "InLobby";
         public const string inGameScene = "InGame";
         public const string testMainScene = "InMainMenu";
-        public const string InGameScene = "InGame";
+
+        public const string currentSceneKey = "CurrentScene";
 
         public const int maxPlayer = 10;
 

@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 using Minseok;
+using System;
 
 namespace ColorPicker.InGame
 {
@@ -11,6 +12,7 @@ namespace ColorPicker.InGame
         private Dictionary<string, PublicPlayerData> publicPlayerDataDict = new Dictionary<string, PublicPlayerData>(); // UID로 맵핑된 playerData
         private Dictionary<string, PrivatePlayerData> privatePlayerDataDict = new Dictionary<string, PrivatePlayerData>(); // UID로 맵핑된 playerData
         private Dictionary<string, InGameData> inGameDataDict = new Dictionary<string, InGameData>(); // UID로 맵핑된 InGameData
+        private Dictionary<string, PlayerMissionData> missionBackup;
 
         private Dictionary<string, int> viewIDByGoogleUID = new Dictionary<string, int>();
         private Dictionary<int, string> googleUIDByViewID = new Dictionary<int, string>();
@@ -18,6 +20,17 @@ namespace ColorPicker.InGame
         private GameRuleSettings currentGameRuleSettings = new GameRuleSettings();  
 
         private GameStateType currentGameState = GameStateType.None; // 데이터 저장을 위한 enum class
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            currentGameRuleSettings = new GameRuleSettings()
+            {
+                mafiaAmount = 1,
+                detectiveAmount = 0
+            };
+        }
 
         #region [호스트 전용] Player Data 생성 및 갱신 
 
@@ -114,6 +127,15 @@ namespace ColorPicker.InGame
             else
             {
                 privatePlayerDataDict[newData.googleUID] = newData;
+            }
+        }
+
+        public void InitializedPlayerInGameData()
+        {
+            foreach(var playerUID in publicPlayerDataDict.Keys)
+            {
+                InGameData data = new InGameData() { hasVoted = false, isAlive = true };
+                inGameDataDict.Add(playerUID, data);
             }
         }
 
@@ -436,5 +458,23 @@ namespace ColorPicker.InGame
         }
 
         #endregion
+
+
+        public void SetMissionBackup(Dictionary<string, PlayerMissionData> backup)
+        {
+            missionBackup = backup;
+        }
+
+        public bool TryAddMissionReward(string playerUID)
+        {
+            if (!inGameDataDict.ContainsKey(playerUID))
+            {
+                Debug.LogWarning($"[TryAddMissionReward] 존재하지 않는 UID: {playerUID}");
+                return false;
+            }
+
+            inGameDataDict[playerUID].stickerCount++;
+            return true;
+        }
     }
 }
