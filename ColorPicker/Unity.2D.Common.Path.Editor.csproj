@@ -103,8 +103,8 @@
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\EditorTool\PathComponentEditor.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\EditablePath\IUndoObject.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\Shapes\Polygon.cs" />
-    <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\Selection\IndexedSelection.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\EditablePath\MultipleEditablePathController.cs" />
+    <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\Selection\IndexedSelection.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\Selection\ISelection.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\IMGUI\PathEditor.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.common@8.0.4\Path\Editor\EditorTool\PathEditorToolExtensions.cs" />

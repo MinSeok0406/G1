@@ -62,16 +62,16 @@
   <ItemGroup>
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\CurveRangePropertyDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\CurveValueDraver.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\SourceOptionsDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\SoCollectionDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\Installer.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\OutputOptionsDrawer.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\LayerDrawer.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\SourceOptionsDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\UtilsEditor.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\OutputOptionsDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\AnimationCurveRangeDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\InplaceFieldDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\RangeFloatDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\OptionalDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\LayerDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\GradientDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1023,18 +1023,6 @@
     <ProjectReference Include="Tools.Runtime.csproj">
       <Project>{B77BE60C-0479-4CB2-4111-8A295B171944}</Project>
       <Name>Tools.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Editor.csproj">
-      <Project>{C590152C-B8E0-D121-A1D4-0F1EF22C12E3}</Project>
-      <Name>Unity.RenderPipelines.Core.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
-      <Project>{08278BC8-2450-4160-D716-9E0B9A5A969E}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.csproj">
-      <Project>{0AFE62F8-3502-BBBC-534E-421CA32A93C4}</Project>
-      <Name>Unity.RenderPipelines.Universal.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{BFF670C0-A8B7-F3BC-E5E8-E3DE940344CA}</Project>

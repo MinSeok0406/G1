@@ -64,14 +64,14 @@
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Utils\Optional.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\SoCollection.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\Attributes\SocTypesAttribute.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Utils\RenderTarget.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\Attributes\SocUniqueAttribute.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Utils\RenderTargetFlip.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\Attributes\SocIgnoreAttribute.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\CurveRangeAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Utils\RenderTarget.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\VolFxPool.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Pool.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\Attributes\SocFormatAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\Attributes\SocUniqueAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Utils\RenderTargetFlip.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\SoCollection\Attributes\SocIgnoreAttribute.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Runtime\Utils\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -864,14 +864,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
-      <Project>{AFDD6DA3-9313-AF5F-3140-17A9DEC60328}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.Player.csproj">
-      <Project>{9974B0A4-5FDA-34FF-7D42-7BCF5F8F035B}</Project>
-      <Name>Unity.RenderPipelines.Universal.Runtime.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.Timeline.Player.csproj">
       <Project>{1B90FC4A-3EAD-2948-5942-157F451779F7}</Project>
       <Name>Unity.Timeline.Player</Name>

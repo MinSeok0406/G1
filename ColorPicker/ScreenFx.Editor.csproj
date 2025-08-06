@@ -61,10 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\VolumeAssetEditor.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\ScreenBehaviourDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\InplaceFieldDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\LayerDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\OptionalDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\ScreenBehaviourDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetPack\VolFx\ScreenFx\Editor\ScreenFx.Editor.asmdef" />
@@ -1011,14 +1011,6 @@
     <ProjectReference Include="ScreenFx.csproj">
       <Project>{1098E05D-B596-3BE7-62DB-BBB117C34343}</Project>
       <Name>ScreenFx</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Editor.csproj">
-      <Project>{C590152C-B8E0-D121-A1D4-0F1EF22C12E3}</Project>
-      <Name>Unity.RenderPipelines.Core.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
-      <Project>{08278BC8-2450-4160-D716-9E0B9A5A969E}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{BFF670C0-A8B7-F3BC-E5E8-E3DE940344CA}</Project>

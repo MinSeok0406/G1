@@ -88,15 +88,15 @@
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Evaluation\RuntimeClipBase.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Utilities\WeightUtility.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\AssetUpgrade\ClipUpgrade.cs" />
-    <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Audio\AudioPlayableAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\TimelineAsset_CreateRemove.cs" />
+    <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Audio\AudioPlayableAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Utilities\TimelineUndo.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Animation\AnimationPlayableAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Control\ControlPlayableAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Properties\AssemblyInfo.cs" />
-    <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Utilities\TimelineClipExtensions.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Utilities\TimelineCreateUtilities.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Audio\AudioTrack.cs" />
+    <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Utilities\TimelineClipExtensions.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Events\MarkerTrack.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Extensions\TrackExtensions.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.7.6\Runtime\Utilities\Extrapolation.cs" />

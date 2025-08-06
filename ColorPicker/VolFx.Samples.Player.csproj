@@ -861,14 +861,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
-      <Project>{AFDD6DA3-9313-AF5F-3140-17A9DEC60328}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.Player.csproj">
-      <Project>{9974B0A4-5FDA-34FF-7D42-7BCF5F8F035B}</Project>
-      <Name>Unity.RenderPipelines.Universal.Runtime.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="VolFx.Player.csproj">
       <Project>{D6FFDB80-64D2-6433-2FF5-76D51B05A0A9}</Project>
       <Name>VolFx.Player</Name>

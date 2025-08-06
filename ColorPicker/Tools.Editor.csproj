@@ -60,10 +60,10 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\OptionalDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\UtilsEditor.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\SoCollectionDrawer.cs" />
     <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\CurveRangePropertyDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\OptionalDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetPack\VolFx\Tools\Editor\Tools.Editor.asmdef" />
@@ -1007,14 +1007,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
-      <Project>{08278BC8-2450-4160-D716-9E0B9A5A969E}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.csproj">
-      <Project>{0AFE62F8-3502-BBBC-534E-421CA32A93C4}</Project>
-      <Name>Unity.RenderPipelines.Universal.Runtime</Name>
-    </ProjectReference>
     <ProjectReference Include="Tools.Runtime.csproj">
       <Project>{B77BE60C-0479-4CB2-4111-8A295B171944}</Project>
       <Name>Tools.Runtime</Name>

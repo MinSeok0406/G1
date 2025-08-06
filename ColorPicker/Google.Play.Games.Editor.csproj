@@ -61,12 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSProjectSettings.cs" />
-    <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\NearbyConnectionUI.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSUpgrader.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSStrings.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSAndroidSetupUI.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSPostBuild.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSUtil.cs" />
+    <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\NearbyConnectionUI.cs" />
     <Compile Include="Assets\GooglePlayGames\com.google.play.games\Editor\GPGSDocsUI.cs" />
   </ItemGroup>
   <ItemGroup>

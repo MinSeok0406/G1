@@ -62,75 +62,75 @@
   <ItemGroup>
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Attributes\LayerAttribute.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Flow\FlowPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Posterize\PosterizePass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\GradientParameter.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Blur\BlurPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Slice\SlicePass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\SoCollection\SoCollection.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Dissolve\DissolvePass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\Optional.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Outline\OutlinePass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Bloom\BloomVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Ascii\AsciiVol.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\NoInterpCurveParameter.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\VolFx.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Warp\WarpVol.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\GradientValue.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Pixelation\PixelationVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\ColorMap\ColorMapPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\SoCollection\Attributes\SocFormatAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Blur\BlurVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Dissolve\DissolveVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Adjustments\AdjustmentsPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\AssemblyInfo.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Slice\SliceVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Sharpen\SharpenPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\VolFx.Api.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Scanlines\ScanlinesPass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\CurveParameter.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Invert\InvertPass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\RenderTarget.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\OldMovie\OldMoviePass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Adjustments\AdjustmentsVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\RenderTargetFlip.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Dither\DitherPass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\OldMovie\OldMovieVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Mask\MaskVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Glitch\GlitchPass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\Utils.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Bloom\BloomPass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\SoCollection\Attributes\SocIgnoreAttribute.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Invert\InvertVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Blit\BlitPass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\NoInterpGradientParameter.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Dither\DitherVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\ColorMap\ColorMapVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Posterize\PosterizePass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\GradientParameter.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Slice\SlicePass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Dissolve\DissolvePass.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\VolFx.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\NoInterpCurveParameter.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Warp\WarpVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\GradientValue.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Blur\BlurVol.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Slice\SliceVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Distort\DistortVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Chromatic\ChromaticPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\CurveParameter.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Invert\InvertPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Grain\GrainVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Ascii\AsciiPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Pixelation\PixelationPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Distort\DistortPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Warp\WarpPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Jpeg\JpegVol.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\RenderTarget.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\OldMovie\OldMoviePass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Adjustments\AdjustmentsVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Attributes\ShaderNameAttribute.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\SoCollection\Attributes\SocTypesAttribute.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Scanlines\ScanlinesVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Attributes\InplaceFieldAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\RenderTargetFlip.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\SoCollection\Attributes\SocUniqueAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Dither\DitherPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Vhs\VhsPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Outline\OutlineVol.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\OldMovie\OldMovieVol.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Mask\MaskVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Sharpen\SharpenVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\RangeFloat.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Glitch\GlitchPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Attributes\CurveRangeAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\Utils.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Chromatic\ChromaticVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Jpeg\JpegPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Bloom\BloomPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Glitch\GlitchVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Grain\GrainPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\SoCollection\Attributes\SocIgnoreAttribute.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Mask\MaskPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Invert\InvertVol.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Blit\BlitPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\NoInterpGradientParameter.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Dither\DitherVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Flow\FlowVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Posterize\PosterizeVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\CurveValue.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\ColorMap\ColorMapVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Lib\Vhs\VhsVol.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -949,14 +949,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.Player.csproj">
-      <Project>{9974B0A4-5FDA-34FF-7D42-7BCF5F8F035B}</Project>
-      <Name>Unity.RenderPipelines.Universal.Runtime.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
-      <Project>{AFDD6DA3-9313-AF5F-3140-17A9DEC60328}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.Timeline.Player.csproj">
       <Project>{1B90FC4A-3EAD-2948-5942-157F451779F7}</Project>
       <Name>Unity.Timeline.Player</Name>
