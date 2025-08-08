@@ -1,21 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="Current">
   <!-- Generated file, do not modify, your changes will be overwritten (use AssetPostprocessor.OnGeneratedCSProject) -->
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <BaseIntermediateOutputPath>Temp\obj\$(Configuration)\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
   </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectCapability Include="Unity" />
+  </ItemGroup>
   <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <LangVersion>9.0</LangVersion>
+    <Configurations>Debug;Release</Configurations>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{F7AB824C-7FF3-34E0-698C-2E40C1F825C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <BaseDirectory>.</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -23,7 +28,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>UNITY_2022_3_57;UNITY_2022_3;UNITY_2022;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_RUNTIME_PERMISSIONS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;ENABLE_VIDEO;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_NAVIGATION_PACKAGE_DEBUG_VISUALIZATION;ENABLE_NAVIGATION_HEIGHTMESH_RUNTIME_SUPPORT;ENABLE_NAVIGATION_UI_REQUIRES_PACKAGE;PLATFORM_ANDROID;TEXTCORE_1_0_OR_NEWER;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;UNITY_CAN_SHOW_SPLASH_SCREEN;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO;ENABLE_SPATIALTRACKING;ENABLE_ETC_COMPRESSION;PLATFORM_EXTENDS_VULKAN_DEVICE;PLATFORM_HAS_MULTIPLE_SWAPCHAINS;UNITY_ANDROID_SUPPORTS_SHADOWFILES;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;PHOTON_UNITY_NETWORKING;PUN_2_0_OR_NEWER;PUN_2_OR_NEWER;PUN_2_19_OR_NEWER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>UNITY_2022_3_57;UNITY_2022_3;UNITY_2022;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_RUNTIME_PERMISSIONS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;ENABLE_VIDEO;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_NAVIGATION_PACKAGE_DEBUG_VISUALIZATION;ENABLE_NAVIGATION_HEIGHTMESH_RUNTIME_SUPPORT;ENABLE_NAVIGATION_UI_REQUIRES_PACKAGE;PLATFORM_ANDROID;TEXTCORE_1_0_OR_NEWER;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;UNITY_CAN_SHOW_SPLASH_SCREEN;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO;ENABLE_SPATIALTRACKING;ENABLE_ETC_COMPRESSION;PLATFORM_EXTENDS_VULKAN_DEVICE;PLATFORM_HAS_MULTIPLE_SWAPCHAINS;UNITY_ANDROID_SUPPORTS_SHADOWFILES;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;PHOTON_UNITY_NETWORKING;PUN_2_0_OR_NEWER;PUN_2_OR_NEWER;PUN_2_19_OR_NEWER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169;USG0001</NoWarn>
@@ -39,297 +44,489 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <NoConfig>true</NoConfig>
+    <NoStandardLibraries>true</NoStandardLibraries>
     <NoStdLib>true</NoStdLib>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
-    <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
+    <NoConfig>true</NoConfig>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
     <UnityProjectGeneratorVersion>2.0.22</UnityProjectGeneratorVersion>
-    <UnityProjectGeneratorStyle>Legacy</UnityProjectGeneratorStyle>
+    <UnityProjectGeneratorStyle>SDK</UnityProjectGeneratorStyle>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>2022.3.57f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="D:\VisualStudio\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
-    <Analyzer Include="D:\Unity_Study\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
-    <Analyzer Include="D:\Unity_Study\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
+    <Analyzer Include="C:\Users\tnrbs\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.2\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Unity\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
+    <Analyzer Include="C:\Unity\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\GameManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightingCameras.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Components\TilemapRoom2D.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\ServerCore\Connector.cs" />
-    <Compile Include="Assets\InGame\Scripts\Movement\Idle.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\BlurChecker.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
-    <Compile Include="Assets\InGame\Scripts\Mics\GameData.cs" />
-    <Compile Include="Assets\InGame\Scripts\Mics\SingletonNetworkBehaviour.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionMultiClick.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_Scene.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\DeathEvent.cs" />
-    <Compile Include="Assets\Minseok\Script\MouseEvent\MouseIdleState.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\AnimatePlayer.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationSets.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Sorting\SortDepthList.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\DayLightCollider\DayLightCollider2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightingOcclusionShape.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2DList.cs" />
-    <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerController.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocity.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_LobbyScene.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\LightingMonobehavior.cs" />
-    <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocityEvent.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\Tiled\SpriteTiledMesh.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\LightCollider\LightTilemapCollider2D.cs" />
-    <Compile Include="Assets\Minseok\Script\Player\InteractiveControl.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\MaterialSystem.cs" />
-    <Compile Include="Assets\Minseok\Script\Packet\PacketQueue.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitterMultiButton.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\EventForward.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\BookShelfTarget.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarAuto.cs" />
     <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\LayerTrigger.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\ShadowEngine.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorted.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SpriteExtension\PhysicsShapeManager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularRound.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\PerpendicularIntersection.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\LightingMaterial.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightSprite2D\LightSpriteShape.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\LightSprite.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Pair2D.cs" />
-    <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\6 - Event Handling\Scripts\BasicEvents.cs" />
-    <Compile Include="Assets\Minseok\Script\MouseInterective\MouseInteractiveEvent.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightRoom2D\LightingRoomShape.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Collider3D.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Scene\LobbyScene.cs" />
-    <Compile Include="Assets\Minseok\Script\MouseEvent\MouseStateMachine.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularRoundAuto.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\LegacyGPU.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Tilemap2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightCollider2D\LightColliderShape.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\GLExtended.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListener.cs" />
-    <Compile Include="Assets\Minseok\Script\Movement\MovementByVelocityEvent.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Graphics\Max2DMesh.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\Ripple.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipSnap.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\UI\UITextScale.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Occlusion\LightTilemapOcclusion2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Lighting2DMaterials.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\BookItem.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\ClickableObject.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\IMiniGameInteractable.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\NetworkManager.cs" />
-    <Compile Include="Assets\InGame\Scripts\ClassAbility\MafiaAbility.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarPatternCircularAuto.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightTexture2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Shadow\SpriteRendererShadow.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Math2D.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\ServerCore\Session.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationWrapper.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\Object.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\GameManager.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2ListCollider2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\CameraLightmap.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindow.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightRoom2D.cs" />
-    <Compile Include="Assets\Minseok\Script\Player\MyPlayerControl.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightCollision2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Main.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Switch\SwitchSimple.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenuLongPress.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleTextSimple.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\LightTilemapTransform.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithmUtility.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Profile.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_InGameScene.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\VirtualSpriteRenderer.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Graphics\Max2D.cs" />
+    <Compile Include="Assets\DongJu\Random Placement.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\GUI\LightEventListenerCountGUI.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\MeshBrush.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Hexagon.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Mask\Grid.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationWithButtonUI.cs" />
     <Compile Include="Assets\InGame\Scripts\GameState\GameState.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\LightSettings.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Masks\SpriteRenderer2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\UI\UICanvasScale.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\MiniGameManager.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\CanvasManager.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerDataChangedEvent.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\Light2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Base.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\TabView\TabView.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\LaunchURL.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\1 - Demo Dungeon\Scripts\SortingOrderByY.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightBuffer.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\AbilityManager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\TabView\TabViewSimple.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toast\Toast.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Occlusion\LightOcclusion2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Helper.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\TextureRenderer.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenuRightClick.cs" />
     <Compile Include="Assets\Minseok\Script\MouseEvent\MouseDragState.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorting\SortObject.cs" />
     <Compile Include="Assets\Minseok\Script\MouseInterective\ToggleButtonInteractiveEffect.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightParticleSystem2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Effects\LightFlicker.cs" />
-    <Compile Include="Assets\InGame\Scripts\Mics\DeathCameraRendering.cs" />
-    <Compile Include="Assets\InGame\Scripts\ClassAbility\IClassAbility.cs" />
-    <Compile Include="Assets\Minseok\Script\Packet\ServerSession.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\NetworkManager.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Collider2D.cs" />
     <Compile Include="Assets\Minseok\Script\PlayerClass\IClassAbility.cs" />
     <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\SpriteColorAnimation.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\Light2D\LightFreeForm.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\EditorDemoPositionFix.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\BumpMask.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\DataManager.cs" />
+    <Compile Include="Assets\DongJu\EndDetection.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Mask.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Scriptable\Demo 1 - Light Sprite\LightSpriteSample.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionMultiDown.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\Shape.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\DayLightCollider2D\DayLightColliderShape.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\LightSource.cs" />
     <Compile Include="Assets\Minseok\Script\Enum\Enum.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SpriteProjection.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Gradient\GradientText.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Presets\EventPresets.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\ResourceManager.cs" />
-    <Compile Include="Assets\InGame\Scripts\Server\OnlineManager.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\UI\Popup\UI_Joystick.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\TilemapCollider.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftDefault.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toast\ToastContentFitter.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\PoolManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\UnityTilemap.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\LayerSetting.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\SkinnedMesh.cs" />
-    <Compile Include="Assets\Minseok\Script\MouseEvent\MousePointerDownState.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Components\Mesh2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SkinnedMeshRendererShape.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider3D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarSpecialAuto.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleText.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\PlayerManager.cs" />
-    <Compile Include="Assets\InGame\Scripts\UI\PlayerSlotUI.cs" />
     <Compile Include="Assets\Minseok\Script\Packet\Protocol.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Main.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\TilemapProperties.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarGridLinearAuto.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\ExitToSystem.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\Particle.cs" />
     <Compile Include="Assets\Minseok\Script\MouseInterective\MouseInteractiveObject.cs" />
-    <Compile Include="Assets\Minseok\Script\Packet\ClientPacketManager.cs" />
-    <Compile Include="Assets\Minseok\Script\Mission\MissionDetailsSO.cs" />
-    <Compile Include="Assets\Minseok\Script\Player\AnimatePlayer.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarBubbleAuto.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\ParticleRenderer.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Isometric.cs" />
-    <Compile Include="Assets\InGame\Scripts\AES\AESCrypto.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Data\Data.Contents.cs" />
-    <Compile Include="Assets\InGame\Scripts\Interactive\InteractiveItem.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanMiniGame.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowInputFieldUI.cs" />
     <Compile Include="Assets\Minseok\Script\PlayerClass\MafiaAbility.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Scriptable\LightSprite2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationUtility.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\Room.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldTransitionSpecial.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownMultiCheckTransition.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Button\ButtonMultiTransition.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Scene\LoginScene.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Lighting2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\LightTexture.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerControl.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapOcclusion\OcclusionTileset.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowListUI.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\Misc\TimerHelper.cs" />
-    <Compile Include="Assets\Minseok\Script\Manager\GameResources.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipSpecial.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\FollowRacer.cs" />
     <Compile Include="Assets\Minseok\Script\Misc\PRS.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\Base.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationContentFitterWithButton.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Pass.cs" />
-    <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Scripts\DemoFollowMouse.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\UI\Popup\UI_Popup.cs" />
-    <Compile Include="Assets\Minseok\Script\MouseInterective\ButtonInteractiveEffect.cs" />
-    <Compile Include="Assets\Minseok\Script\Misc\SingletonMonobehaviour.cs" />
+    <Compile Include="Assets\DongJu\ToyDraggable.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\Death.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\LightingSettings.cs" />
-    <Compile Include="Assets\InGame\Scripts\Room\GameRuleSettings.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\MapManager.cs" />
-    <Compile Include="Assets\Minseok\Script\Movement\IdleEvent.cs" />
-    <Compile Include="Assets\InGame\Scripts\Interactive\IInteractive.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\AESKeyManager.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\Poolable.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Scene\BaseScene.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Switch\Switch.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\TabView\Tab.cs" />
     <Compile Include="Assets\Minseok\Script\Manager\UIManager.cs" />
-    <Compile Include="Assets\InGame\Scripts\Server\PacketHandler.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\LightingRender2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\Server\PacketHandler.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Graphics\SmartMaterial.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\PolygonUtility.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\LightingPosition.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightCollider2D\LayerManager.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Managers\Managers.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Base.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\LobbyUIManager.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightTilemap.cs" />
-    <Compile Include="Assets\InGame\Scripts\Player\LobbyPlayer.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\BackgroundFilter.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\Tile.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerOtherController.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightTilemapRoom2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightOcclusion2D\OcclusionMesh.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\SpriteTransform.cs" />
-    <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\PropsAltar.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SpriteExtension\PhysicsShape.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_ChatScene.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Sprite.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Main.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarSpecialPatternAuto.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Shadow\Shadow.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\DefaultTriagulator\UnityDefaultTriangulator.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Input\GamepadChecker.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Manager\LightingMeshRenderer.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Vector2Extension.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\MeshRendererShape.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\SoftShadowEngine.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowRadioButton.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Lights.cs" />
+    <Compile Include="Assets\Minseok\Script\Mission\Mission.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\LocalBackupManager.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Mask\SpriteRenderer2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Tooltip\Tooltip.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\PanelInitUtil.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Selector\SelectorSimple.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\BookOrganizingMiniGame.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\SliderManager.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorting\SortDepth.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Utils\PriorityQueue.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Events\PressKeyEvent.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightCollider.cs" />
+    <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\GizmosHelper.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\DoublePair2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipDetermine.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\NoSort.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ResizableWindow\WindowDrag.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\WebManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\GameState\GameStartedState.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Button\ButtonTransition.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\ChatManager.cs" />
+    <Compile Include="Assets\AssetPack\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\CameraSettings.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Slider\SliderTransition.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\UIDissolveEffect.cs" />
+    <Compile Include="Assets\InGame\Scripts\Mics\RoomObjectMarker.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarGridCircular.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListenerCount.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationContentFitterWithButtonUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorting\SortPass.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftDistance.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarGridCircularAuto.cs" />
+    <Compile Include="Assets\InGame\Scripts\Server\BackupPayload.cs" />
+    <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Manager\OnRenderMode.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\ScrollForMore.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\UI\UI_EventHandler.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightSprite2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Tile.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Effects\LightCycle.cs" />
+    <Compile Include="Assets\InGame\Scripts\GameState\PlayingGameState.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftShadowSorter.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\Fast.cs" />
+    <Compile Include="Assets\InGame\Scripts\ClassAbility\KillEvent.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenu.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\ServerCore\RecvBuffer.cs" />
+    <Compile Include="Assets\Minseok\Script\Movement\MovementByVelocity.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Shadow\Collider.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Night\Room.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Effects\LightBlink.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerBackground.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Utility\InputModuleSwitch.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBarUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorting\SortList.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Pass.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\TabView\TabViewGroup.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\CompositeCollider2DShape.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowList.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\MeshObject.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Interaction\InteractiveObject.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\TilemapRoom.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\GameResources.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\NoSort.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarLoop.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SceneView\SceneView.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ContextMenu\ContextMenuRightClick.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\GameDataManager.cs" />
+    <Compile Include="Assets\Minseok\Script\MouseEvent\MouseStateController.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Events\PointerEnterEvents.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitterUI.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Window\MainPanelManager.cs" />
+    <Compile Include="Assets\Minseok\Script\Movement\Idle.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowCheckBoxUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapRoom2D\LightingTilemapRoomTransform.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\GUI\LightEventListenerGUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithm.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Rectangle.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Window\MainPanelButton.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\QualityManager.cs" />
+    <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DListCollider2D.cs" />
+    <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\TopDownCharacterController.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ResizableWindow\WindowResizeHandle.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapMaterials.cs" />
+    <Compile Include="Assets\InGame\Scripts\Player\Player.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\LightTile.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowCheckBox.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_BackGround.cs" />
+    <Compile Include="Assets\InGame\Scripts\Utilities\HelperUtilities.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Texture.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\GameState\GameStateMachine.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Slider\SliderRange.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DListCollider3D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\ProjectSettings.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\SpriteMeshObject.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerImage.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationUI.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\ServerCore\Connector.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ContextMenu\ContextMenuLeftClick.cs" />
+    <Compile Include="Assets\DongJu\color_script\ToyColorCategory.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarPatternAuto.cs" />
+    <Compile Include="Assets\InGame\Scripts\Movement\Idle.cs" />
+    <Compile Include="Assets\InGame\Scripts\Mics\GameData.cs" />
+    <Compile Include="Assets\InGame\Scripts\Mics\SingletonNetworkBehaviour.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\DropdownManager.cs" />
+    <Compile Include="Assets\Minseok\Script\MouseEvent\MouseIdleState.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Gradient\GradientModifier.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Selector\Selector.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionClick.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2DList.cs" />
+    <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerController.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_LobbyScene.cs" />
+    <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocityEvent.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\Tiled\SpriteTiledMesh.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\LightCollider\LightTilemapCollider2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowInputField.cs" />
+    <Compile Include="Assets\Minseok\Script\Player\InteractiveControl.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\MaterialSystem.cs" />
+    <Compile Include="Assets\Minseok\Script\Packet\PacketQueue.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toast\ToastUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\ShadowEngine.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorted.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SpriteExtension\PhysicsShapeManager.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Pair2D.cs" />
+    <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\6 - Event Handling\Scripts\BasicEvents.cs" />
+    <Compile Include="Assets\Minseok\Script\MouseInterective\MouseInteractiveEvent.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Collider3D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowMultiButtonUI.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Scene\LobbyScene.cs" />
+    <Compile Include="Assets\Minseok\Script\MouseEvent\MouseStateMachine.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListener.cs" />
+    <Compile Include="Assets\Minseok\Script\Movement\MovementByVelocityEvent.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBar.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Graphics\Max2DMesh.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarPattern.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Occlusion\LightTilemapOcclusion2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Lighting2DMaterials.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionHover.cs" />
+    <Compile Include="Assets\InGame\Scripts\ClassAbility\MafiaAbility.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Input\ScrollRectElement.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Math2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationWrapper.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ResizableWindow\WindowResize.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitter.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2ListCollider2D.cs" />
+    <Compile Include="Assets\Minseok\Script\Player\MyPlayerControl.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Main.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithmUtility.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_InGameScene.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\VirtualSpriteRenderer.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Hexagon.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Mask\Grid.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanableObject.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\SwitchManager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBar.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Masks\SpriteRenderer2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\UI\UICanvasScale.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarBubble.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\Light2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Base.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\AbilityManager.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Helper.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\TextureRenderer.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightParticleSystem2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\Mics\DeathCameraRendering.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipInDetermine.cs" />
+    <Compile Include="Assets\InGame\Scripts\ClassAbility\IClassAbility.cs" />
+    <Compile Include="Assets\Minseok\Script\Packet\ServerSession.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\NetworkManager.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Collider2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\Light2D\LightFreeForm.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationWithButton.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\DataManager.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\DayLightCollider2D\DayLightColliderShape.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Window\SplashScreenManager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ContextMenu\ContextMenuLongPress.cs" />
+    <Compile Include="Assets\InGame\Scripts\Server\OnlineManager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarGridLinear.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\UI\Popup\UI_Joystick.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\SkinnedMesh.cs" />
+    <Compile Include="Assets\Minseok\Script\MouseEvent\MousePointerDownState.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Components\Mesh2D.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SkinnedMeshRendererShape.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider3D.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\PlayerSlotUI.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Main.cs" />
+    <Compile Include="Assets\Minseok\Script\Packet\ClientPacketManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\BookGameTester.cs" />
+    <Compile Include="Assets\Minseok\Script\Mission\MissionDetailsSO.cs" />
+    <Compile Include="Assets\Minseok\Script\Player\AnimatePlayer.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Isometric.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationContentFitter.cs" />
+    <Compile Include="Assets\DongJu\Box_script\ToyBox.cs" />
+    <Compile Include="Assets\InGame\Scripts\AES\AESCrypto.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Data\Data.Contents.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenuLeftClick.cs" />
+    <Compile Include="Assets\InGame\Scripts\Interactive\InteractiveItem.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Others\LayoutGroupFix.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\UIParticleRenderer.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Scriptable\LightSprite2D.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\UIGradient.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\Room.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleTransition.cs" />
+    <Compile Include="Assets\InGame\Scripts\Utilities\MiniGameInputContext.cs" />
+    <Compile Include="Assets\Minseok\Script\Manager\GameResources.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\ButtonAnimationFix.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\Base.cs" />
+    <Compile Include="Assets\Minseok\Script\MouseInterective\ButtonInteractiveEffect.cs" />
+    <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Scripts\DemoFollowMouse.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleCheck.cs" />
+    <Compile Include="Assets\Minseok\Script\Misc\SingletonMonobehaviour.cs" />
+    <Compile Include="Assets\InGame\Scripts\Room\GameRuleSettings.cs" />
+    <Compile Include="Assets\Minseok\Script\Movement\IdleEvent.cs" />
+    <Compile Include="Assets\InGame\Scripts\Interactive\IInteractive.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\AESKeyManager.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\Poolable.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Scene\BaseScene.cs" />
+    <Compile Include="Assets\DongJu\color_script\ObjectColor.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBarLoop.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightCollider2D\LayerManager.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Managers\Managers.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\DraggableObject.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightTilemap.cs" />
+    <Compile Include="Assets\InGame\Scripts\Player\LobbyPlayer.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Editor Handlers\DarkUIEditorHandler.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ContextMenu\ContextMenu.cs" />
+    <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\PropsAltar.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Sprite.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_ChatScene.cs" />
+    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Main.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Vector2Extension.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Export Demo\GUIFPS.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Chunks\Tilemap\TilemapChunk.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\SoftShadowEngine.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Events\TimedEvent.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toast\ToastContentFitterUI.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Pass.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\SpriteRenderer2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarPatternCircular.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\CollisionEvent.cs" />
-    <Compile Include="Assets\Minseok\Script\Mission\Mission.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Lights.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\LocalBackupManager.cs" />
     <Compile Include="Assets\InGame\Scripts\ClassAbility\CitizenAbility.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\DTSweepUtility.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleSwap.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\ButtonManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Shadow\Shadow.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Mask\SpriteRenderer2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\DayLightCollider\DayLightTilemapCollider2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\TabView\TabSimple.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\MeshRendererManager.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\SceneManagerEx.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Presets\LightPresets.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\UI_Manager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularMove.cs" />
     <Compile Include="Assets\Minseok\GPGS_Manager.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameInputHandler.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldTransition.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\HorizontalSelector.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\UIElementSound.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapShaders.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\Misc\DestroyTimer.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorting\SortDepth.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2ListCollider3D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightOcclusion2D\LightingOcclussion.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Utils\PriorityQueue.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightCollider.cs" />
-    <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\GizmosHelper.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Manager.cs" />
     <Compile Include="Assets\Minseok\Script\Utilities\HelperUtilities.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\DoublePair2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\NoSort.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\WebManager.cs" />
-    <Compile Include="Assets\InGame\Scripts\GameState\GameStartedState.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Mathd.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Utils\Util.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\TilemapEvents.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBarLoopUI.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\ChatManager.cs" />
-    <Compile Include="Assets\AssetPack\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\CameraSettings.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionMultiHover.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\Camera\CameraTransform.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownMultiCheck.cs" />
     <Compile Include="Assets\Minseok\Script\Interactive\IInteractable.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Slider\SliderCircular.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Mesh.cs" />
+    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldSimple.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTag.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer.cs" />
-    <Compile Include="Assets\InGame\Scripts\Mics\RoomObjectMarker.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListenerCount.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\1 - Demo Dungeon\Scripts\DungeonPlayerController.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\LightShape.cs" />
     <Compile Include="Assets\InGame\Scripts\Mics\Settings.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorted.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorting\SortPass.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftDistance.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Window\ModalWindowManager.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Export Demo\MainDemoManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\DelaunayTriangle.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerLogo.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightCollider2D\LightColliderTransform.cs" />
-    <Compile Include="Assets\InGame\Scripts\Server\BackupPayload.cs" />
-    <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Manager\OnRenderMode.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularMoveAuto.cs" />
     <Compile Include="Assets\Minseok\Script\MouseEvent\MousePointerUpState.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\NoSort.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\Notification.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerRoad.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\UI\UI_EventHandler.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitterMultiButtonUI.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\Collider3DShape.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightSprite2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Tile.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowRadioButtonUI.cs" />
     <Compile Include="Assets\Minseok\Script\Utilities\ValidateCheck.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorting\SortDepthList.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\LightCollider\LightCollider2D.cs" />
@@ -337,98 +534,71 @@
     <Compile Include="Assets\InGame\Scripts\Manager\CharacterCustomizeManager.cs" />
     <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\CameraFollow.cs" />
     <Compile Include="Assets\InGame\Scripts\GameState\MeetingState.cs" />
-    <Compile Include="Assets\InGame\Scripts\GameState\PlayingGameState.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Effects\LightCycle.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftShadowSorter.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\Fast.cs" />
-    <Compile Include="Assets\InGame\Scripts\ClassAbility\KillEvent.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\ServerCore\RecvBuffer.cs" />
-    <Compile Include="Assets\Minseok\Script\Movement\MovementByVelocity.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Shadow\Collider.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Night\Room.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Effects\LightBlink.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Slider\SliderRangeTransition.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Window\SplashScreenTitle.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Main.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorting\SortList.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Pass.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\Simple\SpriteMesh.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Rendering.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\CompositeCollider2DShape.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationContentFitterUI.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Pass.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\Collider2DShape.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\LobbyPlayerControl.cs" />
-    <Compile Include="Assets\GPGSIds.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Misc\MeshObject.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\UnityTilemap.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Presets\LightmapPresets.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\ObjectManager.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\Interaction\InteractiveObject.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\TilemapRoom.cs" />
     <Compile Include="Assets\InGame\Scripts\GameState\VotingState.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\GameResources.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerCustomization.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_LoginScene.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightBuffer2D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\NoSort.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SceneView\SceneView.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowMultiButton.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerText.cs" />
     <Compile Include="Assets\Minseok\Script\Web\WebPacket.cs" />
-    <Compile Include="Assets\Minseok\Script\MouseEvent\MouseStateController.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\BlurManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Sorting\SortDepth.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\LobbyManager.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\GameManager\PlayerClassAssigner.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\GameDataManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\DragTriggerSensor.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpriteShape.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Manager\LightingManager2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Sorted.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Graphics\MaterialManager.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarSpecial.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Components\TilemapCollider2D.cs" />
     <Compile Include="Assets\InGame\Scripts\Enum\Enum.cs" />
     <Compile Include="Assets\Minseok\Script\Misc\Settings.cs" />
     <Compile Include="Assets\InGame\Scripts\Server\HostMigrationHandler.cs" />
-    <Compile Include="Assets\Minseok\Script\Movement\Idle.cs" />
     <Compile Include="Assets\Minseok\Script\Player\PlayerControl.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\DayLightCollider2D\DayLightColliderTransfom.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapRoom2D\LightingTilemapRoomTransform.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Enums.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\PolygonTriangulator2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DHelper.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\GUI\LightEventListenerGUI.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithm.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Shadow\SpriteRendererShadow.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Rectangle.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\UI\UI_Base.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionDown.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\IdleEvent.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\Light2D\LightTransform.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Debug\LightingDebug.cs" />
-    <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DListCollider2D.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Input\GamepadScrollEvent.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\LegacyCPU.cs" />
-    <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\TopDownCharacterController.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapMaterials.cs" />
     <Compile Include="Assets\Minseok\Script\MouseEvent\MouseState.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameBase.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Scene\GameScene.cs" />
-    <Compile Include="Assets\InGame\Scripts\Player\Player.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer2D.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownTransition.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Utils\Define.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\LightTile.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\Common\TransitionTwo.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_CustomScene.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\Manager.cs" />
-    <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_BackGround.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\UIManager.cs" />
-    <Compile Include="Assets\InGame\Scripts\Utilities\HelperUtilities.cs" />
+    <Compile Include="Assets\AssetPlus\Dark - Complete Horror UI\Scripts\Core\DarkInternalTools.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpritePhysicsShape.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Texture.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Room.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Shadow\Grid.cs" />
     <Compile Include="Assets\Minseok\Script\Packet\PacketHandler.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2D.cs" />
-    <Compile Include="Assets\InGame\Scripts\GameState\GameStateMachine.cs" />
-    <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DListCollider3D.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\ProjectSettings.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Utils\Extension.cs" />
+    <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarSpecialPattern.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Shape.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Scripts\DemoLightColorChange.cs" />
-    <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\SpriteMeshObject.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Shadow.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -464,9 +634,11 @@
     <None Include="Assets\Libs\Google.Protobuf.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Translucency\BlurHorizontal.shader" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Shaders\UI Particle Additive.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Fast\SpriteLit_Pass1.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\LightShadow\SpriteProjection.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Misc\SpriteInvert.shader" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Shaders\Fast UI Blur.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Misc\Emissive.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Mask\DayMask.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Bump\Bumped_Pass3.shader" />
@@ -489,12 +661,14 @@
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Fast\SpriteLit_Pass4.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Misc\LitMask.shader" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Shaders\UI Dissolve Effect.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\AlphaBlended.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Setup\AllInOne.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Read Me.txt" />
     <None Include="Assets\AssetPack\Photon\PhotonLibs\changes-library.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Light\FreeFormFalloff.shader" />
@@ -506,6 +680,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\AssetPack\Photon\PhotonUnityNetworking\readme.txt" />
     <None Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\Files\eurof_tt.txt" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Documentation\Documentation.txt" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Light\SpriteLight.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Light\PointOcclusion.shader" />
     <None Include="Assets\AssetPack\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll" />
@@ -530,6 +705,7 @@
     <None Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Shader\SH Sprite Shadow Mask.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Unlit\Texture.shader" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Shaders\Masked UI Blur.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Depth\DayShadows.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\AssetPack\Photon\PhotonUnityNetworking\link.xml" />
@@ -543,326 +719,327 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Day\DayBump.shader" />
     <None Include="Assets\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Mask\MaskTranslucency.shader" />
+    <None Include="Assets\AssetPlus\Dark - Complete Horror UI\Shaders\UI Blur.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AIModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ARModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ARModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ARModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AccessibilityModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AccessibilityModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AccessibilityModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AndroidJNIModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AndroidJNIModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AndroidJNIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AnimationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AssetBundleModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.AudioModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ClothModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ClothModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ClothModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ContentLoadModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ContentLoadModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ContentLoadModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CrashReportingModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.CrashReportingModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.CrashReportingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.DSPGraphModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.DSPGraphModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.DSPGraphModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.DirectorModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.DirectorModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.DirectorModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GIModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.GIModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.GIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GameCenterModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.GameCenterModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.GameCenterModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GridModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.GridModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.GridModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.HotReloadModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.HotReloadModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.HotReloadModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.InputModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.InputModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.JSONSerializeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.LocalizationModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.LocalizationModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.LocalizationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ParticleSystemModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PerformanceReportingModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.PerformanceReportingModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.PerformanceReportingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.Physics2DModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ProfilerModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ProfilerModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ProfilerModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PropertiesModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.PropertiesModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.PropertiesModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ScreenCaptureModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ScreenCaptureModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.ScreenCaptureModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SharedInternalsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SharedInternalsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SharedInternalsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SpriteMaskModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SpriteMaskModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SpriteMaskModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SpriteShapeModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SpriteShapeModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SpriteShapeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.StreamingModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.StreamingModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.StreamingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SubstanceModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SubstanceModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SubstanceModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SubsystemsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SubsystemsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.SubsystemsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TLSModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TLSModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TLSModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TerrainModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TerrainModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TerrainModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TerrainPhysicsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TerrainPhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextCoreFontEngineModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextCoreTextEngineModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TilemapModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TilemapModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.TilemapModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UIElementsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UmbraModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UmbraModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UmbraModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityAnalyticsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityAnalyticsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityAnalyticsCommonModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityConnectModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityConnectModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityConnectModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityCurlModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityCurlModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityCurlModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityTestProtocolModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityTestProtocolModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VFXModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VFXModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VFXModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VRModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VRModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VehiclesModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VehiclesModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VehiclesModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VideoModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VideoModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.VideoModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.WindModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.WindModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.WindModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.XRModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.XRModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEngine.XRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.CoreModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.CoreModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.DeviceSimulatorModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.DeviceSimulatorModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.DeviceSimulatorModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.DiagnosticsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.DiagnosticsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.DiagnosticsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.EditorToolbarModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.EditorToolbarModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.EditorToolbarModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.GraphViewModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.GraphViewModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.GraphViewModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.PresetsUIModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.PresetsUIModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.PresetsUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.QuickSearchModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.QuickSearchModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.QuickSearchModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.SceneTemplateModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.SceneTemplateModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.SceneTemplateModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.SceneViewModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.SceneViewModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.SceneViewModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.TextCoreFontEngineModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.TextCoreFontEngineModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.TextCoreFontEngineModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.TextCoreTextEngineModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.TextCoreTextEngineModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.TextCoreTextEngineModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UIBuilderModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UIBuilderModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UIBuilderModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UIElementsModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UIElementsModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UIElementsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UIElementsSamplesModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UIElementsSamplesModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UIElementsSamplesModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UnityConnectModule">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
@@ -894,527 +1071,583 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Android.Types">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Android.Gradle">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Android.GradleProject">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.GradleProject.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.GradleProject.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\Microsoft.Win32.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.AppContext">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.AppContext.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.AppContext.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Buffers">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Buffers.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Buffers.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections.Concurrent">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.Concurrent.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.Concurrent.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections.NonGeneric">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.NonGeneric.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.NonGeneric.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections.Specialized">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.Specialized.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Collections.Specialized.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.EventBasedAsync">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.EventBasedAsync.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.EventBasedAsync.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.TypeConverter">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.TypeConverter.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ComponentModel.TypeConverter.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Console">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Console.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Console.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data.Common">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Data.Common.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Data.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.Contracts">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Contracts.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Contracts.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.Debug">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Debug.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Debug.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.FileVersionInfo">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.FileVersionInfo.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.FileVersionInfo.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.Process">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Process.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Process.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.StackTrace">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.StackTrace.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.StackTrace.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.TextWriterTraceListener">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.TextWriterTraceListener.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.TextWriterTraceListener.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.Tools">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Tools.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Tools.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.TraceSource">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.TraceSource.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.TraceSource.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.Tracing">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Tracing.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Diagnostics.Tracing.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Drawing.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Drawing.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Dynamic.Runtime">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Dynamic.Runtime.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Dynamic.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Globalization.Calendars">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Globalization.Calendars.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Globalization.Calendars.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Globalization">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Globalization.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Globalization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Globalization.Extensions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Globalization.Extensions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Globalization.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Compression">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.Compression.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.Compression.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Compression.ZipFile">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.Compression.ZipFile.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.Compression.ZipFile.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.FileSystem">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.FileSystem.DriveInfo">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.DriveInfo.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.DriveInfo.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.FileSystem.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.FileSystem.Watcher">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.Watcher.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.FileSystem.Watcher.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.IsolatedStorage">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.IsolatedStorage.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.IsolatedStorage.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.MemoryMappedFiles">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.MemoryMappedFiles.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.MemoryMappedFiles.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Pipes">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.Pipes.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.Pipes.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.UnmanagedMemoryStream">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.UnmanagedMemoryStream.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.IO.UnmanagedMemoryStream.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Linq">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Linq.Expressions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.Expressions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.Expressions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Linq.Parallel">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.Parallel.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.Parallel.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Linq.Queryable">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.Queryable.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Linq.Queryable.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Memory">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Memory.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Memory.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Http">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Http.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Http.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.NameResolution">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.NameResolution.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.NameResolution.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.NetworkInformation">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.NetworkInformation.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.NetworkInformation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Ping">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Ping.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Ping.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Requests">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Requests.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Requests.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Security">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Security.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Security.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Sockets">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Sockets.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.Sockets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.WebHeaderCollection">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.WebHeaderCollection.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.WebHeaderCollection.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.WebSockets.Client">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.WebSockets.Client.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.WebSockets.Client.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.WebSockets">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.WebSockets.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Net.WebSockets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Numerics.Vectors">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Numerics.Vectors.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Numerics.Vectors.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ObjectModel">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ObjectModel.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ObjectModel.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.DispatchProxy">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.DispatchProxy.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.DispatchProxy.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Emit">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Emit.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Emit.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Emit.ILGeneration">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Emit.ILGeneration.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Emit.ILGeneration.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Emit.Lightweight">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Emit.Lightweight.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Emit.Lightweight.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Extensions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Extensions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Reflection.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Resources.Reader">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Resources.Reader.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Resources.Reader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Resources.ResourceManager">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Resources.ResourceManager.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Resources.ResourceManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Resources.Writer">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Resources.Writer.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Resources.Writer.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.VisualC">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.CompilerServices.VisualC.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.CompilerServices.VisualC.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Extensions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Extensions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Handles">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Handles.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Handles.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.InteropServices">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.InteropServices.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.InteropServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Numerics">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Numerics.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Numerics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Formatters">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Formatters.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Formatters.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Json">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Json.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Xml">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Xml.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Runtime.Serialization.Xml.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Claims">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Claims.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Claims.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Algorithms">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Csp">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Csp.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Csp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Encoding">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Encoding.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Encoding.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Primitives">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Primitives.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.Primitives.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.X509Certificates">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Cryptography.X509Certificates.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.Principal">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Principal.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.Principal.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Security.SecureString">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.SecureString.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Security.SecureString.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Text.Encoding">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Text.Encoding.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Text.Encoding.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Text.Encoding.Extensions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Text.Encoding.Extensions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Text.Encoding.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Text.RegularExpressions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Text.RegularExpressions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Text.RegularExpressions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.Overlapped">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Overlapped.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Overlapped.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.Tasks">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Tasks.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Tasks.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Tasks.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.Tasks.Parallel">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Tasks.Parallel.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Tasks.Parallel.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.Thread">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Thread.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Thread.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.ThreadPool">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.ThreadPool.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.ThreadPool.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Threading.Timer">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Timer.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Threading.Timer.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ValueTuple">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ValueTuple.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.ValueTuple.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.ReaderWriter">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.ReaderWriter.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.ReaderWriter.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.XDocument">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XDocument.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XDocument.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.XmlDocument">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XmlDocument.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XmlDocument.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.XmlSerializer">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XmlSerializer.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XmlSerializer.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.XPath">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XPath.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XPath.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.XPath.XDocument">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XPath.XDocument.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netstandard\System.Xml.XPath.XDocument.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\mscorlib.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\mscorlib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Core">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Core.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Data.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Data.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Drawing.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Drawing.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.IO.Compression.FileSystem.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.IO.Compression.FileSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Net.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Net.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Numerics">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Numerics.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Numerics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Runtime.Serialization.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Runtime.Serialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ServiceModel.Web">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ServiceModel.Web.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ServiceModel.Web.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Transactions">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Transactions.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Transactions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Web.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Web.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Windows.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Windows.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Linq.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Linq.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Serialization">
-      <HintPath>D:\Unity_Study\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Sysroot.Linux_x86_64">
-      <HintPath>Library\ScriptAssemblies\Unity.Sysroot.Linux_x86_64.dll</HintPath>
+      <HintPath>C:\Unity\2022.3.57f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.2D.IK.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PsdPlugin">
-      <HintPath>Library\ScriptAssemblies\PsdPlugin.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Burst">
-      <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.2D.Common.Path.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Path.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.PixelPerfect.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Rider.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.Aseprite.Common">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Aseprite.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Flow">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.Tilemap.Extras.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.PlasticSCM.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.SpriteShape.Runtime">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.PixelPerfect">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.Aseprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Aseprite.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
+      <HintPath>Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Sysroot.Linux_x86_64">
+      <HintPath>Library\ScriptAssemblies\Unity.Sysroot.Linux_x86_64.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PsdPlugin">
+      <HintPath>Library\ScriptAssemblies\PsdPlugin.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
@@ -1449,24 +1682,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Rider.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.PixelPerfect.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.Aseprite.Common">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.Aseprite.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow.Editor">
@@ -1477,24 +1694,20 @@
       <HintPath>Library\ScriptAssemblies\Unity.InternalAPIEngineBridge.001.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.2D.Common.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.Tilemap.Extras.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.InputSystem.ForUI">
+      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.ForUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
@@ -1505,32 +1718,16 @@
       <HintPath>Library\ScriptAssemblies\Unity.SysrootPackage.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Collections">
-      <HintPath>Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+    <Reference Include="Unity.InternalAPIEditorBridge.001">
+      <HintPath>Library\ScriptAssemblies\Unity.InternalAPIEditorBridge.001.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.2D.Psdimporter.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.2D.Psdimporter.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.InternalAPIEditorBridge.001">
-      <HintPath>Library\ScriptAssemblies\Unity.InternalAPIEditorBridge.001.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.SpriteShape.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.VisualScripting.State.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.PixelPerfect">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Mathematics">
@@ -1541,24 +1738,16 @@
       <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.2D.Aseprite.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.Aseprite.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
-      <HintPath>Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
+    <Reference Include="Unity.2D.SpriteShape.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Editor">
@@ -1573,68 +1762,31 @@
       <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.2D.SpriteShape.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj">
-      <Project>{72F47BB1-7F84-A5FC-FF12-559CCE92A083}</Project>
-      <Name>PunDemos.DemoSlotcarEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Editor.csproj">
-      <Project>{24E28398-47B6-507A-535B-B630EA7D49B2}</Project>
-      <Name>PhotonUnityNetworking.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.csproj">
-      <Project>{EE428FF1-AB5A-8220-6282-256BB53CC7F0}</Project>
-      <Name>PhotonUnityNetworking.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj">
-      <Project>{F98A89B9-4B31-B673-80E7-3731232AC5EE}</Project>
-      <Name>PhotonUnityNetworking.Utilities.Culling.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Google.Play.Games.Editor.csproj">
-      <Project>{C46B8198-D66F-30AC-DFA9-AC453CFF3784}</Project>
-      <Name>Google.Play.Games.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonRealtime.csproj">
-      <Project>{C99FE612-B170-3EC2-829A-6082DE716B13}</Project>
-      <Name>PhotonRealtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj">
-      <Project>{74799143-EBA2-B446-8CA2-3FF044F44EF0}</Project>
-      <Name>PhotonUnityNetworking.Utilities.PhotonPlayer.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Google.Play.Games.csproj">
-      <Project>{8407A933-CD55-EEFF-8E01-7D1D7441371C}</Project>
-      <Name>Google.Play.Games</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.csproj">
-      <Project>{695134F4-2397-5C89-A206-A9FF323C45C5}</Project>
-      <Name>PhotonUnityNetworking</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonChat.csproj">
-      <Project>{0272580F-48CB-8EEC-D288-309F661E7FE0}</Project>
-      <Name>PhotonChat</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
-      <Project>{EAE5061B-6E6B-2794-C0A5-25D8062FCE2D}</Project>
-      <Name>PhotonUnityNetworking.Demos</Name>
-    </ProjectReference>
-    <ProjectReference Include="PunDemos.DemoHubEditor.csproj">
-      <Project>{93672AC5-5576-7D59-CFD9-4DC421990C46}</Project>
-      <Name>PunDemos.DemoHubEditor</Name>
-    </ProjectReference>
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj" />
+    <ProjectReference Include="Google.Play.Games.Editor.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj" />
+    <ProjectReference Include="PunDemos.DemoHubEditor.csproj" />
+    <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Editor.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.csproj" />
+    <ProjectReference Include="PhotonRealtime.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj" />
+    <ProjectReference Include="Google.Play.Games.csproj" />
+    <ProjectReference Include="PhotonChat.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="GenerateTargetFrameworkMonikerAttribute" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectCapability Remove="LaunchProfiles" />
+    <ProjectCapability Remove="SharedProjectReferences" />
+    <ProjectCapability Remove="ReferenceManagerSharedProjects" />
+    <ProjectCapability Remove="ProjectReferences" />
+    <ProjectCapability Remove="ReferenceManagerProjects" />
+    <ProjectCapability Remove="COMReferences" />
+    <ProjectCapability Remove="ReferenceManagerCOM" />
+    <ProjectCapability Remove="AssemblyReferences" />
+    <ProjectCapability Remove="ReferenceManagerAssemblies" />
+  </ItemGroup>
 </Project>

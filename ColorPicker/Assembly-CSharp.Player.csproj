@@ -114,7 +114,9 @@
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\UI\UITextScale.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Occlusion\LightTilemapOcclusion2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\ClickableObject.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Material\Lighting2DMaterials.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\IMiniGameInteractable.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\NetworkManager.cs" />
     <Compile Include="Assets\InGame\Scripts\ClassAbility\MafiaAbility.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Lightmap\LightTexture2D.cs" />
@@ -141,7 +143,9 @@
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Hexagon.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Mask\Grid.cs" />
     <Compile Include="Assets\InGame\Scripts\GameState\GameState.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanableObject.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\LightSettings.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\MiniGameManager.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Masks\SpriteRenderer2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\UI\UICanvasScale.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerDataChangedEvent.cs" />
@@ -201,6 +205,7 @@
     <Compile Include="Assets\Minseok\Script\Mission\MissionDetailsSO.cs" />
     <Compile Include="Assets\Minseok\Script\Player\AnimatePlayer.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\ParticleRenderer.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanMiniGame.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Isometric.cs" />
     <Compile Include="Assets\InGame\Scripts\AES\AESCrypto.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Data\Data.Contents.cs" />
@@ -215,6 +220,7 @@
     <Compile Include="Assets\InGame\Scripts\Player\PlayerControl.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapOcclusion\OcclusionTileset.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\Misc\TimerHelper.cs" />
+    <Compile Include="Assets\InGame\Scripts\Utilities\MiniGameInputContext.cs" />
     <Compile Include="Assets\Minseok\Script\Manager\GameResources.cs" />
     <Compile Include="Assets\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\FollowRacer.cs" />
     <Compile Include="Assets\Minseok\Script\Misc\PRS.cs" />
@@ -243,6 +249,7 @@
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Managers.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Base.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\LobbyUIManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\DraggableObject.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightTilemap.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\LobbyPlayer.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\Tile.cs" />
@@ -280,6 +287,7 @@
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Settings\Presets\LightPresets.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\UI_Manager.cs" />
     <Compile Include="Assets\Minseok\GPGS_Manager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameInputHandler.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapShaders.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\Misc\DestroyTimer.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorting\SortDepth.cs" />
@@ -306,6 +314,7 @@
     <Compile Include="Assets\Minseok\Script\Interactive\IInteractable.cs" />
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Mesh.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTag.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer.cs" />
     <Compile Include="Assets\InGame\Scripts\Mics\RoomObjectMarker.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListenerCount.cs" />
@@ -375,6 +384,7 @@
     <Compile Include="Assets\InGame\Scripts\Manager\LobbyManager.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\GameManager\PlayerClassAssigner.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\GameDataManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\DragTriggerSensor.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpriteShape.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Components\Manager\LightingManager2D.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Sorted.cs" />
@@ -405,6 +415,7 @@
     <Compile Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Script\TopDownCharacterController.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapMaterials.cs" />
     <Compile Include="Assets\Minseok\Script\MouseEvent\MouseState.cs" />
+    <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameBase.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Scene\GameScene.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\Player.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer2D.cs" />

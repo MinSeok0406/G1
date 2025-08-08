@@ -10,7 +10,15 @@ namespace ColorPicker.InGame
         mafia, // 1
         detective, //2
         ghost // 3
-    } 
+    }
+
+    public enum MiniGameType
+    {
+        DragTest,
+        ClickTest,
+        BookOrganizing,
+        OrigamiFolding
+    }
 
     public enum ColorType
     {

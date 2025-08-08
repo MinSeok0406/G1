@@ -7,6 +7,21 @@ using UnityEngine;
 public  static class HelperUtilities 
 {
     /// <summary>
+    /// 스크린 좌표를 로컬 좌표(RectTransform 기준)로 변환해주는 함수
+    /// </summary>
+    public static Vector2 ScreenToLocalPointInRect(Canvas canvas, RectTransform targetRect, Vector2 screenPosition)
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            targetRect,
+            screenPosition,
+            canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera,
+            out Vector2 localPoint
+        );
+
+        return localPoint;
+    }
+
+    /// <summary>
     /// 커스터마이징 색상(Enum)을 Unity의 Color 타입으로 변환해주는 함수  
     /// 플레이어 색상 적용 시 사용
     /// </summary>
@@ -93,4 +108,6 @@ public  static class HelperUtilities
         return view.GetComponent<RoomObjectMarker>() != null ||
                view.gameObject.name.StartsWith("Room_");
     }
+
+    
 }
