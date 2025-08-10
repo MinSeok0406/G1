@@ -11,25 +11,36 @@ namespace ServerCore
 		Socket _listenSocket;
 		Func<Session> _sessionFactory;
 
-		public void Init(IPEndPoint endPoint, Func<Session> sessionFactory, int register = 10, int backlog = 100)
+		public void Init(IPEndPoint endPoint, Func<Session> sessionFactory, int register = 16, int backlog = 100)
 		{
-			_listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-			_sessionFactory += sessionFactory;
+            if (endPoint == null) throw new ArgumentNullException(nameof(endPoint));
+            if (sessionFactory == null) throw new ArgumentNullException(nameof(sessionFactory));
 
-			// 문지기 교육
-			_listenSocket.Bind(endPoint);
+            // ✅ 세션 팩토리 대입(중요)
+            _sessionFactory = sessionFactory;
 
-			// 영업 시작
-			// backlog : 최대 대기수
-			_listenSocket.Listen(backlog);
+            // ✅ 포트만 사용하고, 주소는 안전하게 IPv4 Any(0.0.0.0)로 강제
+            int port = endPoint.Port;
+            var bindEndPoint = new IPEndPoint(IPAddress.Any, port);
 
-			for (int i = 0; i < register; i++)
+            _listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _listenSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+            /*_listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			_sessionFactory += sessionFactory;*/
+
+            _listenSocket.Bind(bindEndPoint);
+            _listenSocket.Listen(backlog);
+
+            for (int i = 0; i < register; i++)
 			{
 				SocketAsyncEventArgs args = new SocketAsyncEventArgs();
 				args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
 				RegisterAccept(args);
 			}
-		}
+
+            Console.WriteLine($"[Listener] Listening on {bindEndPoint.Address}:{bindEndPoint.Port}");
+        }
 
 		void RegisterAccept(SocketAsyncEventArgs args)
 		{
@@ -43,7 +54,7 @@ namespace ServerCore
             }
 			catch (Exception e)
 			{
-                Console.WriteLine(e);
+                Console.WriteLine($"[Listener] Accept register failed: {e}");
             }
 		}
 
@@ -58,12 +69,12 @@ namespace ServerCore
                     session.OnConnected(args.AcceptSocket.RemoteEndPoint);
                 }
                 else
-                    Console.WriteLine(args.SocketError.ToString());
+                    Console.WriteLine($"[Listener] Accept error: {args.SocketError}");
             }
 			catch (Exception e)
 			{
-                Console.WriteLine(e);
-			}
+                Console.WriteLine($"[Listener] Accept handler exception: {e}");
+}
 
 			RegisterAccept(args);
 		}

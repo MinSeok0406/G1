@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharedDB;
 
 namespace Server.DB
 {
@@ -15,13 +15,14 @@ namespace Server.DB
 
         static readonly ILoggerFactory _logger = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
-        string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=G1GameDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options
-                .UseLoggerFactory(_logger)
-                .UseSqlServer(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
+            if (options.IsConfigured) return;
+
+            options.UseSqlServer(
+                DbConfig.GameConnection,
+                sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null) // RDS 연결 재시도
+            );
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

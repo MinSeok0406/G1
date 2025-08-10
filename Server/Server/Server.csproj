@@ -25,4 +25,8 @@
     <ProjectReference Include="..\SharedDB\SharedDB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

@@ -7,10 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedDB;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
+using static StackExchange.Redis.Role;
 
 namespace AccountServer
 {
@@ -26,19 +29,40 @@ namespace AccountServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddRazorPages();
+            var cfg = Configuration;
 
-            services.AddControllers().AddJsonOptions(options =>
+            string acc = Environment.GetEnvironmentVariable("AccountConnection")
+                         ?? cfg.GetConnectionString("AccountConnection");
+            string shared = Environment.GetEnvironmentVariable("SharedConnection")
+                            ?? cfg.GetConnectionString("SharedConnection");
+
+            services.AddDbContext<AppDbContext>(o => o.UseSqlServer(acc));
+            services.AddDbContext<SharedDbContext>(o => o.UseSqlServer(shared));
+
+            var redisEndpoint = System.Environment.GetEnvironmentVariable("REDIS_ENDPOINT");   // host:port
+            var redisPassword = System.Environment.GetEnvironmentVariable("REDIS_PASSWORD");   // AUTH token
+            var useTls = (System.Environment.GetEnvironmentVariable("REDIS_USE_TLS") ?? "true").ToLower() == "true";
+
+            if (string.IsNullOrWhiteSpace(redisEndpoint))
+                throw new InvalidOperationException("REDIS_ENDPOINT가 비어 있습니다. EC2 환경변수 또는 appsettings에 설정하세요.");
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+                var options = ConfigurationOptions.Parse(redisEndpoint);
+                if (!string.IsNullOrWhiteSpace(redisPassword)) options.Password = redisPassword;
+                options.AbortOnConnectFail = false;
+                options.ConnectRetry = 5;
+                options.ConnectTimeout = 5000;
+                options.KeepAlive = 30;
+                if (useTls)
+                {
+                    options.Ssl = true;
+                    options.SslProtocols = SslProtocols.Tls12;
+                }
+                return ConnectionMultiplexer.Connect(options);
             });
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefalutConnection")));
-
-            services.AddDbContext<SharedDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SharedConnection")));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,11 +75,10 @@ namespace AccountServer
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

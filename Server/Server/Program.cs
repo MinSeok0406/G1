@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
-using Server.Data;
 using Server.DB;
 using Server.Game;
 using ServerCore;
@@ -99,20 +98,15 @@ namespace Server
         }
 
         public static string Name { get; set; } = "빨강";
-        public static int Port { get; set; } = 7777;
+        public static int Port { get; set; } = 50000;
         public static string IpAddress { get; set; }
 
         static void Main(string[] args)
 		{
-            ConfigManager.LoadConfig();
-            DataManager.LoadData();
-
             GameLogic.Instance.Push(() => { GameLogic.Instance.Add(1); });
 
             // DNS (Domain Name System)
-            string host = Dns.GetHostName();
-            IPHostEntry ipHost = Dns.GetHostEntry(host);
-            IPAddress ipAddr = ipHost.AddressList[1];
+            IPAddress ipAddr = IPAddress.Any;
             IPEndPoint endPoint = new IPEndPoint(ipAddr, Port);
 
             IpAddress = ipAddr.ToString();

@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharedDB;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace AccountServer.Controllers
 {
@@ -13,12 +16,14 @@ namespace AccountServer.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        AppDbContext _context;
+        private readonly AppDbContext _context;
+        private readonly IDatabase _cache;
         SharedDbContext _shared;
 
-        public AccountController(AppDbContext context, SharedDbContext shared)
+        public AccountController(AppDbContext context, IConnectionMultiplexer mux , SharedDbContext shared)
         {
             _context = context;
+            _cache = mux.GetDatabase();
             _shared = shared;
         }
 
@@ -41,8 +46,7 @@ namespace AccountServer.Controllers
                     Name = req.AccountName
                 });
 
-                bool success = _context.SaveChangesEx();
-                res.CreateOk = success;
+                res.CreateOk = _context.SaveChangesEx();
             }
             else
             {
@@ -71,15 +75,15 @@ namespace AccountServer.Controllers
             else
             {
                 res.LoginOk = true;
+                int newToken = RandomNumberGenerator.GetInt32(int.MaxValue);
 
-                // 토큰 발급
-                DateTime expired = DateTime.UtcNow;
-                expired.AddSeconds(600);
+                // ① 토큰 생성/DB 저장(SharedDB.Token)
+                var expired = DateTime.UtcNow.AddHours(12);
 
                 TokenDb tokenDb = _shared.Tokens.Where(t => t.AccountDbId == account.AccountDbId).FirstOrDefault();
                 if (tokenDb != null)
                 {
-                    tokenDb.Token = new Random().Next(Int32.MinValue, Int32.MaxValue);
+                    tokenDb.Token = newToken;
                     tokenDb.Expired = expired;
                     _shared.SaveChangesEx();
                 }
@@ -90,29 +94,34 @@ namespace AccountServer.Controllers
                         AccountDbId = account.AccountDbId,
                         Name = account.Name,
                         GoogleID = account.GoogleID,
-                        Token = new Random().Next(Int32.MinValue, Int32.MaxValue),
+                        Token = newToken,
                         Expired = expired
                     };
                     _shared.Add(tokenDb);
                     _shared.SaveChangesEx();
                 }
 
+                // ② Redis 캐시(유효기간 동기화)
+                var ttl = expired - DateTime.UtcNow;
+                if (ttl.TotalSeconds > 0)
+                {
+                    _cache.StringSet($"acc:token:{account.AccountDbId}", tokenDb.Token.ToString(), ttl);
+                    _cache.StringSet($"acc:name:{account.AccountDbId}", account.Name ?? "", ttl);
+                }
+
                 res.AccountId = account.AccountDbId;
                 res.Token = tokenDb.Token;
                 res.Name = tokenDb.Name;
                 res.GoogleID = tokenDb.GoogleID;
-                res.ServerList = new List<ServerInfo>();
 
-                foreach (ServerDb serverDb in _shared.Servers)
-                {
-                    res.ServerList.Add(new ServerInfo()
+                res.ServerList = _shared.Servers.AsNoTracking()
+                    .Select(s => new ServerInfo
                     {
-                        Name = serverDb.Name,
-                        IpAddress = serverDb.IpAddress,
-                        Port = serverDb.Port,
-                        BusyScore = serverDb.BusyScore
-                    });
-                }
+                        Name = s.Name,
+                        IpAddress = s.IpAddress,
+                        Port = s.Port,
+                        BusyScore = s.BusyScore
+                    }).ToList();
             }
 
             return res;

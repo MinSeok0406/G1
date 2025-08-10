@@ -24,15 +24,15 @@ namespace SharedDB
         }
 
         // GameServer
-        public static string ConnectionString { get; set; } = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=G1SharedDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        //public static string ConnectionString { get; set; } = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=G1SharedDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            if (options.IsConfigured == false)
-            {
-                options
-                //.UseLoggerFactory(_logger)
-                .UseSqlServer(ConnectionString);
-            }
+            if (options.IsConfigured) return;
+
+            options.UseSqlServer(
+                DbConfig.SharedConnection,
+                sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)
+            );
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

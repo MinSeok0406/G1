@@ -1,5 +1,4 @@
 ﻿using Google.Protobuf.Protocol;
-using Server.Data;
 using Server.DB;
 using System;
 using System.Collections.Generic;
@@ -36,25 +35,25 @@ namespace Server.Game
 
         void Init(int achievementDbId)
         {
-            AchievementData achievementData = null;
+            /*AchievementData achievementData = null;
             DataManager.AchievementDict.TryGetValue(achievementDbId, out achievementData);
 
             AchievementData data = (AchievementData)achievementData;
             {
                 TemplateId = data.id;
                 IsActive = data.isActive;
-            }
+            }*/
         }
 
         public static Achievement GetAchievement(AchievementDb achievementDb)
         {
             Achievement achievement = null;
 
-            AchievementData achievementData = null;
-            DataManager.AchievementDict.TryGetValue(achievementDb.AchievementDbId, out achievementData);
+            /*AchievementData achievementData = null;
+            DataManager.AchievementDict.TryGetValue(achievementDb.AchievementDbId, out achievementData);*/
 
-            if (achievementData == null)
-                return null;
+            /*if (achievementData == null)
+                return null;*/
 
             achievement = new Achievement(achievementDb.TemplateId);
 

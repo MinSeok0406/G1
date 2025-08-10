@@ -1,6 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
-using Server.Data;
 using Server.DB;
 using Server.Game;
 using ServerCore;
@@ -153,7 +152,7 @@ namespace Server
                     {
                         PlayerName = createPacket.Name,
                         // Speed 서버에서 직접 관리 버전
-                        Speed = Stat._speed,
+                        //Speed = 10.0f;
                         AccountDbId = AccountDbId
                     };
 
@@ -168,7 +167,7 @@ namespace Server
                         PlayerDbId = newPlayerDb.PlayerDbId,
                         Name = createPacket.Name,
                         // Speed 서버에서 직접 관리 버전
-                        Speed = Stat._speed
+                        // Speed = 10.0f;
                     };
 
                     // 메모리에도 들고 있다
