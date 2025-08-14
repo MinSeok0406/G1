@@ -138,8 +138,8 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\ShaderLibrary\Sampling\Hammersley.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Common\ObjectPools.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Textures\DepthBits.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\ProfilingScope.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Camera\FreeCamera.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\ProfilingScope.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\DebugManager.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Textures\TextureXR.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Utilities\HashFNV1A32.cs" />
@@ -173,8 +173,8 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Common\ConstantBuffer.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\XR\XRGraphicsAutomatedTests.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Textures\RTHandles.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Volume\VolumeComponent.EditorOnly.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\Prefabs\Scripts\DebugUIHandlerField.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Volume\VolumeComponent.EditorOnly.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\IVolumeDebugSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\Prefabs\Scripts\DebugUIHandlerPanel.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Common\IVirtualTexturingEnabledRenderPipeline.cs" />
@@ -208,8 +208,8 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\PostProcessing\LensFlareCommonSRP.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Utilities\CoreUtils.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Common\ComponentSingleton.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Common\RemoveRange.Extensions.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\DebugShapes.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Common\RemoveRange.Extensions.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\DebugUI.Panel.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Camera\CameraSwitcher.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@14.0.11\Runtime\Debugging\DebugFrameTiming.cs" />

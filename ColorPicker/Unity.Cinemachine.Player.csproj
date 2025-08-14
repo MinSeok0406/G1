@@ -120,8 +120,8 @@
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Components\CinemachinePositionComposer.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\ConfinerOven.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Behaviours\CinemachineFollowZoom.cs" />
-    <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\SignalSourceAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Deprecated\CinemachineGroupComposer.cs" />
+    <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\SignalSourceAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\NoiseSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\BlendManager.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\TargetPositionCache.cs" />
@@ -134,8 +134,8 @@
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Behaviours\CinemachineStoryboard.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Deprecated\CinemachineSmoothPath.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Deprecated\CinemachinePathBase.cs" />
-    <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\LookaheadSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Components\CinemachineFollow.cs" />
+    <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Core\LookaheadSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Deprecated\LegacyLensSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\PostProcessing\CinemachinePostProcessing.cs" />
     <Compile Include="Library\PackageCache\com.unity.cinemachine@3.1.4\Runtime\Behaviours\CinemachineCamera.cs" />

@@ -1261,6 +1261,10 @@
       <Project>{40EC71B1-FF0F-9239-2486-3E963A9C2BB6}</Project>
       <Name>Unity.RenderPipelines.Universal.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="PunDemos.DemoHubEditor.csproj">
+      <Project>{93672AC5-5576-7D59-CFD9-4DC421990C46}</Project>
+      <Name>PunDemos.DemoHubEditor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj">
       <Project>{48C26623-77B1-FB23-1722-105686A5300D}</Project>
       <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary</Name>
@@ -1268,10 +1272,6 @@
     <ProjectReference Include="Unity.Sysroot.Linux_x86_64.csproj">
       <Project>{BE7D8B5F-93B2-3F6D-BB6B-84B49B3B1CC2}</Project>
       <Name>Unity.Sysroot.Linux_x86_64</Name>
-    </ProjectReference>
-    <ProjectReference Include="PunDemos.DemoHubEditor.csproj">
-      <Project>{93672AC5-5576-7D59-CFD9-4DC421990C46}</Project>
-      <Name>PunDemos.DemoHubEditor</Name>
     </ProjectReference>
     <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj">
       <Project>{72F47BB1-7F84-A5FC-FF12-559CCE92A083}</Project>
