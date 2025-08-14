@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>UNITY_2022_3_57;UNITY_2022_3;UNITY_2022;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_RUNTIME_PERMISSIONS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;ENABLE_VIDEO;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_NAVIGATION_PACKAGE_DEBUG_VISUALIZATION;ENABLE_NAVIGATION_HEIGHTMESH_RUNTIME_SUPPORT;ENABLE_NAVIGATION_UI_REQUIRES_PACKAGE;PLATFORM_ANDROID;TEXTCORE_1_0_OR_NEWER;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;UNITY_CAN_SHOW_SPLASH_SCREEN;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO;ENABLE_SPATIALTRACKING;ENABLE_ETC_COMPRESSION;PLATFORM_EXTENDS_VULKAN_DEVICE;PLATFORM_HAS_MULTIPLE_SWAPCHAINS;UNITY_ANDROID_SUPPORTS_SHADOWFILES;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_4_6;NET_UNITY_4_8;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;PHOTON_UNITY_NETWORKING;PUN_2_0_OR_NEWER;PUN_2_OR_NEWER;PUN_2_19_OR_NEWER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER;UNITY_EDITOR_ONLY_COMPILATION</DefineConstants>
+    <DefineConstants>UNITY_2022_3_57;UNITY_2022_3;UNITY_2022;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_RUNTIME_PERMISSIONS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;ENABLE_VIDEO;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_NAVIGATION_PACKAGE_DEBUG_VISUALIZATION;ENABLE_NAVIGATION_HEIGHTMESH_RUNTIME_SUPPORT;ENABLE_NAVIGATION_UI_REQUIRES_PACKAGE;PLATFORM_ANDROID;TEXTCORE_1_0_OR_NEWER;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;UNITY_CAN_SHOW_SPLASH_SCREEN;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO;ENABLE_SPATIALTRACKING;ENABLE_ETC_COMPRESSION;PLATFORM_EXTENDS_VULKAN_DEVICE;PLATFORM_HAS_MULTIPLE_SWAPCHAINS;UNITY_ANDROID_SUPPORTS_SHADOWFILES;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_4_6;NET_UNITY_4_8;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;PHOTON_UNITY_NETWORKING;PUN_2_0_OR_NEWER;PUN_2_OR_NEWER;PUN_2_19_OR_NEWER;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER;UNITY_EDITOR_ONLY_COMPILATION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169;USG0001</NoWarn>
@@ -61,30 +61,155 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightTilemapRoom2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\TimedEventEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Dropdown\DropdownMultiCheckTransitionEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\Light2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\TabView\TabViewGroupEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowContentFitterUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Tools\InitDarkUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Occlusion\LightTilemapOcclusion2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\EventForwardEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\UIElementSoundEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\TabView\TabEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarCircularMoveEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowProgressBarLoopUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarCircularMoveAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationContentFitterWithButtonUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionClickEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\InputField\InputFieldSimpleEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarSpecialPatternEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\ProjectSettingsEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarSpecialEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightRoom2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\MainPanelManagerEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Occlusion\LightOcclusion2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarSpecialAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\ContextMenu.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\SplashScreenManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarGridCircularEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Gradient\GradientTextEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Window\WindowResizeEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationWithButtonUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\PopupMenu\PopupMenuLeftClickEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\BackgroundFilterEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipInDetermineEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\PressKeyEventEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarPatternCircularEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Switch\SwitchSimpleEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Editor\Mesh2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionDownEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\Light2DWindow.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightTexture2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Button\ButtonMultiTransitionEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\TabView\TabSimpleEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Slider\SliderTransitionEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Slider\SliderCircularEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarPatternCircularAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowRadioButtonEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\HorizontalSelectorEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationContentFitterUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\SwitchManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarCircularRoundAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationContentFitterWithButtonEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowMultiButtonUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarSpecialPatternAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ContextMenu\ContextMenuLongPressEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Gradient\GradientModifierEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\TabView\TabViewSimpleEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\DebuggingEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowProgressBarEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowContentFitterEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toggle\ToggleTextEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ContextMenu\ContextMenuEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Shaders\PassShader.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Misc\MoveGizmos.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\LightTilemapCollider2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionMultiDownEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarPatternEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarBubbleAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipDetermineEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\LightCollider2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\BlurManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toggle\ToggleCheckEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\ButtonManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarGridLinearAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Tools\ExtendedColorPicker.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ContextMenu\ContextMenuRightClickEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowCheckBoxUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\InputField\InputFieldTransitionEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationWithButtonEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\InputField\InputFieldTransitionSpecialEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationContentFitterEditor.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\Editor\ChatEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\SliderManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\PopupMenu\PopupMenuLongPressEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarGridCircularAutoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toggle\ToggleSwapEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowRadioButtonUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toast\ToastEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionTwoEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipSnapEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\DropdownManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowInputFieldUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionHoverEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightSprite2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Misc\GUIExtensions.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\QualityManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowContentFitterMultiButtonUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Slider\SliderRangeEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionMultiHoverEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\PopupMenu\PopupMenuEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Settings\ProfileEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Manager\LightingManager2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Window\WindowDragEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipSpeciallEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\UIManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowProgressBarUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\UIDissolveEffectEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowContentFitterMultiButtonEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarGridLinearEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toggle\ToggleTransitionEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarPatternAutoEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Day\DayLightTilemapCollider2DEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Night\LightParticleSystem2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Selector\SelectorSimpleEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Misc\EditorGameObjects.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowCheckBoxEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Window\WindowResizeHandleEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toast\ToastUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toast\ToastContentFitterEditor.cs" />
     <Compile Include="Assets\Editor\MultiplayersBuildAndRun.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Dropdown\DropdownMultiCheckEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ContextMenu\ContextMenuLeftClickEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toast\ToastContentFitterUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarLoopEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\UIGradientEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\GamepadCheckerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Switch\SwitchEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowMultiButtonEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\ProfileEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowInputFieldEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Day\DayLightCollider2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarBubbleEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Selector\SelectorEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Slider\SliderRangeTransitionEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowListEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toggle\ToggleTextSimpleEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarCircularRoundEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowProgressBarLoopEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Button\ButtonTransitionEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\ModalWindowManagerEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\TabView\TabViewEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ModalWindow\ModalWindowListUIEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\PopupMenu\PopupMenuRightClickEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Common\TransitionMultiClickEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\PackageCache\com.unity.collab-proxy@2.7.1\Lib\Editor\Localization\differences.ja.txt" />
@@ -1365,9 +1490,17 @@
       <Project>{DA0D8D06-0A13-1AA0-7399-845D1A6CFB46}</Project>
       <Name>Unity.Timeline</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.InputSystem.csproj">
+      <Project>{0C69DC49-913A-1548-44A3-0A5C0EB02A99}</Project>
+      <Name>Unity.InputSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj">
       <Project>{74799143-EBA2-B446-8CA2-3FF044F44EF0}</Project>
       <Name>PhotonUnityNetworking.Utilities.PhotonPlayer.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InputSystem.ForUI.csproj">
+      <Project>{5D5B4996-D3A4-A3E3-96D7-D79EFA48DEBF}</Project>
+      <Name>Unity.InputSystem.ForUI</Name>
     </ProjectReference>
     <ProjectReference Include="Google.Play.Games.csproj">
       <Project>{8407A933-CD55-EEFF-8E01-7D1D7441371C}</Project>
