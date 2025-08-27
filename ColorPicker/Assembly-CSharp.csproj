@@ -1,21 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="Current">
   <!-- Generated file, do not modify, your changes will be overwritten (use AssetPostprocessor.OnGeneratedCSProject) -->
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <BaseIntermediateOutputPath>Temp\obj\$(Configuration)\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
   </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectCapability Include="Unity" />
+  </ItemGroup>
   <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <LangVersion>9.0</LangVersion>
+    <Configurations>Debug;Release</Configurations>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{F7AB824C-7FF3-34E0-698C-2E40C1F825C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <BaseDirectory>.</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,29 +44,29 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <NoConfig>true</NoConfig>
+    <NoStandardLibraries>true</NoStandardLibraries>
     <NoStdLib>true</NoStdLib>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
-    <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
+    <NoConfig>true</NoConfig>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
     <UnityProjectGeneratorVersion>2.0.22</UnityProjectGeneratorVersion>
-    <UnityProjectGeneratorStyle>Legacy</UnityProjectGeneratorStyle>
+    <UnityProjectGeneratorStyle>SDK</UnityProjectGeneratorStyle>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>2022.3.57f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\addmin\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.3\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\GameManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarGridCircular.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\PlayerController.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipSpecial.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\UIDissolveEffect.cs" />
@@ -88,6 +93,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarBubble.cs" />
     <Compile Include="Assets\DongJu\Setting_script\SinglechoiceButtonGroup.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerText.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Scripts\Shaders\Utility\RetroShaderUtility.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Triangulation\PolygonTriangulator2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithm.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownMultiCheckTransition.cs" />
@@ -177,6 +183,7 @@
     <Compile Include="Assets\InGame\Scripts\Player\Death.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Contents\MapManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownMultiCheck.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Scripts\Shaders\CRTEffect.cs" />
     <Compile Include="Assets\Minseok\Script\Manager\UIManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenu.cs" />
     <Compile Include="Assets\InGame\Scripts\Server\PacketHandler.cs" />
@@ -211,6 +218,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\Camera\CameraTransform.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Mathd.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftDistance.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Scripts\FramerateLimiter.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Pass.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\Misc\TimerHelper.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightRoom2D\LightingRoomShape.cs" />
@@ -238,6 +246,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenuRightClick.cs" />
     <Compile Include="Assets\InGame\Scripts\Mics\RoomObjectMarker.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Light\Shadow\Collider.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\ChatBubbleView.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleTextSimple.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorted.cs" />
     <Compile Include="Assets\InGame\Scripts\Server\BackupPayload.cs" />
@@ -354,6 +363,8 @@
     <Compile Include="Assets\Minseok\Script\Sever\UI\Scene\UI_LobbyScene.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocityEvent.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitterMultiButtonUI.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\MouseLook.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\River.cs" />
     <Compile Include="Assets\Minseok\Script\Player\InteractiveControl.cs" />
     <Compile Include="Assets\Minseok\Script\Packet\PacketQueue.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\LightShape.cs" />
@@ -465,7 +476,9 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapMaterials.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Scene\BaseScene.cs" />
     <Compile Include="Assets\DongJu\color_script\ObjectColor.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\RoomCodeUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleSwap.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Scripts\Shaders\Settings\CRTSettings.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\TilemapCollider.cs" />
     <Compile Include="Assets\InGame\Scripts\Interactive\InteractionDetector.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Managers.cs" />
@@ -485,6 +498,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Room.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Masks\SpriteRenderer2D.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Common\TransitionMultiClick.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\Hover.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Main.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightingOcclusionShape.cs" />
     <Compile Include="Assets\InGame\Scripts\ClassAbility\CitizenAbility.cs" />
@@ -493,6 +507,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBarLoop.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerRoad.cs" />
     <Compile Include="Assets\DongJu\Setting_script\SimpleTabController.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\Rotate.cs" />
     <Compile Include="Assets\Minseok\Script\Sever\Managers\Core\SceneManagerEx.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Objects\Room.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\UI\UICanvasScale.cs" />
@@ -528,6 +543,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\UIElementSound.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTag.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBar.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\GooseFlight.cs" />
     <Compile Include="Assets\InGame\Scripts\Mics\Settings.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListenerCount.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\UJoystick\Content\Script\Internal\bl_JoystickUtils.cs" />
@@ -595,6 +611,7 @@
     <Compile Include="Assets\Minseok\Script\Sever\UI\UI_Base.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\IdleEvent.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowInputFieldUI.cs" />
+    <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\RandomSway.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapOcclusion\OcclusionTileset.cs" />
     <Compile Include="Assets\Minseok\Script\MouseEvent\MouseState.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Tile.cs" />
@@ -639,6 +656,7 @@
     <None Include="Assets\AssetPack\Photon\PhotonUnityNetworking\changelog.txt" />
     <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\RetroLit.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Spine\LitSpine.shader" />
+    <None Include="Assets\Retro Shaders Pro\Shaders\Retro Base\RetroSGFunctions.hlsl" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\DayDepth\Depth_Pass1.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\FogOfWar.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\LightShadow\SoftDefault.shader" />
@@ -661,6 +679,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\Libs\Google.Protobuf.dll" />
     <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\RetroVertexLit.shader" />
+    <None Include="Assets\Retro Shaders Pro\Resources\Shaders\CRT.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Translucency\BlurHorizontal.shader" />
     <None Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Shaders\UI Particle Additive.shader" />
@@ -1620,318 +1639,93 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.2D.IK.Runtime.csproj">
-      <Project>{E427AC53-D50E-2FCC-6690-DA6179C2382E}</Project>
-      <Name>Unity.2D.IK.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
-      <Project>{08278BC8-2450-4160-D716-9E0B9A5A969E}</Project>
-      <Name>Unity.RenderPipelines.Core.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Burst.Editor.csproj">
-      <Project>{7E3E992E-CC34-7500-575C-C417B6D9DD76}</Project>
-      <Name>Unity.Burst.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Common.Path.Editor.csproj">
-      <Project>{4F63145B-D69F-B502-AE9A-1CC2A0F96A64}</Project>
-      <Name>Unity.2D.Common.Path.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.PixelPerfect.Editor.csproj">
-      <Project>{3987A254-D226-A7E3-E01B-0AA03DD54578}</Project>
-      <Name>Unity.2D.PixelPerfect.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Rider.Editor.csproj">
-      <Project>{B96F34FE-D98D-DB18-19CE-A19176B4841A}</Project>
-      <Name>Unity.Rider.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Aseprite.Common.csproj">
-      <Project>{23378616-BEA1-C208-DAF9-CCEE3DDBB937}</Project>
-      <Name>Unity.2D.Aseprite.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj">
-      <Project>{F98A89B9-4B31-B673-80E7-3731232AC5EE}</Project>
-      <Name>PhotonUnityNetworking.Utilities.Culling.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Config.Runtime.csproj">
-      <Project>{98103E9B-21A3-3A6B-0BE0-824B2BCE6966}</Project>
-      <Name>Unity.RenderPipelines.Universal.Config.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Sprite.Editor.csproj">
-      <Project>{73EB9858-2386-1A38-52DA-6C54E59168B4}</Project>
-      <Name>Unity.2D.Sprite.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Google.Play.Games.Editor.csproj">
-      <Project>{C46B8198-D66F-30AC-DFA9-AC453CFF3784}</Project>
-      <Name>Google.Play.Games.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Flow.csproj">
-      <Project>{4CF86B17-8617-6383-6DB6-6BFD18212330}</Project>
-      <Name>Unity.VisualScripting.Flow</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.Editor.csproj">
-      <Project>{C590152C-B8E0-D121-A1D4-0F1EF22C12E3}</Project>
-      <Name>Unity.RenderPipelines.Core.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Mathematics.Editor.csproj">
-      <Project>{F43ED585-499E-4830-EAC5-1664A7FCA4AE}</Project>
-      <Name>Unity.Mathematics.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Tilemap.Extras.Editor.csproj">
-      <Project>{92C3694B-ED8F-0E31-EEB7-E752D2E4ABF6}</Project>
-      <Name>Unity.2D.Tilemap.Extras.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Splines.Editor.csproj">
-      <Project>{A531A449-EE39-6AE5-2985-EBB9EDA75542}</Project>
-      <Name>Unity.Splines.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Core.ShaderLibrary.csproj">
-      <Project>{7EDADB33-6442-9FE3-3D0A-A89C05B5A2E8}</Project>
-      <Name>Unity.RenderPipelines.Core.ShaderLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Collections.csproj">
-      <Project>{716502B3-AB77-5982-F597-44705C1D0163}</Project>
-      <Name>Unity.Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.PlasticSCM.Editor.csproj">
-      <Project>{44DF41BC-EFFA-2653-54BD-FF1264BAA1A5}</Project>
-      <Name>Unity.PlasticSCM.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.SpriteShape.Runtime.csproj">
-      <Project>{3BAE40D3-CAAE-263D-799C-449E9A89D63B}</Project>
-      <Name>Unity.2D.SpriteShape.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.PixelPerfect.csproj">
-      <Project>{B64D5ED3-6F9F-4B98-52F2-6D84607FC7E6}</Project>
-      <Name>Unity.2D.PixelPerfect</Name>
-    </ProjectReference>
-    <ProjectReference Include="PPv2URPConverters.csproj">
-      <Project>{2468E26E-A15B-57D9-2A07-78DC2CBC2E05}</Project>
-      <Name>PPv2URPConverters</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.csproj">
-      <Project>{3826E4AD-458C-23BB-D079-5E0AD9405551}</Project>
-      <Name>Unity.TextMeshPro</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Aseprite.Editor.csproj">
-      <Project>{4D0078C3-4E2E-67E7-2E73-33BCCF8693E8}</Project>
-      <Name>Unity.2D.Aseprite.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.csproj">
-      <Project>{695134F4-2397-5C89-A206-A9FF323C45C5}</Project>
-      <Name>PhotonUnityNetworking</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64.csproj">
-      <Project>{3C0C3125-433A-65E8-7309-BCE66BBEDAF8}</Project>
-      <Name>Unity.Toolchain.Win-x86_64-Linux-x86_64</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
-      <Project>{EAE5061B-6E6B-2794-C0A5-25D8062FCE2D}</Project>
-      <Name>PhotonUnityNetworking.Demos</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Editor.csproj">
-      <Project>{40EC71B1-FF0F-9239-2486-3E963A9C2BB6}</Project>
-      <Name>Unity.RenderPipelines.Universal.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PunDemos.DemoHubEditor.csproj">
-      <Project>{93672AC5-5576-7D59-CFD9-4DC421990C46}</Project>
-      <Name>PunDemos.DemoHubEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj">
-      <Project>{48C26623-77B1-FB23-1722-105686A5300D}</Project>
-      <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Sysroot.Linux_x86_64.csproj">
-      <Project>{BE7D8B5F-93B2-3F6D-BB6B-84B49B3B1CC2}</Project>
-      <Name>Unity.Sysroot.Linux_x86_64</Name>
-    </ProjectReference>
-    <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj">
-      <Project>{72F47BB1-7F84-A5FC-FF12-559CCE92A083}</Project>
-      <Name>PunDemos.DemoSlotcarEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PsdPlugin.csproj">
-      <Project>{45C0D1F9-1E00-F20A-6127-B6F91F083F99}</Project>
-      <Name>PsdPlugin</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.csproj">
-      <Project>{0AFE62F8-3502-BBBC-534E-421CA32A93C4}</Project>
-      <Name>Unity.RenderPipelines.Universal.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Burst.csproj">
-      <Project>{C8F34884-7FFA-8403-A87A-16C1FCAD7708}</Project>
-      <Name>Unity.Burst</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Editor.csproj">
-      <Project>{24E28398-47B6-507A-535B-B630EA7D49B2}</Project>
-      <Name>PhotonUnityNetworking.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Timeline.Editor.csproj">
-      <Project>{2AF3CBA7-C13E-381F-EC43-10001548A0F2}</Project>
-      <Name>Unity.Timeline.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj">
-      <Project>{375291A3-70EE-17A9-09FC-66D43AD96150}</Project>
-      <Name>Unity.VisualScripting.Shared.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.ShaderGraph.Editor.csproj">
-      <Project>{0AD881C5-3D69-55B5-2869-925BD957C3A2}</Project>
-      <Name>Unity.ShaderGraph.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
-      <Project>{303CC37D-AEA2-04F9-F339-79C19BC03B7D}</Project>
-      <Name>Unity.VisualStudio.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{BFF670C0-A8B7-F3BC-E5E8-E3DE940344CA}</Project>
-      <Name>UnityEditor.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Core.csproj">
-      <Project>{1A58175F-1EA6-955A-3CEB-85F9ED6636D7}</Project>
-      <Name>Unity.VisualScripting.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Animation.Runtime.csproj">
-      <Project>{CE6B4BCD-2AE5-1716-AF6D-C16C3BF0FEBF}</Project>
-      <Name>Unity.2D.Animation.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Tilemap.Extras.csproj">
-      <Project>{DC71F53D-EBA7-6752-CFA9-29C7BE27CFB5}</Project>
-      <Name>Unity.2D.Tilemap.Extras</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Cinemachine.csproj">
-      <Project>{03A5A428-DF09-3CC6-F1E4-C31B8BB04541}</Project>
-      <Name>Unity.Cinemachine</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.csproj">
-      <Project>{EE428FF1-AB5A-8220-6282-256BB53CC7F0}</Project>
-      <Name>PhotonUnityNetworking.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Core.Editor.csproj">
-      <Project>{227F0477-C403-475D-80B7-C2E0CDAD275A}</Project>
-      <Name>Unity.VisualScripting.Core.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{D67A5593-500E-737C-2284-4A7BF277D822}</Project>
-      <Name>UnityEngine.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
-      <Project>{AF5658F0-2CF3-9E02-92C4-AB67861F0373}</Project>
-      <Name>Unity.VisualScripting.Flow.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonRealtime.csproj">
-      <Project>{C99FE612-B170-3EC2-829A-6082DE716B13}</Project>
-      <Name>PhotonRealtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.InternalAPIEngineBridge.001.csproj">
-      <Project>{4971825D-A503-15DC-1EC6-BDA6B3AE939E}</Project>
-      <Name>Unity.InternalAPIEngineBridge.001</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Common.Runtime.csproj">
-      <Project>{278B3C95-9970-375B-A576-EBCA8F1C3CBA}</Project>
-      <Name>Unity.2D.Common.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipeline.Universal.ShaderLibrary.csproj">
-      <Project>{60290E3A-D013-3650-8804-722E4C380958}</Project>
-      <Name>Unity.RenderPipeline.Universal.ShaderLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Timeline.csproj">
-      <Project>{DA0D8D06-0A13-1AA0-7399-845D1A6CFB46}</Project>
-      <Name>Unity.Timeline</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.InputSystem.csproj">
-      <Project>{0C69DC49-913A-1548-44A3-0A5C0EB02A99}</Project>
-      <Name>Unity.InputSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj">
-      <Project>{74799143-EBA2-B446-8CA2-3FF044F44EF0}</Project>
-      <Name>PhotonUnityNetworking.Utilities.PhotonPlayer.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.InputSystem.ForUI.csproj">
-      <Project>{5D5B4996-D3A4-A3E3-96D7-D79EFA48DEBF}</Project>
-      <Name>Unity.InputSystem.ForUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="Google.Play.Games.csproj">
-      <Project>{8407A933-CD55-EEFF-8E01-7D1D7441371C}</Project>
-      <Name>Google.Play.Games</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.SettingsProvider.Editor.csproj">
-      <Project>{A7213333-A76B-44EC-7BC5-AA621F963178}</Project>
-      <Name>Unity.VisualScripting.SettingsProvider.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.SysrootPackage.Editor.csproj">
-      <Project>{06D9199E-9F28-C72E-5778-F641CC9B5F51}</Project>
-      <Name>Unity.SysrootPackage.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.InternalAPIEditorBridge.001.csproj">
-      <Project>{1F8E25BE-19F2-7093-EEB6-40FE340BA11E}</Project>
-      <Name>Unity.InternalAPIEditorBridge.001</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Psdimporter.Editor.csproj">
-      <Project>{4239573E-3CB3-8C9B-C6FB-5EA2184EF9FF}</Project>
-      <Name>Unity.2D.Psdimporter.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.State.Editor.csproj">
-      <Project>{BCD4A624-195A-4D62-E241-3A345F74EBF2}</Project>
-      <Name>Unity.VisualScripting.State.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Mathematics.csproj">
-      <Project>{D4239C9A-8E9E-801E-B52C-4ED43C7E3C5D}</Project>
-      <Name>Unity.Mathematics</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Common.Editor.csproj">
-      <Project>{A00AD7A6-3D41-1DE6-2F25-2E579D423406}</Project>
-      <Name>Unity.2D.Common.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Splines.csproj">
-      <Project>{00AF6852-A474-9C81-5129-8F75E7AE2E5E}</Project>
-      <Name>Unity.Splines</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.Universal.Shaders.csproj">
-      <Project>{8478E3A6-E2A2-F4BB-4E52-A8FF489BC59B}</Project>
-      <Name>Unity.RenderPipelines.Universal.Shaders</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
-      <Project>{A0302BD5-B810-9AF7-8DC3-8D9AB717C9F5}</Project>
-      <Name>Unity.TextMeshPro.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Searcher.Editor.csproj">
-      <Project>{75D0694D-3CFE-2DE1-E54F-6998761F7143}</Project>
-      <Name>Unity.Searcher.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Cinemachine.Editor.csproj">
-      <Project>{1ABDF36F-09AD-1847-72AC-B6013C9B62D6}</Project>
-      <Name>Unity.Cinemachine.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.State.csproj">
-      <Project>{CE678375-3DA3-352B-24B6-527235E5AA6F}</Project>
-      <Name>Unity.VisualScripting.State</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonChat.csproj">
-      <Project>{0272580F-48CB-8EEC-D288-309F661E7FE0}</Project>
-      <Name>PhotonChat</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.SpriteShape.Editor.csproj">
-      <Project>{1E0DC77D-7952-CC12-5D11-81473253A73E}</Project>
-      <Name>Unity.2D.SpriteShape.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Tilemap.Editor.csproj">
-      <Project>{DFD83F18-7FA7-845B-62BA-00875E626DE2}</Project>
-      <Name>Unity.2D.Tilemap.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Animation.Editor.csproj">
-      <Project>{0CCBFFA1-1D4C-0212-DCBD-2A4C7D08B059}</Project>
-      <Name>Unity.2D.Animation.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.IK.Editor.csproj">
-      <Project>{4EA3D611-ACEC-EF6B-4023-E498A31CDB27}</Project>
-      <Name>Unity.2D.IK.Editor</Name>
-    </ProjectReference>
+    <ProjectReference Include="Unity.2D.IK.Runtime.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj" />
+    <ProjectReference Include="Unity.Burst.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.Common.Path.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.PixelPerfect.Editor.csproj" />
+    <ProjectReference Include="Unity.Rider.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.Aseprite.Common.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Universal.Config.Runtime.csproj" />
+    <ProjectReference Include="Unity.2D.Sprite.Editor.csproj" />
+    <ProjectReference Include="Google.Play.Games.Editor.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.Flow.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Core.Editor.csproj" />
+    <ProjectReference Include="Unity.Mathematics.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.Tilemap.Extras.Editor.csproj" />
+    <ProjectReference Include="Unity.Splines.Editor.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Core.ShaderLibrary.csproj" />
+    <ProjectReference Include="Unity.Collections.csproj" />
+    <ProjectReference Include="Unity.PlasticSCM.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.SpriteShape.Runtime.csproj" />
+    <ProjectReference Include="Unity.2D.PixelPerfect.csproj" />
+    <ProjectReference Include="PPv2URPConverters.csproj" />
+    <ProjectReference Include="Unity.TextMeshPro.csproj" />
+    <ProjectReference Include="Unity.2D.Aseprite.Editor.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.csproj" />
+    <ProjectReference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Universal.Editor.csproj" />
+    <ProjectReference Include="PunDemos.DemoHubEditor.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj" />
+    <ProjectReference Include="Unity.Sysroot.Linux_x86_64.csproj" />
+    <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj" />
+    <ProjectReference Include="PsdPlugin.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.csproj" />
+    <ProjectReference Include="Unity.Burst.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Editor.csproj" />
+    <ProjectReference Include="Unity.Timeline.Editor.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj" />
+    <ProjectReference Include="Unity.ShaderGraph.Editor.csproj" />
+    <ProjectReference Include="Unity.VisualStudio.Editor.csproj" />
+    <ProjectReference Include="UnityEditor.UI.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.Core.csproj" />
+    <ProjectReference Include="Unity.2D.Animation.Runtime.csproj" />
+    <ProjectReference Include="Unity.2D.Tilemap.Extras.csproj" />
+    <ProjectReference Include="Unity.Cinemachine.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.Core.Editor.csproj" />
+    <ProjectReference Include="UnityEngine.UI.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj" />
+    <ProjectReference Include="PhotonRealtime.csproj" />
+    <ProjectReference Include="Unity.InternalAPIEngineBridge.001.csproj" />
+    <ProjectReference Include="Unity.2D.Common.Runtime.csproj" />
+    <ProjectReference Include="Unity.RenderPipeline.Universal.ShaderLibrary.csproj" />
+    <ProjectReference Include="Unity.Timeline.csproj" />
+    <ProjectReference Include="Unity.InputSystem.csproj" />
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj" />
+    <ProjectReference Include="Unity.InputSystem.ForUI.csproj" />
+    <ProjectReference Include="Google.Play.Games.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.SettingsProvider.Editor.csproj" />
+    <ProjectReference Include="Unity.SysrootPackage.Editor.csproj" />
+    <ProjectReference Include="Unity.InternalAPIEditorBridge.001.csproj" />
+    <ProjectReference Include="Unity.2D.Psdimporter.Editor.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.State.Editor.csproj" />
+    <ProjectReference Include="Unity.Mathematics.csproj" />
+    <ProjectReference Include="Unity.2D.Common.Editor.csproj" />
+    <ProjectReference Include="Unity.Splines.csproj" />
+    <ProjectReference Include="Unity.RenderPipelines.Universal.Shaders.csproj" />
+    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj" />
+    <ProjectReference Include="Unity.Searcher.Editor.csproj" />
+    <ProjectReference Include="Unity.Cinemachine.Editor.csproj" />
+    <ProjectReference Include="Unity.VisualScripting.State.csproj" />
+    <ProjectReference Include="PhotonChat.csproj" />
+    <ProjectReference Include="Unity.2D.SpriteShape.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.Tilemap.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.Animation.Editor.csproj" />
+    <ProjectReference Include="Unity.2D.IK.Editor.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="GenerateTargetFrameworkMonikerAttribute" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectCapability Remove="LaunchProfiles" />
+    <ProjectCapability Remove="SharedProjectReferences" />
+    <ProjectCapability Remove="ReferenceManagerSharedProjects" />
+    <ProjectCapability Remove="ProjectReferences" />
+    <ProjectCapability Remove="ReferenceManagerProjects" />
+    <ProjectCapability Remove="COMReferences" />
+    <ProjectCapability Remove="ReferenceManagerCOM" />
+    <ProjectCapability Remove="AssemblyReferences" />
+    <ProjectCapability Remove="ReferenceManagerAssemblies" />
+  </ItemGroup>
 </Project>

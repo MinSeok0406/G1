@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -8,61 +9,165 @@ using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
-    public class LobbyUIManager : SingletonNetworkBehaviour<LobbyUIManager>
+    public sealed class LobbyUIManager : SingletonNetworkBehaviour<LobbyUIManager>
     {
         [Header("UI Elements")]
         [SerializeField] private Button readyButton;
         [SerializeField] private Button startButton;
-        
-        [SerializeField] private GameObject playerSlots;
-        [SerializeField] private GameObject playerContainer;
+
+        [SerializeField] private GameObject playerSlotsRoot;
+        [SerializeField] private Transform playerContainer;
         [SerializeField] private GameObject playerSlotPrefab;
 
         [SerializeField] private TMP_Text playerCountText;
+        [SerializeField] private TMP_Text readyButtonLabel;   // "Ready/Cancel" í…ìŠ¤íŠ¸ ì—°ê²°
 
-        private List<PlayerSlotUI> slotPool = new List<PlayerSlotUI>();
-        private Dictionary<int, PlayerSlotUI> actorIdToSlotUIMap = new Dictionary<int, PlayerSlotUI>();
-        private Dictionary<int, bool> isReadyMap = new Dictionary<int, bool>(); // [È£½ºÆ® Àü¿ë]
+        private readonly List<PlayerSlotUI> slotPool = new();
+        private readonly Dictionary<int, PlayerSlotUI> actorIdToSlotUIMap = new();
 
-        private bool isLocalReady = false;
+        // Host only: actorId -> isReady
+        private readonly Dictionary<int, bool> isReadyMap = new();
+
+        private bool isLocalReady;
+        private bool isStartingGame;
+
+        #region Unity
 
         protected override void Awake()
         {
             base.Awake();
 
-            slotPool.Clear();
+            // ë„ ê°€ë“œ
+            if (!playerContainer)
+            {
+                Debug.LogError("[LobbyUI] playerContainer is not assigned.");
+                return;
+            }
+            if (!playerSlotPrefab)
+            {
+                Debug.LogError("[LobbyUI] playerSlotPrefab is not assigned.");
+                return;
+            }
 
             InitSlotPool();
+
         }
 
         private void Start()
         {
-            readyButton.onClick.AddListener(OnReadyButtonClicked);
+            if (readyButton)
+            {
+                readyButton.onClick.RemoveAllListeners();
+                readyButton.onClick.AddListener(OnReadyButtonClicked);
+            }
+            if (startButton)
+            {
+                startButton.onClick.RemoveAllListeners();
+                startButton.onClick.AddListener(OnClickStartGame);
+            }
 
-            startButton.onClick.AddListener(OnClickStartGame);
+            UpdatePlayerCountUI();
         }
 
-        public void InitSlotPool()
+        private void OnDestroy()
         {
+            if (readyButton) readyButton.onClick.RemoveAllListeners();
+            if (startButton) startButton.onClick.RemoveAllListeners();
+        }
+
+        #endregion
+
+        #region Slot Pool / Refresh
+
+        private void InitSlotPool()
+        {
+            slotPool.Clear();
+            actorIdToSlotUIMap.Clear();
+
             for (int i = 0; i < Settings.maxPlayer; i++)
             {
-                GameObject obj = Instantiate(playerSlotPrefab, playerContainer.transform);
-                var slot = obj.GetComponent<PlayerSlotUI>();
+                var go = Instantiate(playerSlotPrefab, playerContainer);
+                var slot = go.GetComponent<PlayerSlotUI>();
+                if (!slot)
+                {
+                    Debug.LogError("[LobbyUI] PlayerSlotUI missing on prefab.");
+                    continue;
+                }
+                go.SetActive(false);
                 slotPool.Add(slot);
-
-                slot.gameObject.SetActive(false);
             }
         }
 
+        private void ClearAllSlots()
+        {
+            foreach (var slot in slotPool) slot.gameObject.SetActive(false);
+            actorIdToSlotUIMap.Clear();
+        }
+
+        private void RefreshPlayerSlotList(List<LobbyPlayerData> lobbyPlayerDatas)
+        {
+            ClearAllSlots();
+
+            int idx = 0;
+            foreach (var data in lobbyPlayerDatas)
+            {
+                if (idx >= slotPool.Count)
+                {
+                    Debug.LogWarning("[LobbyUI] Slot pool exhausted.");
+                    break;
+                }
+
+                var slot = slotPool[idx];
+                slot.InitializedSlot(data);
+                slot.gameObject.SetActive(true);
+
+                actorIdToSlotUIMap[data.staticData.actorId] = slot;
+
+                // ì´ë¯¸ ì•Œê³  ìˆëŠ” Ready ìƒíƒœ ìˆìœ¼ë©´ ì¦‰ì‹œ ë°˜ì˜
+                if (PhotonNetwork.IsMasterClient &&
+                    isReadyMap.TryGetValue(data.staticData.actorId, out var isR))
+                {
+                    slot.SetReady(isR);
+                }
+
+                idx++;
+            }
+
+            UpdatePlayerCountUI();
+        }
+
+        public void SetPlayerSlotsActive(bool isActive)
+        {
+            if (playerSlotsRoot) playerSlotsRoot.SetActive(isActive);
+        }
+
+        private void UpdatePlayerCountUI()
+        {
+            var room = PhotonNetwork.CurrentRoom;
+            if (room == null || !playerCountText) return;
+
+            playerCountText.text = $"{room.PlayerCount} / {room.MaxPlayers}";
+        }
+
+
+        #endregion
+
+        #region Host: Slot/Ready Sync
+
+        /// <summary>í˜¸ìŠ¤íŠ¸: í˜„ì¬ ë¡œë¹„ í”Œë ˆì´ì–´ ë¦¬ìŠ¤íŠ¸ë¥¼ ì§ë ¬í™”í•˜ì—¬ ë°°í¬</summary>
         public void RequestLobbySlotRefreshFromHost()
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
+            // ìŠ¬ë¡¯ ë¦¬ìŠ¤íŠ¸ ë¸Œë¡œë“œìºìŠ¤íŠ¸
             OnLobbyPlayerSlotUpdateRequested();
+
+            // ë ˆë””ë§µì„ ìµœì‹  í”Œë ˆì´ì–´ ëª©ë¡ìœ¼ë¡œ ë™ê¸°í™”í•˜ê³  ë¸Œë¡œë“œìºìŠ¤íŠ¸
             SyncIsReadyMapWithCurrentPlayers();
+            BroadcastReadyMapToAll();
         }
 
-        public string SerializeLobbyPlayerList()
+        private string SerializeLobbyPlayerList()
         {
             if (!PhotonNetwork.IsMasterClient) return string.Empty;
 
@@ -70,7 +175,6 @@ namespace ColorPicker.InGame
             {
                 lobbyPlayerDatas = LobbyManager.Instance.GetLobbyPlayerList()
             };
-
             return JsonUtility.ToJson(wrapper);
         }
 
@@ -79,130 +183,120 @@ namespace ColorPicker.InGame
             if (!PhotonNetwork.IsMasterClient) return;
 
             string json = SerializeLobbyPlayerList();
-
-            photonView.RPC(nameof(Rpc_ReceiveUpdatedLobbyPlayerSlot), RpcTarget.All, json);
+            photonView.RPC(nameof(Rpc_ReceiveUpdatedLobbyPlayerSlot), RpcTarget.AllViaServer, json);
         }
 
         [PunRPC]
         private void Rpc_ReceiveUpdatedLobbyPlayerSlot(string json)
         {
-            LobbyPlayerDataListWrapper wrapper = JsonUtility.FromJson<LobbyPlayerDataListWrapper>(json);
+            var wrapper = JsonUtility.FromJson<LobbyPlayerDataListWrapper>(json);
             RefreshPlayerSlotList(wrapper.lobbyPlayerDatas);
         }
 
-        private void RefreshPlayerSlotList(List<LobbyPlayerData> lobbyPlayerDatas)
-        {
-            ClearAllSlots();
-
-            int index = 0;
-
-            foreach(LobbyPlayerData data in lobbyPlayerDatas)
-            {
-                if (index >= slotPool.Count){ Debug.Log($"[LobbyUIManager] ½½·Ô °³¼ö ÃÊ°ú"); break;}
-
-                slotPool[index].InitializedSlot(data);
-                slotPool[index].gameObject.SetActive(true);
-                actorIdToSlotUIMap.Add(data.staticData.actorId, slotPool[index]);
-                index++;
-            }
-
-            UpdatePlayerCountUI();
-        }
-
-        private void ClearAllSlots()
-        {
-            foreach (var slot in slotPool)
-            {
-                slot.gameObject.SetActive(false);
-            }
-
-            actorIdToSlotUIMap.Clear();
-
-        }
-
-        public void SetPlayerSlotsActive(bool isActive)
-        {
-            playerSlots.SetActive(isActive);
-        }
-
-        private void UpdatePlayerCountUI()
-        {
-            if (PhotonNetwork.CurrentRoom == null) return;
-
-            int current = PhotonNetwork.CurrentRoom.PlayerCount;
-            int max = PhotonNetwork.CurrentRoom.MaxPlayers;
-
-            playerCountText.text = $"{current} / {max}";
-        }
-
+        /// <summary>í˜¸ìŠ¤íŠ¸: í˜„ì¬ ë£¸ êµ¬ì„±ì— ë”°ë¼ isReadyMap ì •ë¦¬</summary>
         private void SyncIsReadyMapWithCurrentPlayers()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom == null) return;
 
             var currentActorIds = PhotonNetwork.CurrentRoom.Players.Values
                 .Select(p => p.ActorNumber).ToHashSet();
 
-            var keysToRemove = isReadyMap.Keys.Where(id => !currentActorIds.Contains(id)).ToList();
-            foreach (var id in keysToRemove)
-            {
-                isReadyMap.Remove(id);
-                Debug.Log($"[Lobby] isReadyMap¿¡¼­ ³ª°£ ÇÃ·¹ÀÌ¾î {id} Á¦°ÅµÊ");
-            }
+            // ì œê±°
+            var toRemove = isReadyMap.Keys.Where(id => !currentActorIds.Contains(id)).ToList();
+            foreach (var id in toRemove) isReadyMap.Remove(id);
 
+            // ì¶”ê°€(ê¸°ë³¸ false)
             foreach (var actorId in currentActorIds)
             {
                 if (!isReadyMap.ContainsKey(actorId))
-                {
                     isReadyMap[actorId] = false;
-                    Debug.Log($"[Lobby] isReadyMap¿¡ »õ ÇÃ·¹ÀÌ¾î {actorId} Ãß°¡µÊ");
-                }
             }
         }
+
+        /// <summary>í˜¸ìŠ¤íŠ¸: ë ˆë””ë§µ ì „ì²´ë¥¼ í´ë¼ì— ì¼ê´„ ë°˜ì˜(ì‹ ê·œ ì°¸ì—¬ì ì´ˆê¸°í™”ìš©)</summary>
+        private void BroadcastReadyMapToAll()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+            if (isReadyMap.Count == 0) return;
+
+            var actorIds = isReadyMap.Keys.ToArray();
+            var states = actorIds.Select(id => isReadyMap[id]).ToArray();
+            photonView.RPC(nameof(Rpc_BulkReadyStateUpdate), RpcTarget.AllViaServer, actorIds, states);
+        }
+
+        [PunRPC]
+        private void Rpc_BulkReadyStateUpdate(int[] actorIds, bool[] states)
+        {
+            if (actorIds == null || states == null) return;
+            int n = Math.Min(actorIds.Length, states.Length);
+
+            for (int i = 0; i < n; i++)
+            {
+                if (actorIdToSlotUIMap.TryGetValue(actorIds[i], out var slot))
+                    slot.SetReady(states[i]);
+            }
+
+        }
+
+        #endregion
+
+        #region Ready Button & Flow
 
         private void OnReadyButtonClicked()
         {
             isLocalReady = !isLocalReady;
-
             PlayerManager.Instance.UpdateReadyState(isLocalReady);
 
-            int actorId = PhotonNetwork.LocalPlayer.ActorNumber;
+            var me = PhotonNetwork.LocalPlayer;
+            if (me == null) return;
 
-            photonView.RPC(nameof(Rpc_RequestReadyUpdate), RpcTarget.MasterClient, actorId, isLocalReady);
+            // ë²„íŠ¼ ë¼ë²¨ ì¦‰ì‹œ ë°˜ì˜(í´ë¼ UX)
+            if (readyButtonLabel)
+                readyButtonLabel.text = isLocalReady ? "Cancel" : "Ready";
+
+            photonView.RPC(nameof(Rpc_RequestReadyUpdate), RpcTarget.MasterClient, me.ActorNumber, isLocalReady);
         }
 
         [PunRPC]
-        private void Rpc_RequestReadyUpdate(int actorId, bool isReady)
+        private void Rpc_RequestReadyUpdate(int actorId, bool isReady, PhotonMessageInfo info)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            if (!PhotonNetwork.CurrentRoom.Players.ContainsKey(actorId))
+            // ë³´ë‚¸ ì£¼ì²´ ê²€ì¦
+            if (info.Sender == null || info.Sender.ActorNumber != actorId)
             {
-                Debug.LogWarning($"[Lobby] ÁØºñ ¿äÃ» ¹«½ÃµÊ: actorId {actorId} ´Â ÇöÀç ·ë¿¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+                Debug.LogWarning($"[LobbyUI] Spoofed ready request? sender={info.Sender?.ActorNumber}, actorId={actorId}");
                 return;
             }
 
-            if (!isReadyMap.ContainsKey(actorId))
+            var room = PhotonNetwork.CurrentRoom;
+            if (room == null || !room.Players.ContainsKey(actorId))
             {
-                Debug.LogWarning($"[Lobby] isReadyMap¿¡ ¾ø´Â actorId {actorId} ¡æ false·Î ÃÊ±âÈ­ ÈÄ »óÅÂ ¹İ¿µ");
-                isReadyMap[actorId] = false;
+                Debug.LogWarning($"[LobbyUI] Ready request rejected: actorId {actorId} not in room.");
+                return;
             }
 
+            // ë ˆë””ë§µ ì—…ë°ì´íŠ¸
             isReadyMap[actorId] = isReady;
-
             LobbyManager.Instance.UpdateReadyState(actorId, isReady);
 
-            photonView.RPC(nameof(Rpc_ReceivePlayerReadyState), RpcTarget.All, actorId, isReady);
-            
+            // ë‹¨ê±´ ë°˜ì˜
+            photonView.RPC(nameof(Rpc_ReceivePlayerReadyState), RpcTarget.AllViaServer, actorId, isReady);
+
+            // ì „ì²´ ë ˆë”” ì—¬ë¶€ ì²´í¬
             ReadyCheckProcess();
         }
 
         public void ReadyCheckProcess()
         {
-            if (AreAllPlayersReady())
+            // í˜¸ìŠ¤íŠ¸ë§Œ íŒë‹¨/ì‹œì‘ ë²„íŠ¼ í† ê¸€
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            bool allReady = AreAllPlayersReady();
+            if (allReady)
             {
-                Debug.Log("[Lobby] ÀüÃ¼ ÇÃ·¹ÀÌ¾î ÁØºñ ¿Ï·á!");
-                // StartGame() ¶Ç´Â StartButton È°¼ºÈ­ µî Ã³¸®
                 startButton.gameObject.SetActive(true);
+                startButton.interactable = allReady && !isStartingGame;
             }
             else
             {
@@ -214,45 +308,49 @@ namespace ColorPicker.InGame
         private void Rpc_ReceivePlayerReadyState(int actorId, bool isReady)
         {
             if (actorIdToSlotUIMap.TryGetValue(actorId, out var slot))
-            {
                 slot.SetReady(isReady);
-                Debug.Log($"[LobbyUI] actor {actorId} ¡æ Ready »óÅÂ ¾÷µ¥ÀÌÆ®: {isReady}");
-            }
-            else
-            {
-                Debug.LogWarning($"[LobbyUI] actorId {actorId}¿¡ ÇØ´çÇÏ´Â ½½·ÔÀÌ ¾ø½À´Ï´Ù.");
-            }
+
         }
 
         private bool AreAllPlayersReady()
         {
-            var currentActorIds = PhotonNetwork.CurrentRoom.Players.Keys;
+            var room = PhotonNetwork.CurrentRoom;
+            if (room == null) return false;
 
-            foreach (int actorId in currentActorIds)
+            foreach (var kv in room.Players)
             {
-                if (!isReadyMap.TryGetValue(actorId, out bool isReady) || !isReady)
-                {
+                int actorId = kv.Key;
+                if (!isReadyMap.TryGetValue(actorId, out bool ready) || !ready)
                     return false;
-                }
             }
-
-            return true;
+            return room.PlayerCount > 0; // ìµœì†Œ 1ëª… ì´ìƒì¼ ë•Œë§Œ true
         }
+
+        #endregion
+
+        #region Start Game
 
         public void OnClickStartGame()
         {
-            if (!PhotonNetwork.IsMasterClient || !AreAllPlayersReady()) return;
+            if (!PhotonNetwork.IsMasterClient) return;
+            if (isStartingGame) return;           // ì¤‘ë³µ ê°€ë“œ
+            if (!AreAllPlayersReady()) return;    // ì•ˆì „ë§
+
+            isStartingGame = true;
 
             CacheDataManager.Instance.SaveAll(LobbyManager.Instance.GetLobbyPlayerList());
 
-            photonView.RPC(nameof(Rpc_StartGame), RpcTarget.All);
+            photonView.RPC(nameof(Rpc_StartGame), RpcTarget.AllViaServer);
         }
 
         [PunRPC]
         public void Rpc_StartGame()
         {
+            // ì”¬ ë™ê¸°í™” í‚¤ ì—…ë°ì´íŠ¸ + ë¡œì»¬ ë¡œë“œ
             HelperUtilities.SetCurrentScene(Settings.inGameScene);
             SceneManager.LoadScene(Settings.inGameScene);
         }
+
+        #endregion
     }
 }

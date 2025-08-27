@@ -17,7 +17,7 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
+  - CRT
   - 
   - 
   - 
@@ -64,4 +64,7 @@ TagManager:
     locked: 0
   - name: FrontDecoration
     uniqueID: 1192120731
+    locked: 0
+  - name: Lighting
+    uniqueID: 1703569725
     locked: 0

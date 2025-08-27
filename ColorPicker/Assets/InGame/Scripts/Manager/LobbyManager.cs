@@ -1,5 +1,5 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +7,50 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class LobbyManager : SingletonNetworkBehaviour<LobbyManager>
+    /// <summary>
+    /// Host-authoritative Lobby Manager
+    /// - Host만 데이터 원본을 보유/갱신
+    /// - 마스터 승계 시 Ack 수집 후 복원 파이프라인 수행(타임아웃 내구성)
+    /// - 생성된 LobbyPlayer의 ViewID를 사전에서 직접 관리(FindObjectsOfType 제거)
+    /// </summary>
+    public sealed class LobbyManager : SingletonNetworkBehaviour<LobbyManager>
     {
-        private Dictionary<int, LobbyPlayerData> lobbyPlayers = new Dictionary<int, LobbyPlayerData>();
-        HashSet<int> ackedActorIds = new HashSet<int>();
+        // actorId -> LobbyPlayerData
+        private readonly Dictionary<int, LobbyPlayerData> lobbyPlayers = new();
+
+        // 생성된 로비 플레이어 ViewIDs (actorId -> viewId)
+        private readonly Dictionary<int, int> actorToViewId = new();
+
+        // 마스터 승계 Ack 수집
+        private readonly HashSet<int> ackedActorIds = new();
+
+        // ----- Settings -----
+        [Header("Join/Retry")]
+        [SerializeField] private float roomJoinTimeoutSeconds = 8f;
+        [SerializeField] private float roomJoinRetryIntervalSeconds = 0.25f;
+
+        [Header("Host Migration")]
+        [SerializeField] private float ackTimeoutSeconds = 4f;     // 전원 Ack 대기 최대 시간
+        [SerializeField] private int bulkResendLimit = 32;         // 재전송 시 최근 N개만(여기에선 1인 1개 데이터라 의미상 제한치)
+
+        // 씬 키/이름은 Settings에서 가져가되, 존재하지 않을 경우 대비
+        private string keyCurrentScene => Settings.currentSceneKey;
+        private string sceneLobby => Settings.inGameLobbyScene;
+        private string sceneMain  => Settings.testMainScene;
 
         protected override void Awake()
         {
             base.Awake();
 
-            TryHandleSceneMismatchOrLeave();
+            // 룸/프로퍼티 없을 수 있으므로 방어적으로 체크
+            if (TryHandleSceneMismatchOrLeave())
+                return;
 
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            HelperUtilities.SetCurrentScene(Settings.inGameLobbyScene);
+            // 호스트만 룸 커스텀 씬 키 갱신
+            if (PhotonNetwork.IsMasterClient)
+            {
+                HelperUtilities.SetCurrentScene(sceneLobby);
+            }
         }
 
         private void Start()
@@ -28,71 +58,58 @@ namespace ColorPicker.InGame
             CheckAndInitializeRoomJoin();
         }
 
-        /// <summary>
-        /// 룸 참가 초기화 코루틴 실행하는 함수
-        /// </summary>
-        private void CheckAndInitializeRoomJoin()
-        {
-            StartCoroutine(WaitForJoinAndInitialize());
-        }
+        #region Room Join Init
+
+        private void CheckAndInitializeRoomJoin() => StartCoroutine(WaitForJoinAndInitialize());
 
         private IEnumerator WaitForJoinAndInitialize()
         {
-            float connectStartTime = Time.time;
-
-            while (Time.time < connectStartTime + Settings.RoomJoinTimeoutSeconds)
+            var start = Time.time;
+            while (Time.time - start < roomJoinTimeoutSeconds)
             {
-                if (PhotonNetwork.InRoom)
+                if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
                 {
                     InitializeAfterJoin();
                     yield break;
                 }
-
-                yield return new WaitForSeconds(Settings.RoomJoinRetryIntervalSeconds);
+                yield return new WaitForSeconds(roomJoinRetryIntervalSeconds);
             }
-
             HandleRoomJoinTimeout();
         }
 
-        /// <summary>
-        /// 커스텀 룸 프로퍼티의 CurrentScene과 현재 씬이 일치하지 않으면 씬 이동 처리
-        /// </summary>
-        /// <returns>씬 이동이 발생하면 true, 아니면 false</returns>
         private bool TryHandleSceneMismatchOrLeave()
         {
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(Settings.currentSceneKey, out object sceneObj))
+            // InRoom + Room 존재 체크
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+                return false;
+
+            if (PhotonNetwork.CurrentRoom.CustomProperties != null &&
+                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(keyCurrentScene, out object sceneObj))
             {
-                string roomSceneName = sceneObj as string;
-
-                if (roomSceneName == null) roomSceneName = Settings.inGameLobbyScene;
-
+                string roomSceneName = sceneObj as string ?? sceneLobby;
                 string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-                if (roomSceneName != currentScene)
+                if (!string.Equals(roomSceneName, currentScene, StringComparison.Ordinal))
                 {
                     PhotonNetwork.IsMessageQueueRunning = false;
                     PhotonNetwork.LoadLevel(roomSceneName);
-                    Destroy(gameObject);
+                    // 싱글톤 파괴는 씬 로드 이후에 발생하므로 별도 Destroy 불필요
                     return true;
                 }
             }
-
             return false;
         }
 
-        /// <summary>
-        /// 로컬 플레이어의 LobbyPlayer 데이터를 초기화하고 MasterClient에게 등록 요청하는 함수
-        /// </summary>
         private void InitializeAfterJoin()
         {
-            string googleUID = System.Guid.NewGuid().ToString(); // TODO: Replace with actual ID fetch
+            // 실제 앱에선 플랫폼 계정/구글 UID 등으로 대체
+            string googleUID = System.Guid.NewGuid().ToString();
             int actorId = PhotonNetwork.LocalPlayer.ActorNumber;
             string nickname = $"Player{actorId}";
 
             var dynamicData = new LobbyPlayerDynamicData
             {
-                posX = 0,
-                posY = 0,
+                posX = 0, posY = 0,
                 isReady = false,
                 playerCustomizationData = new PlayerCustomizationData { customColorId = 0, hatId = 0 }
             };
@@ -101,226 +118,245 @@ namespace ColorPicker.InGame
             PlayerManager.Instance.SetStaticPlayerData(googleUID, nickname, actorId);
 
             string dynamicJson = JsonUtility.ToJson(dynamicData);
-            photonView.RPC(nameof(Rpc_RequestRegisterLobbyPlayer), RpcTarget.MasterClient, googleUID, nickname, actorId, dynamicJson);
+
+            // 등록 요청(호스트 권한으로 단일 소스 정리)
+            photonView.RPC(nameof(Rpc_RequestRegisterLobbyPlayer),
+                RpcTarget.MasterClient, googleUID, nickname, actorId, dynamicJson);
         }
 
-        /// <summary>
-        /// 룸 참가 실패 시 로비로 이동 처리하는 함수
-        /// </summary>
         private void HandleRoomJoinTimeout()
         {
+            Debug.LogWarning("[Lobby] Room join timeout. Returning to main.");
             PhotonNetwork.LeaveRoom();
-            PhotonNetwork.LoadLevel(Settings.testMainScene);
+            PhotonNetwork.LoadLevel(sceneMain);
         }
 
-        /// <summary>
-        /// 클라이언트에서 보낸 등록 요청을 마스터가 처리하고 LobbyPlayer를 생성하는 RPC 함수
-        /// </summary>
-        /// <param name="googleUID">플레이어 고유 ID</param>
-        /// <param name="nickname">닉네임</param>
-        /// <param name="actorId">Photon Actor 번호</param>
-        /// <param name="dynamicJson">직렬화된 동적 데이터</param>
+        #endregion
+
+        #region Register/Spawn (Host-only)
+
         [PunRPC]
-        private void Rpc_RequestRegisterLobbyPlayer(string googleUID, string nickname, int actorId, string dynamicJson)
+        private void Rpc_RequestRegisterLobbyPlayer(string googleUID, string nickname, int actorId, string dynamicJson, PhotonMessageInfo info)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            var dynamicData = JsonUtility.FromJson<LobbyPlayerDynamicData>(dynamicJson);
+            // 요청 위조 방지: Sender 유효성
+            if (info.Sender == null || info.Sender.ActorNumber != actorId)
+            {
+                Debug.LogWarning($"[Lobby] Register request spoof? sender={info.Sender?.ActorNumber} actorId={actorId}");
+                return;
+            }
+
+            LobbyPlayerDynamicData dynamicData;
+            try
+            {
+                dynamicData = JsonUtility.FromJson<LobbyPlayerDynamicData>(dynamicJson);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Lobby] DynamicData parse failed: {e}");
+                return;
+            }
+
             RegisterLobbyPlayer(googleUID, nickname, actorId, dynamicData);
             SpawnLobbyPlayer(actorId);
 
-            LobbyUIManager.Instance.ReadyCheckProcess();
+            // UI 반영(호스트 UI)
+            LobbyUIManager.Instance?.RequestLobbySlotRefreshFromHost();
+            LobbyUIManager.Instance?.ReadyCheckProcess();
         }
 
-        /// <summary>
-        /// 마스터가 서버 내 딕셔너리에 로비 플레이어 데이터를 등록하는 함수
-        /// </summary>
-        /// <param name="googleUID">플레이어 고유 ID</param>
-        /// <param name="nickname">닉네임</param>
-        /// <param name="actorId">Photon Actor 번호</param>
-        /// <param name="dynamicData">동적 데이터 객체</param>
         public void RegisterLobbyPlayer(string googleUID, string nickname, int actorId, LobbyPlayerDynamicData dynamicData)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
             lobbyPlayers[actorId] = new LobbyPlayerData
             {
-                staticData = new LobbyPlayerStaticData { googleUID = googleUID, nickname = nickname, actorId = actorId },
+                staticData = new LobbyPlayerStaticData { googleUID = googleUID, nickname = nickname, actorId = actorId, viewId = 0 },
                 dynamicData = dynamicData
             };
-
-            LobbyUIManager.Instance.RequestLobbySlotRefreshFromHost();
         }
 
-        public void SpawnLobbyPlayer(int actorId)
-        {
-            StartCoroutine(SpawnLobbyPlayerDelayed(actorId));
-        }
+        public void SpawnLobbyPlayer(int actorId) => StartCoroutine(SpawnLobbyPlayerDelayed(actorId));
 
-        /// <summary>
-        /// 마스터가 LobbyPlayer RoomObject를 생성하고 소유권 이전 처리하는 함수
-        /// </summary>
-        /// <param name="actorId">Photon Actor 번호</param>
         private IEnumerator SpawnLobbyPlayerDelayed(int actorId)
         {
-            yield return null; // 한 프레임 대기
+            yield return null; // 한 프레임 대기(씬/네트워크 오브젝트 안정화)
 
-            if (!lobbyPlayers.ContainsKey(actorId)) yield break;
+            if (!PhotonNetwork.IsMasterClient) yield break;
+            if (!lobbyPlayers.TryGetValue(actorId, out var lp)) yield break;
 
-            string prefabName = GameResources.Instance.lobbyPlayerPrefab.name;
-            Vector2 pos = new(lobbyPlayers[actorId].dynamicData.posX, lobbyPlayers[actorId].dynamicData.posY);
-            GameObject playerObj = PhotonNetwork.InstantiateRoomObject(prefabName, pos, Quaternion.identity);
-
-            if (playerObj.TryGetComponent(out LobbyPlayer player))
+            var prefab = GameResources.Instance?.lobbyPlayerPrefab;
+            if (!prefab)
             {
-                int viewId = player.photonView.ViewID;
-                lobbyPlayers[actorId].staticData.viewId = viewId;
-                ReassignOwnershipToPlayer(viewId, actorId);
+                Debug.LogError("[Lobby] lobbyPlayerPrefab is missing.");
+                yield break;
             }
+
+            Vector3 pos = new Vector3(lp.dynamicData.posX, lp.dynamicData.posY, 0f);
+            GameObject obj = PhotonNetwork.InstantiateRoomObject(prefab.name, pos, Quaternion.identity);
+
+            if (!obj.TryGetComponent(out LobbyPlayer lobbyPlayer))
+            {
+                Debug.LogError("[Lobby] Spawned object has no LobbyPlayer component.");
+                yield break;
+            }
+
+            int viewId = lobbyPlayer.photonView.ViewID;
+            lp.staticData.viewId = viewId;
+            lobbyPlayers[actorId] = lp;
+
+            actorToViewId[actorId] = viewId;
+
+            // 소유권 이전 + 초기화
+            ReassignOwnershipToPlayer(viewId, actorId);
         }
 
-        
-
-        /// <summary>
-        /// 지정된 ViewId의 객체 소유권을 해당 actor에게 넘기고 초기화 호출하는 함수
-        /// </summary>
-        /// <param name="viewId">PhotonView의 ID</param>
-        /// <param name="newActorId">새로운 소유자 Actor ID</param>
         public void ReassignOwnershipToPlayer(int viewId, int newActorId)
         {
-            if (PhotonView.Find(viewId)?.TryGetComponent(out LobbyPlayer player) != true) return;
+            var view = PhotonView.Find(viewId);
+            if (!view || !PhotonNetwork.IsMasterClient) return;
 
-            if (player.photonView.OwnerActorNr != newActorId)
+            if (view.OwnerActorNr != newActorId)
             {
-                TransferOwnershipSafe(player.photonView, newActorId);
-                Debug.Log($"[Ownership] Transferred to Actor {newActorId}");
+                TransferOwnershipSafe(view, newActorId);
             }
 
-            if (player.photonView.OwnerActorNr == newActorId && PhotonNetwork.IsMasterClient)
+            // 소유자 확정 후 초기화 호출(호스트에서만)
+            if (view.TryGetComponent(out LobbyPlayer player) && PhotonNetwork.IsMasterClient)
             {
                 player.InitializedPlayer();
             }
         }
 
-        /// <summary>
-        /// 안전하게 PhotonView의 소유권을 이전하는 함수
-        /// </summary>
-        /// <param name="view">PhotonView 객체</param>
-        /// <param name="newActorId">새로운 소유자 Actor ID</param>
         public void TransferOwnershipSafe(PhotonView view, int newActorId)
         {
-            if (!PhotonNetwork.IsMasterClient || view == null) return;
-
+            if (!PhotonNetwork.IsMasterClient || !view) return;
             view.TransferOwnership(newActorId);
-            Debug.Log($"[Ownership] Ownership transferred to Actor {newActorId}");
+            Debug.Log($"[Ownership] View {view.ViewID} → Actor {newActorId}");
         }
 
-        /// <summary>
-        /// 플레이어 퇴장 시 해당 LobbyPlayer를 제거하는 함수
-        /// </summary>
-        /// <param name="otherPlayer">Photon 퇴장한 플레이어</param>
+        #endregion
+
+        #region Player Leave / Removal
+
         public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            base.OnLeftRoom();
+            base.OnPlayerLeftRoom(otherPlayer);
 
             RemoveLobbyPlayer(otherPlayer.ActorNumber);
 
-            LobbyUIManager.Instance.RequestLobbySlotRefreshFromHost();
-
-            LobbyUIManager.Instance.ReadyCheckProcess();
+            LobbyUIManager.Instance?.RequestLobbySlotRefreshFromHost();
+            LobbyUIManager.Instance?.ReadyCheckProcess();
         }
 
-        /// <summary>
-        /// actorId에 해당하는 LobbyPlayer 오브젝트 및 데이터를 제거하는 함수
-        /// </summary>
-        /// <param name="actorId">삭제할 Actor ID</param>
         public void RemoveLobbyPlayer(int actorId)
         {
-            if (!PhotonNetwork.IsMasterClient || !lobbyPlayers.ContainsKey(actorId)) return;
+            if (!PhotonNetwork.IsMasterClient) return;
+            if (!lobbyPlayers.ContainsKey(actorId))
+                return;
 
-            int viewId = lobbyPlayers[actorId].staticData.viewId;
-            PhotonView view = PhotonView.Find(viewId);
-
-            if (view != null)
+            // View 제거
+            if (actorToViewId.TryGetValue(actorId, out int viewId))
             {
-                PhotonNetwork.Destroy(view);
+                var view = PhotonView.Find(viewId);
+                if (view)
+                {
+                    // RoomObject 이고 Owner가 0(룸)인 경우 소유자 위임 후 파괴
+                    if (view.OwnerActorNr == 0)
+                        view.TransferOwnership(PhotonNetwork.LocalPlayer);
+
+                    if (view.IsMine || view.OwnerActorNr == PhotonNetwork.LocalPlayer.ActorNumber)
+                        PhotonNetwork.Destroy(view);
+                    else
+                        Debug.LogWarning($"[Lobby] Remove failed ViewID {viewId} owner={view.OwnerActorNr}");
+                }
+                actorToViewId.Remove(actorId);
             }
 
+            // 데이터 제거
             lobbyPlayers.Remove(actorId);
         }
 
-        /// <summary>
-        /// 마스터 교체 시 소유권 이전 및 복원 흐름을 시작하는 함수
-        /// </summary>
-        /// <param name="newMasterClient">새로운 마스터 클라이언트</param>
+        #endregion
+
+        #region Master Switch (Host Migration)
+
         public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
         {
             base.OnMasterClientSwitched(newMasterClient);
 
- 
-            if (!PhotonNetwork.IsMasterClient) return;
+            // 내가 새 호스트가 아니면 할 일 없음
+            if (!PhotonNetwork.IsMasterClient)
+                return;
 
-            foreach (var view in FindObjectsOfType<PhotonView>())
-            {
-
-                view.TransferOwnership(PhotonNetwork.LocalPlayer);
-            }
-
-            RequestAllClientsToCacheDataWithAck();
+            // Ack 수집 및 복원 파이프라인
+            StartCoroutine(Co_HostMigrationRestore());
         }
 
-        /// <summary>
-        /// 모든 클라이언트에 데이터 캐싱 요청을 보내고 Ack를 기다리는 함수
-        /// </summary>
-        private void RequestAllClientsToCacheDataWithAck()
+        private IEnumerator Co_HostMigrationRestore()
+        {
+            // 1) 모든 클라에 캐시 요청 + Ack 대기
+            yield return StartCoroutine(Co_RequestAllClientsToCacheDataWithAck());
+
+            // 2) 기존 오브젝트 정리 후 재등록 요청
+            RestoreAllLobbyPlayersFromClientCache();
+        }
+
+        private IEnumerator Co_RequestAllClientsToCacheDataWithAck()
         {
             ackedActorIds.Clear();
-            photonView.RPC(nameof(Rpc_CacheMyDataAndSendAck), RpcTarget.All);
+
+            // AllViaServer로 순서/일관성 확보
+            photonView.RPC(nameof(Rpc_CacheMyDataAndSendAck), RpcTarget.AllViaServer);
+
+            float start = Time.time;
+            while (Time.time - start < ackTimeoutSeconds)
+            {
+                // 모든 현재 플레이어 Ack 수신하면 조기 종료
+                if (ackedActorIds.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                    yield break;
+                yield return null;
+            }
+
+            // 타임아웃: 부분 Ack 수신 상태로 진행(남은 인원은 이후 재등록 시 합류)
+            if (ackedActorIds.Count < PhotonNetwork.CurrentRoom.PlayerCount)
+            {
+                Debug.LogWarning($"[HostMigration] Ack timeout: {ackedActorIds.Count}/{PhotonNetwork.CurrentRoom.PlayerCount}");
+            }
         }
 
-        /// <summary>
-        /// 클라이언트가 자신의 데이터를 캐싱하고 마스터에게 Ack를 보내는 RPC 함수
-        /// </summary>
         [PunRPC]
         private void Rpc_CacheMyDataAndSendAck()
         {
-            LobbyPlayer myPlayer = PlayerManager.Instance.GetMyLobbyPlayer();
-            PlayerManager.Instance.UpdateLobbyPlayerPos(myPlayer.transform.position);
+            var my = PlayerManager.Instance?.GetMyLobbyPlayer();
+            if (my)
+            {
+                PlayerManager.Instance.UpdateLobbyPlayerPos(my.transform.position);
+            }
 
             int actorId = PhotonNetwork.LocalPlayer.ActorNumber;
             photonView.RPC(nameof(Rpc_ReceiveClientDataAck), RpcTarget.MasterClient, actorId);
         }
 
-        /// <summary>
-        /// 마스터가 Ack를 수신하고, 전체 수신 시 복원 시작하는 RPC 함수
-        /// </summary>
-        /// <param name="actorId">Ack를 보낸 클라이언트의 Actor ID</param>
         [PunRPC]
         private void Rpc_ReceiveClientDataAck(int actorId)
         {
             if (!PhotonNetwork.IsMasterClient) return;
-
             ackedActorIds.Add(actorId);
-            if (ackedActorIds.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
-            {
-                RestoreAllLobbyPlayersFromClientCache();
-            }
         }
 
-        /// <summary>
-        /// 기존 LobbyPlayer 오브젝트를 삭제하고 클라이언트에 재등록 요청을 보내는 함수
-        /// </summary>
         private void RestoreAllLobbyPlayersFromClientCache()
         {
-            DestroyAllLobbyPlayers();
-            photonView.RPC(nameof(Rpc_RequestClientsToResendData), RpcTarget.All);
+            // 현재 트래킹된 오브젝트만 정확히 제거(씬 전역 탐색 금지)
+            DestroyAllLobbyPlayersTracked();
+
+            // 각 클라에 재등록 요청
+            photonView.RPC(nameof(Rpc_RequestClientsToResendData), RpcTarget.AllViaServer);
         }
 
-        /// <summary>
-        /// 각 클라이언트에게 자신의 LobbyPlayer 데이터를 다시 Master에게 전송하도록 요청하는 RPC 함수
-        /// </summary>
         [PunRPC]
         private void Rpc_RequestClientsToResendData()
         {
@@ -331,52 +367,49 @@ namespace ColorPicker.InGame
                 data.staticData.googleUID, data.staticData.nickname, data.staticData.actorId, dynamicJson);
         }
 
-        /// <summary>
-        /// 마스터가 모든 LobbyPlayer RoomObject를 삭제하는 함수
-        /// </summary>
-        public void DestroyAllLobbyPlayers()
+        private void DestroyAllLobbyPlayersTracked()
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            int count = 0;
-            foreach (var player in FindObjectsOfType<LobbyPlayer>())
+            int destroyed = 0;
+            // actorToViewId를 사용해 정확히 파괴
+            foreach (var kv in actorToViewId.ToList())
             {
-                PhotonView view = player.photonView;
+                var view = PhotonView.Find(kv.Value);
+                if (!view) { actorToViewId.Remove(kv.Key); continue; }
 
-                if (view != null && view.IsRoomView())
+                if (view.OwnerActorNr == 0)
+                    view.TransferOwnership(PhotonNetwork.LocalPlayer);
+
+                if (view.IsMine || view.OwnerActorNr == PhotonNetwork.LocalPlayer.ActorNumber)
                 {
-                    if (view.OwnerActorNr == 0)
-                    {
-                        view.TransferOwnership(PhotonNetwork.LocalPlayer);
-                    }
-
-                    if (view.IsMine)
-                    {
-                        PhotonNetwork.Destroy(view);
-                        count++;
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[HostMigration] Failed to destroy ViewID {view.ViewID}, Owner: {view.Owner?.ActorNumber}");
-                    }
+                    PhotonNetwork.Destroy(view);
+                    destroyed++;
                 }
+                else
+                {
+                    Debug.LogWarning($"[HostMigration] Failed to destroy ViewID {view.ViewID}, Owner: {view.OwnerActorNr}");
+                }
+                actorToViewId.Remove(kv.Key);
             }
-
-            Debug.Log($"[HostMigration] Destroyed {count} LobbyPlayers");
+            Debug.Log($"[HostMigration] Destroyed {destroyed} LobbyPlayers (tracked)");
         }
 
-        /// <summary>
-        /// 로비 플레이어 데이터를 리스트 형태로 반환하는 함수
-        /// </summary>
-        /// <returns></returns>
-        public List<LobbyPlayerData> GetLobbyPlayerList()
-        {
-            return lobbyPlayers.Values.ToList();
-        }
+        #endregion
+
+        #region Public APIs
+
+        public List<LobbyPlayerData> GetLobbyPlayerList() => lobbyPlayers.Values.ToList();
 
         public void UpdateReadyState(int actorId, bool isReady)
         {
-            lobbyPlayers[actorId].dynamicData.isReady = isReady;
+            if (!PhotonNetwork.IsMasterClient) return;
+            if (!lobbyPlayers.TryGetValue(actorId, out var lp)) return;
+            lp.dynamicData.isReady = isReady;
+            lobbyPlayers[actorId] = lp;
+            LobbyUIManager.Instance?.RequestLobbySlotRefreshFromHost();
         }
+
+        #endregion
     }
 }

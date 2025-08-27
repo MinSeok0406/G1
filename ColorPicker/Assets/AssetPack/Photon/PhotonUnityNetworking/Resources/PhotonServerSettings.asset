@@ -99,6 +99,11 @@ MonoBehaviour:
   - Rpc_ReceiveReward
   - UpdateMissionStatus
   - RPC_UpdateMissionStatus
+  - C_BulkReceive
+  - C_ClearChatUI
+  - C_ReceiveMessage
+  - S_ReceiveMessage
+  - Rpc_BulkReadyStateUpdate
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
