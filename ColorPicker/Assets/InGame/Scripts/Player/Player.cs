@@ -108,7 +108,7 @@ namespace ColorPicker.InGame
             PlayerManager.Instance.SetMyPlayer(this);
         }
 
-        // ¼öÁ¤ ¿¹Á¤
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         public void AttachClassComponent(PlayerClassType classType)
         {
             var ability = GetComponent<IClassAbility>() as Component;
@@ -120,11 +120,11 @@ namespace ColorPicker.InGame
             if (abilityType != null)
             {
                 gameObject.AddComponent(abilityType);
-                Debug.Log($"[Player] {abilityName} ºÎÂø ¿Ï·á");
+                Debug.Log($"[Player] {abilityName} ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½");
             }
             else
             {
-                Debug.LogWarning($"[Player] {abilityName} Å¸ÀÔÀ» Ã£Áö ¸øÇß½À´Ï´Ù.");
+                Debug.LogWarning($"[Player] {abilityName} Å¸ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½.");
             }
         }
 

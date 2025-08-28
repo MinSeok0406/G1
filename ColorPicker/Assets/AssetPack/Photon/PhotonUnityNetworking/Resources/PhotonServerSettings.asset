@@ -104,6 +104,7 @@ MonoBehaviour:
   - C_ReceiveMessage
   - S_ReceiveMessage
   - Rpc_BulkReadyStateUpdate
+  - UpdateColorIcon
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

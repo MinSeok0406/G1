@@ -22,7 +22,7 @@ namespace ColorPicker.InGame
             base.Awake();
             DontDestroyOnLoad(gameObject);
 
-            // »óÅÂ ÃÊ±âÈ­
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
             StateMachine = new GameStateMachine();
             playerClassAssigner = new PlayerClassAssigner();
 
@@ -52,7 +52,7 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// Room Custom Properties°¡ º¯°æµÇ¾úÀ» ¶§ È£ÃâµÊ (¸ðµç Å¬¶óÀÌ¾ðÆ® »óÅÂ µ¿±âÈ­)
+        /// Room Custom Propertiesï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­)
         /// </summary>
         public override void OnRoomPropertiesUpdate(Hashtable changedProps)
         {
@@ -67,13 +67,13 @@ namespace ColorPicker.InGame
                 }
                 else
                 {
-                    Debug.Log($"[GameManager] ÀÌ¹Ì ÇöÀç »óÅÂ¿Í µ¿ÀÏÇÑ Phase({newPhase})ÀÔ´Ï´Ù. »óÅÂ ÀüÀÌ »ý·«.");
+                    Debug.Log($"[GameManager] ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Phase({newPhase})ï¿½Ô´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.");
                 }
             }
         }
 
         /// <summary>
-        /// [È£½ºÆ® Àü¿ë] Room Custom Properties¿¡ ÇöÀç °ÔÀÓ »óÅÂ¸¦ ±â·ÏÇÏ¿© ¸ðµç Å¬¶óÀÌ¾ðÆ®¿¡°Ô ÀüÆÄÇÑ´Ù.
+        /// [È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½] Room Custom Propertiesï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         /// </summary>
         public void SetPhase(GameStateType phase)
         {
@@ -83,7 +83,7 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// [Å¬¶óÀÌ¾ðÆ® Àü¿ë] Room Custom Properties·Î Àü´Þ¹ÞÀº »óÅÂ °ªÀ» ±â¹ÝÀ¸·Î ÇöÀç ·ÎÄÃ »óÅÂ¸¦ ÀüÈ¯ÇÑ´Ù.
+        /// [Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½] Room Custom Propertiesï¿½ï¿½ ï¿½ï¿½ï¿½Þ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
         /// </summary>
         public void ChangeStateFromPhase(GameStateType phase)
         {
@@ -95,12 +95,12 @@ namespace ColorPicker.InGame
             }
             else
             {
-                Debug.LogError($"[GameManager] »óÅÂ ÀüÀÌ ½ÇÆÐ: {phase}");
+                Debug.LogError($"[GameManager] ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {phase}");
             }
         }
 
         /// <summary>
-        /// [RPC][È£½ºÆ® Àü¿ë] ÀÏ¹Ý Å¬¶óÀÌ¾ðÆ®°¡ ¸¶½ºÅÍ¿¡°Ô »óÅÂ º¯°æÀ» ¿äÃ»ÇÒ ¶§ È£Ãâ (ex: È¸ÀÇ È£Ãâ)
+        /// [RPC][È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½] ï¿½Ï¹ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ (ex: È¸ï¿½ï¿½ È£ï¿½ï¿½)
         /// </summary>
         [PunRPC]
         private void RPC_RequestPhaseChange(int phaseInt, PhotonMessageInfo info)
@@ -109,13 +109,13 @@ namespace ColorPicker.InGame
 
             GameStateType requestedPhase = (GameStateType)phaseInt;
 
-            Debug.Log($"[GameManager] {info.Sender.NickName} ¿äÃ»À¸·Î »óÅÂ º¯°æ ½Ãµµ: {requestedPhase}");
+            Debug.Log($"[GameManager] {info.Sender.NickName} ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½: {requestedPhase}");
 
             SetPhase(requestedPhase);
         }
 
         /// <summary>
-        /// Å¬¶óÀÌ¾ðÆ®°¡ ¸¶½ºÅÍ¿¡°Ô »óÅÂ º¯°æÀ» ¿äÃ»
+        /// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
         /// </summary>
         public void RequestPhaseChange(GameStateType requestedPhase)
         {

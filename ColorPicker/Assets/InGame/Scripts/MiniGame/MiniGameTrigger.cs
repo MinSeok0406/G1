@@ -38,7 +38,7 @@ namespace ColorPicker.InGame
             var playerControl = other.GetComponent<PlayerControl>();
             if (playerControl == null) return;
 
-            if (!playerControl.photonView.IsMine) return; // ·ÎÄÃ ÇÃ·¹ÀÌ¾î¸¸ Ã³¸®
+            if (!playerControl.photonView.IsMine) return; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¸ Ã³ï¿½ï¿½
 
             playerControl.interactionDetector.AddInteractable(this);
         }

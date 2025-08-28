@@ -93,6 +93,13 @@ namespace ColorPicker.InGame
                 }
 
                 GameDataManager.Instance.UpdatePrivatePlayerData(player);
+
+                GameDataManager.Instance.SyncAllPlayerDataToClients();
+
+                ClientAckManager.Instance.WaitForAllClients(() =>
+                {
+                    UIManager.Instance.BroadcastUpdateColorIcon();
+                });
             }
         }
     }

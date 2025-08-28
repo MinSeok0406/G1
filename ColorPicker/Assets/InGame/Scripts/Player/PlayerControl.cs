@@ -6,8 +6,7 @@ namespace ColorPicker.InGame
 {
     public class PlayerControl : MonoBehaviourPun
     {
-        private List<IInteractive> interactiveObjects = new List<IInteractive>();
-        private IInteractive currentInteractiveObject;
+        private List<IInteractive> interactiveObjects = new List<IInteractive>();                       
 
         private Player player;
         private bool disableControl;
@@ -15,23 +14,34 @@ namespace ColorPicker.InGame
 
         public InteractionDetector interactionDetector;
 
-        public IInteractive currentInteractive;
+        public IInteractive currentInteractive; // InteractionDetector가 세팅
 
         [HideInInspector] public CircleCollider2D circleCollider2D;
 
         private void Awake()
         {
             player = GetComponent<Player>();
-            circleCollider2D = GetComponentInChildren<CircleCollider2D>();
-            interactionDetector = GetComponentInChildren<InteractionDetector>();
+            circleCollider2D = GetComponentInChildren<CircleCollider2D>(includeInactive: true);
+            interactionDetector = GetComponentInChildren<InteractionDetector>(includeInactive: true);
 
             moveSpeed = Settings.moveSpeed;
+
+            // 로컬 소유자만 인터랙션 감지 사용
+            if (interactionDetector)
+                interactionDetector.enabled = photonView.IsMine;
+        }
+
+        private void OnEnable()
+        {
+            if (interactionDetector)
+                interactionDetector.enabled = photonView.IsMine;
         }
 
         private void Update()
         {
             if (!photonView.IsMine || disableControl) return;
 
+            // 추가 소유자 체크 필요 시 유지
             if (player.ownerActNum != PhotonNetwork.LocalPlayer.ActorNumber) return;
 
             MoveInput();
@@ -39,108 +49,62 @@ namespace ColorPicker.InGame
 
         private void MoveInput()
         {
-            float horizontalMovement = Input.GetAxisRaw("Horizontal");
-            float verticalMovement = Input.GetAxisRaw("Vertical");
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
 
-            Vector2 direction = new Vector2(horizontalMovement, verticalMovement);
+            Vector2 dir = new Vector2(h, v);
+            if (h != 0f && v != 0f) dir = dir.normalized;
 
-            if (horizontalMovement != 0f && verticalMovement != 0f)
-            {
-                direction = direction.normalized;
-            }
-
-            if (direction != Vector2.zero)
-            {
-                player.movementByVelocityEvent.CallMovementByVElocityEvent(direction, moveSpeed);
-            }
+            if (dir != Vector2.zero)
+                player.movementByVelocityEvent.CallMovementByVElocityEvent(dir, moveSpeed);
             else
-            {
                 player.idleEvent.CallIdleEvent();
-            }
         }
 
         public void DisablePlayerControl(bool disableControl)
         {
             this.disableControl = disableControl;
-
             if (disableControl)
-            {
                 player.idleEvent.CallIdleEvent();
-            }
         }
 
         public void TryInteract()
         {
-            currentInteractive?.OnInteract();
+            // 재검증 가드
+            if (currentInteractive == null || (currentInteractive as Object) == null)
+                return;
+
+            currentInteractive.OnInteract();
         }
 
-        //private void OnTriggerEnter2D(Collider2D collision)
-        //{
-        //    if (!photonView.IsMine) return;
+        // 선택: 외부에서 안전히 설정하도록 메서드 제공(필드 직접 접근도 유지)
+        public void SetCurrentInteractive(IInteractive target)
+        {
+            currentInteractive = target;
+        }
 
-
-        //    collision.TryGetComponent<IInteractive>(out IInteractive interactiveItem);
-
-        //    if (interactiveItem != null)
-        //    {
-        //        interactiveObjects.Add(interactiveItem);
-        //    }
-
-
-        //}
-
-        //private void OnTriggerStay2D(Collider2D collision)
-        //{
-        //    if (!photonView.IsMine) return;
-
-
-        //    currentInteractiveObject = FindClosestInteractive();
-
-        //    if (currentInteractiveObject != null)
-        //    {
-        //        currentInteractiveObject.SetUI(true);
-        //    }
-        //}
-
+        // (기존 FindClosestInteractive는 호환 보존)
         private IInteractive FindClosestInteractive()
         {
             if (interactiveObjects.Count == 0) return null;
 
-            IInteractive closestItem = null;
-            float closestDistanceSquared = float.MaxValue; 
+            IInteractive closest = null;
+            float closestDistSq = float.MaxValue;
+            Vector3 selfPos = transform.position;
 
-            foreach (var interactiveItem in interactiveObjects)
+            for (int i = 0; i < interactiveObjects.Count; i++)
             {
-                float distanceSquared = (transform.position - interactiveItem.GetPosition()).sqrMagnitude;
+                var it = interactiveObjects[i];
+                if (it == null || (it as Object) == null) continue;
 
-                if (distanceSquared < closestDistanceSquared)
+                float d2 = (selfPos - it.GetPosition()).sqrMagnitude;
+                if (d2 < closestDistSq)
                 {
-                    closestDistanceSquared = distanceSquared;
-                    closestItem = interactiveItem; // ���� ����� ������Ʈ ������Ʈ
+                    closestDistSq = d2;
+                    closest = it;
                 }
             }
-
-            return closestItem;
+            return closest;
         }
-
-        //private void OnTriggerExit2D(Collider2D collision)
-        //{
-        //    if (!photonView.IsMine) return;
-
-        //    collision.TryGetComponent<IInteractive>(out IInteractive interactiveItem);
-
-        //    if (interactiveItem != null)
-        //    {
-        //        interactiveObjects.Remove(interactiveItem);
-        //    }
-
-        //    if (interactiveObjects.Count == 0) currentInteractiveObject = null;
-
-        //    if (currentInteractiveObject == null)
-        //    {
-        //        UIManager.Instance.InitializedInteractiveItemUI();
-        //    }
-
-        //}
     }
 }
