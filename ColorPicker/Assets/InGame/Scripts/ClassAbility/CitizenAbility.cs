@@ -1,20 +1,31 @@
-using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
-    public class CitizenAbility : MonoBehaviourPun, IClassAbility
+    public class CitizenAbility : MonoBehaviour
     {
-        public void ClassAbility()
+        [Header("Activate-only UI (optional)")]
+        [SerializeField] private Button interactiveButton;
+        [SerializeField] private Button paintButton;
+
+
+        public void EnableAbility()
         {
+            gameObject.SetActive(true);
+
+            if (interactiveButton) interactiveButton.gameObject.SetActive(true);
+            if (paintButton) paintButton.gameObject.SetActive(true);
 
         }
 
-        protected virtual void Start()
+        public void DisableAbility()
         {
-            
+
+            if (interactiveButton) interactiveButton.gameObject.SetActive(false);
+            if (paintButton) paintButton.gameObject.SetActive(false);
+
+            gameObject.SetActive(false);
         }
     }
 }

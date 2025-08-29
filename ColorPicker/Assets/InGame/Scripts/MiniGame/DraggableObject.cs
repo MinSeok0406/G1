@@ -19,13 +19,12 @@ namespace ColorPicker.InGame
 
         public void OnBeginDrag(Vector2 pointerWorldPos)
         {
-            // RectTransformÀÇ Áß½É ÁÂÇ¥ (world space)
+            // RectTransformï¿½ï¿½ ï¿½ß½ï¿½ ï¿½ï¿½Ç¥ (world space)
             Vector2 objectWorldPos = rectTransform.localPosition;
 
-            // µå·¡±× ¿ÀÇÁ¼Â °è»ê (Å¬¸¯ À§Ä¡¿Í ¿ÀºêÁ§Æ® Áß½É °£ °Å¸®)
+            // ï¿½å·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (Å¬ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß½ï¿½ ï¿½ï¿½ ï¿½Å¸ï¿½)
             dragOffset = objectWorldPos - pointerWorldPos;
 
-            Debug.Log($"[{name}] µå·¡±× ½ÃÀÛ - dragOffset: {dragOffset}");
         }
 
         public void OnDrag(Vector2 pointerPosition)
@@ -37,7 +36,6 @@ namespace ColorPicker.InGame
 
         public void OnEndDrag()
         {
-            Debug.Log($"[{name}] µå·¡±× ³¡");
         }
     }
 }

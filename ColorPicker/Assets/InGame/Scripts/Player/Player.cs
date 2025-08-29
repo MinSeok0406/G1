@@ -1,11 +1,6 @@
-using Cainos.PixelArtTopDown_Basic;
 using FunkyCode;
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
-using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ColorPicker.InGame
@@ -74,8 +69,6 @@ namespace ColorPicker.InGame
             if (targetView != photonView) return;
             if (!photonView.IsMine) return;
 
-            PlayerManager.Instance.SetMyPlayer(this);
-
             if (PhotonNetwork.IsMasterClient) return;
             
             InitializedPlayer();
@@ -99,34 +92,14 @@ namespace ColorPicker.InGame
             }
 
             cameraObj.transform.SetParent(transform, false);
-            cameraObj.transform.localPosition = new Vector3(0,0,-10);
+            cameraObj.transform.localPosition = new Vector3(0, 0, -10);
 
             playerLight.gameObject.SetActive(true);
 
             ownerActNum = PhotonNetwork.LocalPlayer.ActorNumber;
 
             PlayerManager.Instance.SetMyPlayer(this);
+            
         }
-
-        // ���� ����
-        public void AttachClassComponent(PlayerClassType classType)
-        {
-            var ability = GetComponent<IClassAbility>() as Component;
-            if (ability != null) { Destroy(ability); }
-
-            string abilityName = $"{classType}Ability";
-            Type abilityType = Type.GetType($"ColorPicker.InGame.{abilityName}");
-
-            if (abilityType != null)
-            {
-                gameObject.AddComponent(abilityType);
-                Debug.Log($"[Player] {abilityName} ���� �Ϸ�");
-            }
-            else
-            {
-                Debug.LogWarning($"[Player] {abilityName} Ÿ���� ã�� ���߽��ϴ�.");
-            }
-        }
-
     }
 }

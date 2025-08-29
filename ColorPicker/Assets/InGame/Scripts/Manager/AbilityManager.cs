@@ -1,113 +1,282 @@
 ﻿using Photon.Pun;
-using System.Collections;
+using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class AbilityManager : SingletonNetworkBehaviour<AbilityManager>
+    public sealed class AbilityManager : SingletonNetworkBehaviour<AbilityManager>
     {
-        private Dictionary<int, float> cooldownEndTimes = new Dictionary<int, float>();
-        private float defaultCooldownTime => Settings.defaultCooldown;
+        // ★ 서버시간 기반(동기화됨). viewID -> cooldownEnd(초, PhotonNetwork.Time)
+        private readonly Dictionary<int, double> cooldownEndTimes = new();
 
-        #region Cooldown Handling
+        // ====== Config ======
+        [Header("Kill Config")]
+        [SerializeField, Min(0f)] private float defaultCooldownSeconds = 20f;   // ★ Settings 참조 유지 가능
+        [SerializeField] private float minKillDistance = 1.6f;                  // 필요 시 0으로
+        [SerializeField] private bool validateDistance = false;
 
-        /// <summary>
-        /// 현재 플레이어가 쿨타임 중인지 확인하는 함수
-        /// </summary>
+        [HideInInspector] public AbilityBinder abilityBinder;
+
+        // 외부 Settings와의 호환(기존 코드가 Settings.defaultCooldown 참조 시)
+        private float DefaultCooldownOrSettings =>
+            (Settings.defaultCooldown > 0f) ? Settings.defaultCooldown : defaultCooldownSeconds;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            abilityBinder = FindObjectOfType<AbilityBinder>();
+        }
+
+        // ====== Cooldown ======
+
+        /// <summary> 현재 플레이어(viewID)가 쿨타임 중인가? (클라/호스트 공용 조회) </summary>
         public bool IsOnCooldown(int viewID)
         {
-            return cooldownEndTimes.TryGetValue(viewID, out float endTime) && Time.time < endTime;
+            return cooldownEndTimes.TryGetValue(viewID, out double end) && PhotonNetwork.Time < end;
         }
 
         /// <summary>
-        /// [호스트 전용] 스킬을 사용했을 때 해당 플레이어의 쿨타임을 시작하는 함수
+        /// [호스트 전용] 스킬 사용 시 쿨다운 시작
         /// </summary>
-        /// <param name="viewID"> Player View ID </param>
-        /// <param name="skillCooldownDuration"> 클래스별 쿨타임 </param>
         public void StartCooldown(int viewID, float skillCooldownDuration)
         {
             if (!PhotonNetwork.IsMasterClient) return;
+            double duration = Mathf.Max(0f, skillCooldownDuration);
+            cooldownEndTimes[viewID] = PhotonNetwork.Time + duration;
 
-            float duration = skillCooldownDuration;
-            cooldownEndTimes[viewID] = Time.time + duration;
+            // ★ 클라 동기화(해당 소유자에게만 전송)
+            var pv = PhotonView.Find(viewID);
+            if (pv != null && pv.Owner != null)
+            {
+                photonView.RPC(nameof(RPC_SyncCooldown), pv.Owner, viewID, cooldownEndTimes[viewID]);
+            }
         }
 
         /// <summary>
-        /// [호스트 전용]남은 쿨타임을 초 단위로 반환하는 함수
-        /// 재접속 하는 유저에게 남은 쿨타임을 반환해주기 위해서 사용
+        /// [호스트 전용] 남은 쿨타임(초). 재참여/재연결 동기화용
         /// </summary>
-        /// <param name="viewID"> view ID </param>
-        /// <returns> 남은 쿨타임 시간 반환 </returns>
         public float GetRemainingCooldown(int viewID)
         {
-            return cooldownEndTimes.TryGetValue(viewID, out float endTime)? Mathf.Max(0f, endTime - Time.time) : 0f;
+            return cooldownEndTimes.TryGetValue(viewID, out double end)
+                ? Mathf.Max(0f, (float)(end - PhotonNetwork.Time))
+                : 0f;
         }
 
-        #endregion
+        [PunRPC]
+        private void RPC_SyncCooldown(int viewID, double endTime)
+        {
+            // ★ 클라측 로컬 캐시 반영(재접속/씬 재로딩 대비)
+            cooldownEndTimes[viewID] = endTime;
+            UIManager.Instance?.UpdateAbilityCooldownUI(viewID, GetRemainingCooldown(viewID));
+        }
 
-        #region Kill Event
+        // ====== Kill Flow ======
 
+        /// <summary> 클라 → 호스트: 킬 요청 </summary>
         public void TryRequestKill(int targetViewID, int killerViewID)
         {
             photonView.RPC(nameof(RPC_RequestKill), RpcTarget.MasterClient, targetViewID, killerViewID);
         }
 
         [PunRPC]
-        private void RPC_RequestKill(int targetViewID, int killerViewID)
+        private void RPC_RequestKill(int targetViewID, int killerViewID, PhotonMessageInfo info)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            GameDataManager.Instance.TryGetUIDByViewID(targetViewID, out string targetID);
-            GameDataManager.Instance.TryGetUIDByViewID(killerViewID, out string killerID);
-
-            if (!IsKillValid(targetID, killerID))
-            {   
+            // ★ 스푸핑 방지: killerViewID의 소유자와 RPC 발신자 일치해야 함
+            var killerPV = PhotonView.Find(killerViewID);
+            if (killerPV == null || killerPV.OwnerActorNr != info.Sender?.ActorNumber)
+            {
+                Debug.LogWarning($"[Ability] Spoofed kill? sender={info.Sender?.ActorNumber}, killerPV.Owner={killerPV?.OwnerActorNr}");
                 return;
             }
 
-            ApplyKill(killerID, targetID);
+            // ★ 쿨타임 체크(서버)
+            if (IsOnCooldown(killerViewID))
+            {
+                photonView.RPC(nameof(RPC_KillRejectedCooldown), info.Sender, GetRemainingCooldown(killerViewID));
+                return;
+            }
+
+            // UID 매핑
+            if (!GameDataManager.Instance.TryGetUIDByViewID(targetViewID, out string targetUID) ||
+                !GameDataManager.Instance.TryGetUIDByViewID(killerViewID, out string killerUID))
+            {
+                Debug.LogWarning("[Ability] UID mapping failed.");
+                return;
+            }
+
+            // 유효성 검증
+            if (!IsKillValid(targetUID, killerUID, targetViewID, killerViewID))
+                return;
+
+            // 적용
+            ApplyKill(killerUID, targetUID, targetViewID, killerViewID);
         }
 
-        private bool IsKillValid(string targetID, string killerID)
+        [PunRPC]
+        private void RPC_KillRejectedCooldown(float remaining)
         {
-            if (!GameDataManager.Instance.TryGetPrivatePlayerData(killerID, out var killerData) ||
-                !GameDataManager.Instance.TryGetPrivatePlayerData(targetID, out var targetData))
+            UIManager.Instance?.UpdateAbilityCooldownUI(PhotonNetwork.LocalPlayer.ActorNumber, remaining);
+        }
+
+        private bool IsKillValid(string targetUID, string killerUID, int targetViewID, int killerViewID)
+        {
+            if (!GameDataManager.Instance.TryGetPrivatePlayerData(killerUID, out var killerData) ||
+                !GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var targetData))
                 return false;
 
+            // 직업 검증
             if (killerData.classType != (int)PlayerClassType.mafia) return false;
             if (targetData.classType == (int)PlayerClassType.ghost) return false;
+
+            // 거리 검증 옵션
+            if (validateDistance && minKillDistance > 0f)
+            {
+                var kv = PhotonView.Find(killerViewID);
+                var tv = PhotonView.Find(targetViewID);
+                if (kv == null || tv == null) return false;
+
+                var kp = kv.transform.position;
+                var tp = tv.transform.position;
+                if (Vector3.SqrMagnitude(kp - tp) > (minKillDistance * minKillDistance))
+                    return false;
+            }
 
             return true;
         }
 
-        private void ApplyKill(string targetID, string killerID)
+        private void ApplyKill(string killerUID, string targetUID, int targetViewID, int killerViewID)
         {
-            if (!GameDataManager.Instance.TryGetPrivatePlayerData(targetID, out var targetData)) return;
-            
-            targetData.classType = (int)PlayerClassType.ghost;
+            if (!GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var targetData)) return;
 
+            // 상태 전환
+            targetData.classType = (int)PlayerClassType.ghost;
             GameDataManager.Instance.UpdatePrivatePlayerData(targetData);
 
-            GameDataManager.Instance.TryGetViewIDByUID(targetID, out int targetViewID);
-
+            // ★ 킬 확정 브로드캐스트(연출/사운드/데스 처리)
             photonView.RPC(nameof(RPC_ConfirmKillResult), RpcTarget.All, targetViewID);
 
-            StartCooldown(targetViewID, Settings.defaultCooldown);
+            // ★ 쿨타임 시작은 "킬러"에게 (기존 코드의 버그 수정)
+            StartCooldown(killerViewID, DefaultCooldownOrSettings);
         }
 
         [PunRPC]
         private void RPC_ConfirmKillResult(int targetViewID)
         {
-            PhotonView view = PhotonView.Find(targetViewID);
+            var view = PhotonView.Find(targetViewID);
+            if (!view) return;
 
-            if (view != null)
+            var player = view.GetComponent<Player>();
+            if (player)
             {
-                Player player = view.GetComponent<Player>();
-                //플레이어 사망 이벤트 발생 추가 *****
+                // TODO: 실제 사망 처리(애니메이션/컨트롤 비활성/스펙터 상태 전환 등)
+                // player.Die();
+            }
+
+        }
+
+        // ====== 재접속/유지보수 ======
+
+        public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+        {
+            var toRemove = ListPool<int>.Get(); // using 제거
+            try
+            {
+                foreach (var key in cooldownEndTimes.Keys)   // 키만 순회해서 수집
+                {
+                    var pv = PhotonView.Find(key);
+                    if (pv == null || pv.Owner == null || pv.OwnerActorNr == otherPlayer.ActorNumber)
+                        toRemove.Add(key);
+                }
+
+                for (int i = 0; i < toRemove.Count; i++)
+                    cooldownEndTimes.Remove(toRemove[i]);
+            }
+            finally
+            {
+                ListPool<int>.Release(toRemove); // 리스트 비움(재사용)
             }
         }
 
-        #endregion
+
+        /// <summary> 클라가 자신의 남은 쿨타임 동기화를 요청할 때(재접속/씬 재오픈) </summary>
+        public void RequestMyCooldownSync(int myViewID)
+        {
+            photonView.RPC(nameof(RPC_RequestCooldownSync), RpcTarget.MasterClient, myViewID);
+        }
+
+        [PunRPC]
+        private void RPC_RequestCooldownSync(int viewID, PhotonMessageInfo info)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            // 요청자가 해당 view 소유자인지 보수적으로 검증
+            var pv = PhotonView.Find(viewID);
+            if (pv == null || pv.OwnerActorNr != info.Sender?.ActorNumber) return;
+
+            if (cooldownEndTimes.TryGetValue(viewID, out double end))
+                photonView.RPC(nameof(RPC_SyncCooldown), info.Sender, viewID, end);
+        }
+
+        // ====== 유틸 풀 ======
+
+        private static class ListPool<T>
+        {
+            [System.ThreadStatic] private static List<T> _list;
+            public static List<T> Get() => _list ??= new List<T>(8);
+            public static void Release(List<T> list) => list.Clear();
+        }
+
+        // ====== Mafia Ability ======
+        public void RequestMafiaLayerSync(int requesterActorId)
+        {
+            photonView.RPC(nameof(RPC_RequestMafiaLayerSync), RpcTarget.MasterClient, requesterActorId);
+        }
+
+        [PunRPC]
+        private void RPC_RequestMafiaLayerSync(int requesterActorId, PhotonMessageInfo info)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            // 마피아 플레이어 목록 조회
+            var mafiaList = GameDataManager.Instance.GetAllPrivatePlayerData()
+                .FindAll(p => p.classType == (int)PlayerClassType.mafia);
+
+            foreach (var pdata in mafiaList)
+            {
+                if (GameDataManager.Instance.TryGetViewIDByUID(pdata.googleUID, out int viewId) && viewId > 0)
+                {
+                    // 해당 클라이언트에게만 레이어 변경 요청
+                    photonView.RPC(nameof(ApplyMafiaLayer), PhotonNetwork.CurrentRoom.GetPlayer(requesterActorId), viewId);
+                }
+            }
+        }
+
+        [PunRPC]
+        private void ApplyMafiaLayer(int targetViewId)
+        {
+            PhotonView targetView = PhotonView.Find(targetViewId);
+            if(targetView.IsMine) return;
+
+            if (targetView && targetView.gameObject)
+            {
+                int mafiaLayer = LayerMask.NameToLayer("Mafia");
+                if (mafiaLayer < 0)
+                {
+                    Debug.LogError("[MafiaAbility] 'Mafia' 레이어가 프로젝트에 정의되어 있지 않습니다.");
+                    return;
+                }
+
+                targetView.gameObject.layer = mafiaLayer;
+                foreach (Transform child in targetView.transform)
+                {
+                    child.gameObject.layer = mafiaLayer;
+                }
+
+                Debug.Log($"[MafiaAbility] Mafia Layer 적용 완료: {targetView.gameObject.name}");
+            }
+        }
     }
 }

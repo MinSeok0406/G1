@@ -83,28 +83,5 @@ namespace ColorPicker.InGame
             currentInteractive = target;
         }
 
-        // (기존 FindClosestInteractive는 호환 보존)
-        private IInteractive FindClosestInteractive()
-        {
-            if (interactiveObjects.Count == 0) return null;
-
-            IInteractive closest = null;
-            float closestDistSq = float.MaxValue;
-            Vector3 selfPos = transform.position;
-
-            for (int i = 0; i < interactiveObjects.Count; i++)
-            {
-                var it = interactiveObjects[i];
-                if (it == null || (it as Object) == null) continue;
-
-                float d2 = (selfPos - it.GetPosition()).sqrMagnitude;
-                if (d2 < closestDistSq)
-                {
-                    closestDistSq = d2;
-                    closest = it;
-                }
-            }
-            return closest;
-        }
     }
 }

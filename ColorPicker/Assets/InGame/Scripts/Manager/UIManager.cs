@@ -15,7 +15,7 @@ namespace ColorPicker.InGame
         [SerializeField] private TMP_Text coinInfoText;
         [SerializeField] private TMP_Text PaintInfoText;
         [SerializeField] private Image colorIcon;
-
+        [SerializeField] private Slider missionStatusBar;
 
         private UnityAction defaultClick; // 기본 콜백 캐싱
 
@@ -35,6 +35,10 @@ namespace ColorPicker.InGame
 
             // 기본은 숨김 & 비활성
             interactButton.interactable = false;
+
+            UpdateMissionStatusBarUI(0f);
+            UpdateCoinInfo(0);
+            UpdatePaintInfo(0);
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace ColorPicker.InGame
 
         public void UpdateMissionStatusBarUI(float percent)
         {
-            // TODO: 진행도 바 UI 반영 (필요 시)
+            missionStatusBar.value = percent;
         }
 
         public void UpdateCoinInfo(int coin)
@@ -118,6 +122,11 @@ namespace ColorPicker.InGame
 
             if (colorIcon)
                 colorIcon.color = HelperUtilities.ToUnityColor((ColorType)data.identityColorId);
+        }
+
+        public void UpdateAbilityCooldownUI(int viewID, float v)
+        {
+
         }
     }
 }

@@ -1,30 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Photon.Pun;
-using Minseok;
-using System;
+using Photon.Realtime; // Player 타입 사용
+// using ExitGames.Client.Photon; // RaiseEvent로 확장 시
 
 namespace ColorPicker.InGame
 {
+    /// <summary>
+    /// Host-Authoritative 데이터 허브
+    /// - 기존 퍼블릭 API 유지
+    /// - Late-Join/재접속 안전, 델타 전파, 스냅샷 적용 내성 강화
+    /// </summary>
     public class GameDataManager : SingletonNetworkBehaviour<GameDataManager>
     {
-        private Dictionary<string, PublicPlayerData> publicPlayerDataDict = new Dictionary<string, PublicPlayerData>(); // UID로 맵핑된 playerData
-        private Dictionary<string, PrivatePlayerData> privatePlayerDataDict = new Dictionary<string, PrivatePlayerData>(); // UID로 맵핑된 playerData
-        private Dictionary<string, InGameData> inGameDataDict = new Dictionary<string, InGameData>(); // UID로 맵핑된 InGameData
+        // ====== Core State ======
+        private readonly Dictionary<string, PublicPlayerData>  publicPlayerDataDict  = new Dictionary<string, PublicPlayerData>();  // UID -> Public
+        private readonly Dictionary<string, PrivatePlayerData> privatePlayerDataDict = new Dictionary<string, PrivatePlayerData>(); // UID -> Private (각 클라 로컬은 "본인 것만" 보유)
+        private readonly Dictionary<string, InGameData>        inGameDataDict        = new Dictionary<string, InGameData>();        // UID -> InGame
         private Dictionary<string, PlayerMissionData> missionBackup;
 
-        private Dictionary<string, int> viewIDByGoogleUID = new Dictionary<string, int>();
-        private Dictionary<int, string> googleUIDByViewID = new Dictionary<int, string>();
+        private readonly Dictionary<string, int> viewIDByGoogleUID = new Dictionary<string, int>();
+        private readonly Dictionary<int, string> googleUIDByViewID = new Dictionary<int, string>();
 
-        private GameRuleSettings currentGameRuleSettings = new GameRuleSettings();  
+        private GameRuleSettings currentGameRuleSettings = new GameRuleSettings();
+        private GameStateType currentGameState = GameStateType.None;
 
-        private GameStateType currentGameState = GameStateType.None; // 데이터 저장을 위한 enum class
+        // ====== Utility ======
+        private bool IsHost => PhotonNetwork.IsMasterClient;
 
         protected override void Awake()
         {
             base.Awake();
 
+            // 기본 룰
             currentGameRuleSettings = new GameRuleSettings()
             {
                 mafiaAmount = 1,
@@ -32,23 +42,29 @@ namespace ColorPicker.InGame
             };
         }
 
-        #region [호스트 전용] Player Data 생성 및 갱신 
+        #region [호스트 전용] Player Data 생성 및 갱신
 
-        /// <summary>
-        /// 새로 접속한 플레이어 데이터를 생성하는 함수
-        /// </summary>
-        /// <param name="googleUID">플레이어의 고유 식별자(Google UID)</param>
-        /// <param name="actorNumber">Photon의 ActorNumber</param>
+        /// <summary>새로 접속한 플레이어 데이터 생성 (Host Only)</summary>
         public void CreateNewPlayerData(string googleUID, int actorNumber, int viewID)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost)
+            {
+                Debug.LogWarning("[GameDataManager] CreateNewPlayerData called on non-host. Ignored.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(googleUID))
+            {
+                Debug.LogWarning("[GameDataManager] CreateNewPlayerData failed: googleUID is null/empty.");
+                return;
+            }
 
             var publicData = new PublicPlayerData
             {
                 googleUID = googleUID,
                 currentActorId = actorNumber,
                 nickname = $"Player_{actorNumber}",
-                customizationData = new PlayerCustomizationData() 
+                customizationData = new PlayerCustomizationData()
             };
 
             var privateData = new PrivatePlayerData
@@ -59,50 +75,51 @@ namespace ColorPicker.InGame
                 identityColorId = (int)ColorType.White,
             };
 
-            publicPlayerDataDict[googleUID] = publicData;
-            privatePlayerDataDict[googleUID] = privateData;
+            publicPlayerDataDict[googleUID]  = publicData;  // upsert
+            privatePlayerDataDict[googleUID] = privateData; // upsert (호스트만 전체 보유)
 
-            viewIDByGoogleUID[googleUID] = viewID;
-            googleUIDByViewID[viewID] = googleUID;
+            viewIDByGoogleUID[googleUID] = viewID; // upsert
+            googleUIDByViewID[viewID]    = googleUID; // upsert
         }
 
-        /// <summary>
-        /// 재접속한 플레이어 정보를 갱신하는 함수
-        /// </summary>
-        /// <param name="googleUID">플레이어 UID</param>
-        /// <param name="newActorId">새 ActorNumber</param>
+        /// <summary>재접속 플레이어 ActorNumber 갱신 (Host Only)</summary>
         public void HandleRejoinPlayer(string googleUID, int newActorId)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost)
+            {
+                Debug.LogWarning("[GameDataManager] HandleRejoinPlayer on non-host. Ignored.");
+                return;
+            }
 
             if (!publicPlayerDataDict.TryGetValue(googleUID, out var publicData) ||
                 !privatePlayerDataDict.TryGetValue(googleUID, out var privateData))
             {
-                Debug.LogWarning($"[GameDataManager] 재접속 처리 실패: UID {googleUID}에 대한 데이터가 존재하지 않음");
+                Debug.LogWarning($"[GameDataManager] Rejoin failed: no data for UID {googleUID}");
                 return;
             }
 
-            Debug.Log($"[GameDataManager] 재접속 처리 시작: {googleUID}");
+            Debug.Log($"[GameDataManager] Rejoin start: UID={googleUID} -> Actor={newActorId}");
 
-            publicData.currentActorId = newActorId;
+            publicData.currentActorId  = newActorId;
             privateData.currentActorId = newActorId;
 
             UpdatePublicPlayerData(publicData);
             UpdatePrivatePlayerData(privateData);
+
+            // 권장: 재접속자에게 최신 스냅샷 1:1 전송 (호출부에서 Player를 넘길 수 있으면 아래 오버로드 사용)
+            // SendFullSnapshotTo(targetPlayer);
         }
 
-        /// <summary>
-        /// 퍼블릭 플레이어 데이터를 갱신하는 함수
-        /// </summary>
-        /// <param name="newData">PublicPlayerData</param>
+        /// <summary>퍼블릭 데이터 갱신 (Host Only)</summary>
         public void UpdatePublicPlayerData(PublicPlayerData newData)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] UpdatePublicPlayerData on non-host. Ignored."); return; }
+            if (newData == null || string.IsNullOrEmpty(newData.googleUID)) { Debug.LogWarning("[GameDataManager] UpdatePublicPlayerData invalid input."); return; }
 
             if (publicPlayerDataDict.TryGetValue(newData.googleUID, out var existing))
             {
-                existing.currentActorId = newData.currentActorId;
-                existing.nickname = newData.nickname;
+                existing.currentActorId    = newData.currentActorId;
+                existing.nickname          = newData.nickname;
                 existing.customizationData = newData.customizationData;
             }
             else
@@ -111,17 +128,15 @@ namespace ColorPicker.InGame
             }
         }
 
-        /// <summary>
-        /// 프라이빗 플레이어 데이터를 갱신하는 함수
-        /// </summary>
-        /// <param name="newData">PrivatePlayerData</param>
+        /// <summary>프라이빗 데이터 갱신 (Host Only)</summary>
         public void UpdatePrivatePlayerData(PrivatePlayerData newData)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] UpdatePrivatePlayerData on non-host. Ignored."); return; }
+            if (newData == null || string.IsNullOrEmpty(newData.googleUID)) { Debug.LogWarning("[GameDataManager] UpdatePrivatePlayerData invalid input."); return; }
 
             if (privatePlayerDataDict.TryGetValue(newData.googleUID, out var existing))
             {
-                existing.classType = newData.classType;
+                existing.classType       = newData.classType;
                 existing.identityColorId = newData.identityColorId;
             }
             else
@@ -130,27 +145,31 @@ namespace ColorPicker.InGame
             }
         }
 
+        /// <summary>InGameData 초기화(Upsert) — 중복 Add 예외 방지</summary>
         public void InitializedPlayerInGameData()
         {
-            foreach(var playerUID in publicPlayerDataDict.Keys)
+            foreach (var uid in publicPlayerDataDict.Keys)
             {
-                InGameData data = new InGameData() { hasVoted = false, isAlive = true };
-                inGameDataDict.Add(playerUID, data);
+                if (!inGameDataDict.TryGetValue(uid, out var data) || data == null)
+                {
+                    data = new InGameData();
+                    inGameDataDict[uid] = data;
+                }
+
+                // 기획에 맞게 기본값 리셋
+                data.hasVoted = false;
+                data.isAlive  = true;
+                // stickerCount 등은 유지/리셋 여부를 기획에 맞춰 결정. 기본은 유지.
             }
         }
 
         #endregion
 
-        #region InGame 데이터 설정 (투표/생존 등)
+        #region InGame 데이터 설정 (투표/생존 등) + 델타 전파
 
-        /// <summary>
-        /// 투표 여부 설정을 호스트에게 요청하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="voted">투표 여부</param>
         public void RequestSetPlayerVoted(string uid, bool voted)
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (IsHost)
             {
                 SetPlayerVoted(uid, voted);
             }
@@ -160,14 +179,9 @@ namespace ColorPicker.InGame
             }
         }
 
-        /// <summary>
-        /// 생존 여부 설정을 호스트에게 요청하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="isAlive">생존 여부</param>
         public void RequestSetPlayerAliveState(string uid, bool isAlive)
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (IsHost)
             {
                 SetPlayerAliveState(uid, isAlive);
             }
@@ -177,60 +191,78 @@ namespace ColorPicker.InGame
             }
         }
 
-        /// <summary>
-        /// [RPC][호스트 전용] 투표 여부 설정 요청을 처리하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="voted">투표 여부</param>
         [PunRPC]
         private void RPC_RequestSetPlayerVoted(string uid, bool voted)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost) return;
             SetPlayerVoted(uid, voted);
         }
 
-        /// <summary>
-        /// 플레이어의 투표 여부를 설정하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="voted">투표 여부</param>
+        [PunRPC]
+        private void RPC_RequestSetPlayerAliveState(string uid, bool isAlive)
+        {
+            if (!IsHost) return;
+            SetPlayerAliveState(uid, isAlive);
+        }
+
+        /// <summary>Host 전용: 내부 상태 변경 + 델타 브로드캐스트</summary>
         public void SetPlayerVoted(string uid, bool voted)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] SetPlayerVoted on non-host. Ignored."); return; }
+            if (string.IsNullOrEmpty(uid)) { Debug.LogWarning("[GameDataManager] SetPlayerVoted invalid uid."); return; }
 
-            if (!inGameDataDict.TryGetValue(uid, out var data))
+            if (!inGameDataDict.TryGetValue(uid, out var data) || data == null)
             {
-                data = new InGameData(); // 기본값으로 생성
+                data = new InGameData();
+                inGameDataDict[uid] = data;
+            }
+
+            data.hasVoted = voted;
+
+            // 델타 전파
+            photonView.RPC(nameof(RPC_ApplyDeltaVoted), RpcTarget.Others, uid, voted);
+        }
+
+        /// <summary>Host 전용: 내부 상태 변경 + 델타 브로드캐스트</summary>
+        public void SetPlayerAliveState(string uid, bool isAlive)
+        {
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] SetPlayerAliveState on non-host. Ignored."); return; }
+            if (string.IsNullOrEmpty(uid)) { Debug.LogWarning("[GameDataManager] SetPlayerAliveState invalid uid."); return; }
+
+            if (!inGameDataDict.TryGetValue(uid, out var data) || data == null)
+            {
+                data = new InGameData();
+                inGameDataDict[uid] = data;
+            }
+
+            data.isAlive = isAlive;
+
+            // 델타 전파
+            photonView.RPC(nameof(RPC_ApplyDeltaAlive), RpcTarget.Others, uid, isAlive);
+        }
+
+        [PunRPC]
+        private void RPC_ApplyDeltaVoted(string uid, bool voted)
+        {
+            if (string.IsNullOrEmpty(uid)) return;
+
+            if (!inGameDataDict.TryGetValue(uid, out var data) || data == null)
+            {
+                data = new InGameData();
                 inGameDataDict[uid] = data;
             }
 
             data.hasVoted = voted;
         }
 
-        /// <summary>
-        /// [RPC][호스트 전용] 생존 여부 설정 요청을 처리하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="isAlive">생존 여부</param>
         [PunRPC]
-        private void RPC_RequestSetPlayerAliveState(string uid, bool isAlive)
+        private void RPC_ApplyDeltaAlive(string uid, bool isAlive)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-            SetPlayerAliveState(uid, isAlive);
-        }
+            if (string.IsNullOrEmpty(uid)) return;
 
-        /// <summary>
-        /// 플레이어의 생존 여부를 설정하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="isAlive">생존 여부</param>
-        public void SetPlayerAliveState(string uid, bool isAlive)
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            if (!inGameDataDict.TryGetValue(uid, out var data))
+            if (!inGameDataDict.TryGetValue(uid, out var data) || data == null)
             {
-                data = new InGameData(); // 기본값으로 생성
+                data = new InGameData();
                 inGameDataDict[uid] = data;
             }
 
@@ -239,15 +271,55 @@ namespace ColorPicker.InGame
 
         #endregion
 
-        #region 데이터 동기화 및 백업 처리
+        #region 데이터 동기화 및 백업 처리 (스냅샷)
 
         /// <summary>
-        /// 모든 플레이어 데이터를 백업 및 동기화하는 함수
+        /// 전체 스냅샷 브로드캐스트 (Others)
+        /// - 기존 메서드 유지 (호환성)
+        /// - Late-Join은 아래 SendFullSnapshotTo(Player) 사용 권장
         /// </summary>
         public void SyncAllPlayerDataToClients()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] SyncAllPlayerDataToClients on non-host. Ignored."); return; }
 
+            try
+            {
+                var payload = BuildBackupPayload();
+                string json = JsonUtility.ToJson(payload);
+                photonView.RPC(nameof(RPC_ReceiveBackup), RpcTarget.Others, json);
+                Debug.Log("[GameDataManager] Backup snapshot broadcasted to Others.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[GameDataManager] SyncAllPlayerDataToClients failed: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Late-Join/재접속자에 대한 타겟 스냅샷 전송 (권장)
+        /// - 호출부에서 OnPlayerEnteredRoom 등에서 Player를 받아 넘겨 사용
+        /// </summary>
+        public void SendFullSnapshotTo(Photon.Realtime.Player target)
+        {
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] SendFullSnapshotTo on non-host. Ignored."); return; }
+            if (target == null) { Debug.LogWarning("[GameDataManager] SendFullSnapshotTo target null."); return; }
+
+            try
+            {
+                var payload = BuildBackupPayload();
+                string json = JsonUtility.ToJson(payload);
+                photonView.RPC(nameof(RPC_ReceiveBackup), target, json);
+                Debug.Log($"[GameDataManager] Backup snapshot sent to {target.ActorNumber}.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[GameDataManager] SendFullSnapshotTo failed: {ex}");
+            }
+        }
+
+        private BackupPayload BuildBackupPayload()
+        {
+            // lists로 복제하여 직렬화 안전성 확보
             var publicDataList = publicPlayerDataDict.Values.ToList();
             var inGameDataList = inGameDataDict
                 .Select(kv => new InGameDataEntry { uid = kv.Key, data = kv.Value })
@@ -268,213 +340,251 @@ namespace ColorPicker.InGame
                 encryptedPrivatePlayerDataList = encryptedPrivateList,
                 gameState = currentGameState,
                 viewIDMappings = viewIDMappingList
+                // (선택 확장) gameRules, snapshotVersion 등 추가해도 기존과 호환됨
             };
 
-            string json = JsonUtility.ToJson(payload);
-            photonView.RPC(nameof(RPC_ReceiveBackup), RpcTarget.Others, json);
-
-            Debug.Log("[GameDataManager] 백업 데이터 전송 완료.");
+            return payload;
         }
 
-        /// <summary>
-        /// [PunRPC] 백업 JSON을 수신해 적용하는 함수
-        /// </summary>
-        /// <param name="json">백업 JSON 문자열</param>
+        /// <summary>[Client] 스냅샷 수신 → 로컬 저장 → 적용</summary>
         [PunRPC]
         private void RPC_ReceiveBackup(string json)
         {
-            var payload = JsonUtility.FromJson<BackupPayload>(json); // json 형식으로 받은 데이터를 payload로 변환
-            LocalBackupManager.Instance.StoreBackupFromHost(payload); // 호스트로 부터 json 파일을 받아 백업 데이터로 저장
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogWarning("[GameDataManager] RPC_ReceiveBackup: empty json.");
+                return;
+            }
 
-            ApplyPublicPlayerData(LocalBackupManager.Instance.GetBackupPayload());
+            try
+            {
+                var payload = JsonUtility.FromJson<BackupPayload>(json);
+                if (payload == null)
+                {
+                    Debug.LogWarning("[GameDataManager] RPC_ReceiveBackup: payload null after parse.");
+                    return;
+                }
+
+                LocalBackupManager.Instance.StoreBackupFromHost(payload);
+                ApplyPublicPlayerData(LocalBackupManager.Instance.GetBackupPayload());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[GameDataManager] RPC_ReceiveBackup parse/apply failed: {ex}");
+            }
+        }
+
+        /// <summary>수신된 스냅샷을 안전하게 적용</summary>
+        public void ApplyPublicPlayerData(BackupPayload payload)
+        {
+            if (payload == null)
+            {
+                Debug.LogWarning("[GameDataManager] ApplyPublicPlayerData: payload null.");
+                return;
+            }
+
+            // 딕셔너리 정합성 확보: Clear 후 재구성
+            publicPlayerDataDict.Clear();
+            inGameDataDict.Clear();
+            viewIDByGoogleUID.Clear();
+            googleUIDByViewID.Clear();
+
+            if (payload.publicPlayerDataList != null)
+            {
+                foreach (var p in payload.publicPlayerDataList)
+                {
+                    if (p != null && !string.IsNullOrEmpty(p.googleUID))
+                        publicPlayerDataDict[p.googleUID] = p;
+                }
+            }
+
+            if (payload.inGameDataList != null)
+            {
+                foreach (var entry in payload.inGameDataList)
+                {
+                    if (entry != null && !string.IsNullOrEmpty(entry.uid))
+                        inGameDataDict[entry.uid] = entry.data ?? new InGameData();
+                }
+            }
+
+            // ViewID 매핑 반영
+            if (payload.viewIDMappings != null)
+            {
+                foreach (var m in payload.viewIDMappings)
+                {
+                    if (m != null && !string.IsNullOrEmpty(m.googleUID))
+                    {
+                        viewIDByGoogleUID[m.googleUID] = m.viewID;
+                        googleUIDByViewID[m.viewID]    = m.googleUID;
+                    }
+                }
+            }
+
+            currentGameState = payload.gameState;
+            // (선택) if (payload.gameRules != null) currentGameRuleSettings = payload.gameRules;
+
+            // ★ 내 프라이빗만 복호화→캐시 (클라이언트 로컬)
+            TryApplyMyPrivateDataFrom(payload);
+
+            // 방어용 로그
+            Debug.Log($"[GameDataManager] Snapshot applied. public={publicPlayerDataDict.Count}, inGame={inGameDataDict.Count}, map={viewIDByGoogleUID.Count}");
         }
 
         /// <summary>
-        /// 수신된 백업 데이터를 적용하는 함수
+        /// payload의 encryptedPrivatePlayerDataList에서
+        /// "내 것(내 ActorNumber→내 UID)"만 복호화하여 privatePlayerDataDict에 캐시
         /// </summary>
-        /// <param name="payload">백업 페이로드</param>
-        public void ApplyPublicPlayerData(BackupPayload payload)
+        private void TryApplyMyPrivateDataFrom(BackupPayload payload)
         {
-            publicPlayerDataDict = payload.publicPlayerDataList.ToDictionary(p => p.googleUID);
-            inGameDataDict = payload.inGameDataList.ToDictionary(entry => entry.uid, entry => entry.data);
+            try
+            {
+                // 내 UID 찾기 (내 ActorNumber 기준)
+                var me = publicPlayerDataDict.Values
+                    .FirstOrDefault(p => p.currentActorId == PhotonNetwork.LocalPlayer.ActorNumber);
+                if (me == null || string.IsNullOrEmpty(me.googleUID))
+                    return;
 
-            currentGameState = payload.gameState;
+                string myUid = me.googleUID;
+                var encList = payload.encryptedPrivatePlayerDataList;
+                if (encList == null || encList.Count == 0) return;
+
+                foreach (var enc in encList)
+                {
+                    if (string.IsNullOrEmpty(enc)) continue;
+
+                    string json = AESCrypto.DecryptString(enc, AESKeyManager.Instance.GetAESKeyBytes());
+                    var priv = JsonUtility.FromJson<PrivatePlayerData>(json);
+                    if (priv != null && priv.googleUID == myUid)
+                    {
+                        privatePlayerDataDict[myUid] = priv;
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[GameDataManager] TryApplyMyPrivateDataFrom failed: {ex.Message}");
+            }
         }
 
         #endregion
 
         #region 데이터 조회 인터페이스 (UID/Actor 기반)
 
-        /// <summary>
-        /// UID로 퍼블릭 데이터를 조회하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="data">조회 결과</param>
-        /// <returns>조회 성공 여부</returns>
         public bool TryGetPublicPlayerData(string uid, out PublicPlayerData data)
-        {
-            return publicPlayerDataDict.TryGetValue(uid, out data);
-        }
+            => publicPlayerDataDict.TryGetValue(uid, out data);
 
-        /// <summary>
-        /// ActorNumber로 퍼블릭 데이터를 조회하는 함수
-        /// </summary>
-        /// <param name="actorNum">Photon ActorNumber</param>
-        /// <param name="data">조회 결과</param>
-        /// <returns>조회 성공 여부</returns>
         public bool TryGetPublicPlayerDataByActorId(int actorNum, out PublicPlayerData data)
         {
             data = publicPlayerDataDict.Values.FirstOrDefault(p => p.currentActorId == actorNum);
             return data != null;
         }
 
-        /// <summary>
-        /// UID로 프라이베이트 데이터를 조회하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <param name="data">조회 결과</param>
-        /// <returns>조회 성공 여부</returns>
         public bool TryGetPrivatePlayerData(string uid, out PrivatePlayerData data)
-        {
-            return privatePlayerDataDict.TryGetValue(uid, out data);
-        }
+            => privatePlayerDataDict.TryGetValue(uid, out data);
 
-        /// <summary>
-        /// ActorNumber로 프라이베이트 데이터를 조회하는 함수
-        /// </summary>
-        /// <param name="actorNum">Photon ActorNumber</param>
-        /// <param name="data">조회 결과</param>
-        /// <returns>조회 성공 여부</returns>
         public bool TryGetPrivatePlayerDataByActorId(int actorNum, out PrivatePlayerData data)
         {
             data = privatePlayerDataDict.Values.FirstOrDefault(p => p.currentActorId == actorNum);
             return data != null;
         }
 
-        /// <summary>
-        /// 모든 퍼블릭 데이터를 리스트로 반환하는 함수
-        /// </summary>
-        /// <returns>PublicPlayerData 리스트</returns>
+        /// <summary>내 프라이빗 데이터 바로 얻기 (UI 등에서 편하게 사용)</summary>
+        public bool TryGetMyPrivateData(out PrivatePlayerData data)
+        {
+            data = null;
+
+            // 내 UID를 퍼블릭 테이블에서 찾고, 그 UID로 프라이빗 조회
+            var me = publicPlayerDataDict.Values
+                .FirstOrDefault(p => p.currentActorId == PhotonNetwork.LocalPlayer.ActorNumber);
+            if (me == null || string.IsNullOrEmpty(me.googleUID))
+                return false;
+
+            return privatePlayerDataDict.TryGetValue(me.googleUID, out data);
+        }
+
         public List<PublicPlayerData> GetAllPublicPlayerData()
-        {
-            return publicPlayerDataDict.Values.ToList();
-        }
+            => publicPlayerDataDict.Values.ToList();
 
-        /// <summary>
-        /// 모든 프라이베이트 데이터를 리스트로 반환하는 함수
-        /// </summary>
-        /// <returns>PublicPlayerData 리스트</returns>
         public List<PrivatePlayerData> GetAllPrivatePlayerData()
-        {
-            return privatePlayerDataDict.Values.ToList();
-        }
+            => privatePlayerDataDict.Values.ToList();
 
-        /// <summary>
-        /// UID로 인게임 데이터를 조회하는 함수
-        /// </summary>
-        /// <param name="uid">플레이어 UID</param>
-        /// <returns>InGameData 또는 null</returns>
         public InGameData GetInGameData(string uid)
-        {
-            return inGameDataDict.TryGetValue(uid, out var data) ? data : null;
-        }
+            => inGameDataDict.TryGetValue(uid, out var data) ? data : null;
 
-        /// <summary>
-        /// [호스트 전용] Google UID로 ViewID를 조회하는 함수
-        /// </summary>
-        /// <param name="googleUID">플레이어 Google UID</param>
-        /// <param name="viewID">조회된 ViewID</param>
-        /// <returns>조회 성공 여부</returns>
         public bool TryGetViewIDByUID(string googleUID, out int viewID)
-        {
-            return viewIDByGoogleUID.TryGetValue(googleUID, out viewID);
-        }
+            => viewIDByGoogleUID.TryGetValue(googleUID, out viewID);
 
-        /// <summary>
-        /// [호스트 전용] ViewID로 Google UID를 조회하는 함수
-        /// </summary>
-        /// <param name="googleUID">플레이어 Google UID</param>
-        /// <param name="viewID">조회된 ViewID</param>
-        /// <returns>조회 성공 여부</returns>
         public bool TryGetUIDByViewID(int viewID, out string googleUID)
-        {
-            return googleUIDByViewID.TryGetValue(viewID, out googleUID);
-        }
+            => googleUIDByViewID.TryGetValue(viewID, out googleUID);
+
         #endregion
 
         #region 게임 상태 및 룰 관리
 
-        /// <summary>
-        /// 게임이 시작되었는지 확인하는 함수
-        /// </summary>
-        /// <returns>시작 여부</returns>
-        public bool IsGameStarted()
-        {
-            return currentGameState != GameStateType.None;
-        }
+        public bool IsGameStarted() => currentGameState != GameStateType.None;
 
-        /// <summary>
-        /// 게임 상태를 설정하는 함수
-        /// </summary>
-        /// <param name="state">GameStateType</param>
         public void SetGameState(GameStateType state)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] SetGameState on non-host. Ignored."); return; }
             currentGameState = state;
         }
 
-        /// <summary>
-        /// 게임 룰을 설정하는 함수
-        /// </summary>
-        /// <param name="settings">GameRuleSettings</param>
         public void SetGameRules(GameRuleSettings settings)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-
+            if (!IsHost) { Debug.LogWarning("[GameDataManager] SetGameRules on non-host. Ignored."); return; }
+            if (settings == null) { Debug.LogWarning("[GameDataManager] SetGameRules null settings."); return; }
             currentGameRuleSettings = settings;
         }
 
-        /// <summary>
-        /// 룰의 복사본을 반환하는 함수
-        /// </summary>
-        /// <returns>GameRuleSettings</returns>
         public GameRuleSettings GetGameRulePayload()
         {
             return new GameRuleSettings
             {
-                mafiaAmount = currentGameRuleSettings.mafiaAmount,
+                mafiaAmount     = currentGameRuleSettings.mafiaAmount,
                 detectiveAmount = currentGameRuleSettings.detectiveAmount,
             };
         }
 
-        /// <summary>
-        /// 내부 참조용 룰을 반환하는 함수
-        /// </summary>
-        /// <returns>GameRuleSettings</returns>
-        public GameRuleSettings GetGameRules()
-        {
-            return currentGameRuleSettings;
-        }
+        public GameRuleSettings GetGameRules() => currentGameRuleSettings;
 
         #endregion
 
+        #region 미션/보상 & 유틸
 
         public void SetMissionBackup(Dictionary<string, PlayerMissionData> backup)
         {
-            missionBackup = backup;
+            missionBackup = backup; // 필요 시 Deep Copy 고려
         }
 
         public bool TryAddMissionReward(string playerUID)
         {
             if (!inGameDataDict.ContainsKey(playerUID))
             {
-                Debug.LogWarning($"[TryAddMissionReward] 존재하지 않는 UID: {playerUID}");
+                Debug.LogWarning($"[GameDataManager] TryAddMissionReward: UID not found ({playerUID})");
                 return false;
             }
 
             inGameDataDict[playerUID].stickerCount++;
             return true;
         }
+
+        /// <summary>
+        /// 로컬에 백업이 있고 화면 요소가 먼저 올라와 레이스가 났을 때
+        /// 즉시 재적용하고 싶을 때 호출 (클라 전용)
+        /// </summary>
+        public void RequestResyncForLocal()
+        {
+            if (LocalBackupManager.Instance != null && LocalBackupManager.Instance.HasValidBackup())
+            {
+                ApplyPublicPlayerData(LocalBackupManager.Instance.GetBackupPayload());
+            }
+            else
+            {
+                Debug.LogWarning("[GameDataManager] RequestResyncForLocal: no local backup.");
+            }
+        }
+
+        #endregion
     }
 }

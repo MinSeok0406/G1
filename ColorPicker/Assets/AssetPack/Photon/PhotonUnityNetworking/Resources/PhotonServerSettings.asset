@@ -105,6 +105,16 @@ MonoBehaviour:
   - S_ReceiveMessage
   - Rpc_BulkReadyStateUpdate
   - UpdateColorIcon
+  - RPC_KillRejectedCooldown
+  - RPC_RequestCooldownSync
+  - RPC_SyncCooldown
+  - RPC_RefreshLocalAbilities
+  - RPC_ApplyDeltaAlive
+  - RPC_ApplyDeltaVoted
+  - RPC_ReceiveInspectResult
+  - RPC_RequestInspectNearest
+  - ApplyMafiaLayer
+  - RPC_RequestMafiaLayerSync
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

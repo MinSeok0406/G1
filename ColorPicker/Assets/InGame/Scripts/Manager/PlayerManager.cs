@@ -19,11 +19,18 @@ namespace ColorPicker.InGame
         public LobbyPlayer GetMyLobbyPlayer() => myLobbyPlayer;
         public void SetMyLobbyPlayer(LobbyPlayer lobbyPlayer) { myLobbyPlayer = lobbyPlayer; }
 
+        void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.P))
+            {
+                Debug.Log("[PlayerManager] myplayer: " + (myPlayer ? myPlayer.name : "null"));
+            }
+        }
         protected override void Awake()
         {
             base.Awake();
 
-            
+            DontDestroyOnLoad(gameObject);
         }
 
         /// <summary>

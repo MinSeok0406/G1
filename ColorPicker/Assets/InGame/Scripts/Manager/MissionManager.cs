@@ -1,4 +1,3 @@
-using Google.Protobuf.Protocol;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -373,18 +372,18 @@ namespace ColorPicker.InGame
             if (string.IsNullOrEmpty(playerUID) || target == null) return;
 
             bool success = GameDataManager.Instance.TryAddMissionReward(playerUID);
-            int stickerAmount = GameDataManager.Instance.GetInGameData(playerUID)?.stickerCount ?? 0;
+            int coinAmount = GameDataManager.Instance.GetInGameData(playerUID)?.stickerCount ?? 0;
 
             if (success)
             {
-                photonView.RPC(nameof(Rpc_ReceiveReward), target, stickerAmount);
+                photonView.RPC(nameof(Rpc_ReceiveReward), target, coinAmount);
             }
         }
 
         [PunRPC]
-        private void Rpc_ReceiveReward(int stickerAmout)
+        private void Rpc_ReceiveReward(int coinAmout)
         {
-            // TODO: 보상 UI 반영
+            UIManager.Instance.UpdateCoinInfo(coinAmout);
         }
 
         // --- 간단한 Array/HashSet 풀 (GC 감소용) ---
