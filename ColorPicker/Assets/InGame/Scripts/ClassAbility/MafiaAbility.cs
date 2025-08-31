@@ -1,6 +1,8 @@
+using System.Collections;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace ColorPicker.InGame
@@ -17,14 +19,12 @@ namespace ColorPicker.InGame
 
         [Header("Targeting (2D circle)")]
         [SerializeField] private Material outlineMaterial;
-        [SerializeField] private float aimRadius = 5f;
+        [SerializeField] private float aimRadius = 1f;
         [SerializeField] private LayerMask aimMask2D;
 
         // Legacy 유지
-        [Header("Target (legacy)")]
-        [SerializeField] private PhotonView currentTargetView;
         private Player currentPlayer;
-
+        private Coroutine cooldownRoutine;
         private Transform origin2D;
         private KillEvent killEvent;
         private PhotonView pv;
@@ -47,7 +47,6 @@ namespace ColorPicker.InGame
             {
                 killButton.onClick.RemoveAllListeners();
                 killButton.onClick.AddListener(OnKillButtonPressed);
-                killButton.gameObject.SetActive(false);
             }
 
             if (cooldownText) cooldownText.text = "";
@@ -88,8 +87,6 @@ namespace ColorPicker.InGame
 
         private void KillEvent_OnKill(KillEvent sender, KillEventArgs args)
         {
-            if (!pv || !pv.IsMine) return;
-
             int targetViewID = args?.targetViewID ?? ResolveTargetViewID();
             if (targetViewID < 0) return;
 
@@ -104,7 +101,6 @@ namespace ColorPicker.InGame
             if (uiTick >= 1f)
             {
                 uiTick = 0f;
-                UpdateCooldownUI();
                 UpdateButtonInteractable();
             }
 
@@ -169,11 +165,39 @@ namespace ColorPicker.InGame
             _outlinedView = null;
         }
 
-        private void UpdateCooldownUI()
+        public void StartCooldownUI(float duration)
+        {
+            // 기존 코루틴이 돌고 있다면 정지
+            if (cooldownRoutine != null)
+                StopCoroutine(cooldownRoutine);
+
+            float endTime = Time.time + duration;
+            cooldownRoutine = StartCoroutine(UpdateCooldownUICoroutine(endTime));
+        }
+
+        private void UpdateCooldownUI(float remain)
         {
             if (!cooldownText) return;
-            float remain = AbilityManager.Instance.GetRemainingCooldown(pv.ViewID);
             cooldownText.text = remain > 0f ? Mathf.CeilToInt(remain).ToString() : "";
+        }
+
+        private IEnumerator UpdateCooldownUICoroutine(float endTime)
+        {
+            while (true)
+            {
+                float remain = endTime - Time.time;
+                if (remain <= 0f)
+                {
+                    UpdateCooldownUI(0f);
+                    cooldownRoutine = null;
+                    yield break;
+                }
+
+                UpdateCooldownUI(remain);
+
+                // 1초 단위로만 갱신하고 싶으면
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         private void UpdateButtonInteractable()
@@ -184,53 +208,26 @@ namespace ColorPicker.InGame
 
         private bool CanUseAbility()
         {
-            return ResolveTargetViewID() >= 0 && !AbilityManager.Instance.IsOnCooldown(pv.ViewID);
+            return ResolveTargetViewID() >= 0 && cooldownRoutine == null;
         }
 
         private void OnKillButtonPressed()
         {
-            if (!pv || !pv.IsMine) return;
             if (!CanUseAbility()) return;
 
             int targetViewID = ResolveTargetViewID();
             if (targetViewID < 0) return;
 
-            AbilityManager.Instance.TryRequestKill(targetViewID, pv.ViewID);
-        }
+            int myViewID = PlayerManager.Instance.GetMyPlayer().photonView.ViewID;
 
-        // ===== Legacy Target API (호환 유지) =====
-        public void SetCurrentTarget(PhotonView target)
-        {
-            if (target != _outlinedView)
-            {
-                ClearOutline();
-                if (target) ApplyOutline(target);
-            }
-            currentTargetView = target;
-            currentPlayer = target && target.Owner?.TagObject is Player p ? p : null;
-        }
-
-        public void SetCurrentPlayer(Player p)
-        {
-            currentPlayer = p;
-            currentTargetView = null;
+            AbilityManager.Instance.TryRequestKill(targetViewID, myViewID);
         }
 
         private int ResolveTargetViewID()
         {
-            if (currentTargetView && currentTargetView.ViewID > 0)
-                return currentTargetView.ViewID;
-
             if (_outlinedView && _outlinedView.ViewID > 0)
                 return _outlinedView.ViewID;
 
-            if (currentPlayer != null)
-            {
-                int actor = currentPlayer.ownerActNum;
-                if (GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actor, out var pdata))
-                    if (GameDataManager.Instance.TryGetViewIDByUID(pdata.googleUID, out int vid) && vid > 0)
-                        return vid;
-            }
             return -1;
         }
 

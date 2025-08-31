@@ -124,10 +124,7 @@ namespace ColorPicker.InGame
 
             PhotonView nearest = null;
             float bestSqr = float.MaxValue;
-
-            // 같은 플레이어(동일 PhotonView)에 여러 콜라이더가 붙어있을 수 있으니
-            // ViewID 기준으로 최소 거리만 유지
-            // (가벼운 구현: 처음 본 View만 반영. 더 정확히 하려면 Dictionary로 min 갱신)
+            
             var seen = new System.Collections.Generic.Dictionary<int, float>();
 
             for (int i = 0; i < hitCount; i++)
@@ -192,7 +189,6 @@ namespace ColorPicker.InGame
 
         private void OnInspectPressed()
         {
-            if (!pv || !pv.IsMine) return;
             if (usedThisRound) return;
 
             // 현재 지정된 타깃으로 요청
@@ -203,83 +199,13 @@ namespace ColorPicker.InGame
                 return;
             }
 
-            // 호스트에게 요청: 내 루트 ViewID와 radius만 넘겨 타깃 검증/색상조회
-            var myRoot = FindLocalRootView();
-            if (!myRoot)
-            {
-                Debug.LogWarning("[DetectiveAbility] Local root not found.");
-                return;
-            }
+            var myViewID = PlayerManager.Instance.GetMyPlayer().photonView.ViewID;
 
-            // 호스트는 별도 탐색 로직을 쓰지만, 여기선 선택된 대상의 확인용으로 충분
-            photonView.RPC(nameof(RPC_RequestInspectNearest), RpcTarget.MasterClient, myRoot.ViewID, aimRayLength);
+            AbilityManager.Instance.RequestDetectiveInspectNearest(myViewID, target.ViewID);
         }
 
-        private PhotonView FindLocalRootView()
+        public void HandleInspectResult(int targetViewID, int colorId)
         {
-            PhotonView localRoot = null;
-            foreach (var v in GameObject.FindObjectsOfType<PhotonView>())
-            {
-                if (v && v.IsMine) { localRoot = v; break; }
-            }
-            return localRoot;
-        }
-
-        [PunRPC]
-        private void RPC_RequestInspectNearest(int requesterRootViewID, float radius, PhotonMessageInfo info)
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            var requester = PhotonView.Find(requesterRootViewID);
-            if (!requester)
-            {
-                Debug.LogWarning("[DetectiveAbility] Host: requester root not found.");
-                return;
-            }
-
-            // 가장 가까운 타깃은 기존 구현 그대로 사용(신뢰성)
-            PhotonView nearest = null;
-            float nearestSqr = float.MaxValue;
-            Vector3 origin = requester.transform.position;
-
-            var allViews = GameObject.FindObjectsOfType<PhotonView>();
-            var myOwner = requester.Owner;
-
-            foreach (var v in allViews)
-            {
-                if (!v || v.ViewID <= 0) continue;
-                if (v.Owner == null) continue;
-                if (v.Owner == myOwner) continue; // 자기 자신 제외
-                float sqr = (v.transform.position - origin).sqrMagnitude;
-                if (sqr < nearestSqr && sqr <= radius * radius)
-                {
-                    nearestSqr = sqr;
-                    nearest = v;
-                }
-            }
-
-            if (!nearest)
-            {
-                photonView.RPC(nameof(RPC_ReceiveInspectResult), info.Sender, -1, -1);
-                return;
-            }
-
-            if (!GameDataManager.Instance.TryGetUIDByViewID(nearest.ViewID, out string targetUID) ||
-                !GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var priv))
-            {
-                photonView.RPC(nameof(RPC_ReceiveInspectResult), info.Sender, nearest.ViewID, -1);
-                return;
-            }
-
-            int colorId = priv.identityColorId;
-            photonView.RPC(nameof(RPC_ReceiveInspectResult), info.Sender, nearest.ViewID, colorId);
-        }
-
-        [PunRPC]
-        private void RPC_ReceiveInspectResult(int targetViewID, int colorId)
-        {
-            if (!pv || !pv.IsMine) return;
-
             if (targetViewID < 0)
             {
                 if (resultText) resultText.text = "No Target";

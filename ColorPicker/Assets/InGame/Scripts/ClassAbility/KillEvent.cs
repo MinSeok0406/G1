@@ -41,9 +41,7 @@ namespace ColorPicker.InGame
 
     public class KillEventArgs : EventArgs
     {
-        /// <summary> 권장 식별자 (PhotonView.ViewID). -1이면 미설정 </summary>
         public int targetViewID = -1;
-        /// <summary> 호환용 (Photon.Realtime.Player.ActorNumber). -1이면 미설정 </summary>
         public int actorNumber = -1;
     }
 }

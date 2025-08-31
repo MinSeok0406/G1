@@ -115,6 +115,9 @@ MonoBehaviour:
   - RPC_RequestInspectNearest
   - ApplyMafiaLayer
   - RPC_RequestMafiaLayerSync
+  - RPC_UpdateAbilityCooldownUI
+  - RPC_DetectiveInspectResult
+  - RPC_RequestDetectiveInspectNearest
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

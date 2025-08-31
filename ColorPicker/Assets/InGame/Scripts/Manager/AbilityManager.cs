@@ -13,7 +13,7 @@ namespace ColorPicker.InGame
         // ====== Config ======
         [Header("Kill Config")]
         [SerializeField, Min(0f)] private float defaultCooldownSeconds = 20f;   // ★ Settings 참조 유지 가능
-        [SerializeField] private float minKillDistance = 1.6f;                  // 필요 시 0으로
+        [SerializeField] private float minKillDistance = 1f;                  // 필요 시 0으로
         [SerializeField] private bool validateDistance = false;
 
         [HideInInspector] public AbilityBinder abilityBinder;
@@ -21,6 +21,8 @@ namespace ColorPicker.InGame
         // 외부 Settings와의 호환(기존 코드가 Settings.defaultCooldown 참조 시)
         private float DefaultCooldownOrSettings =>
             (Settings.defaultCooldown > 0f) ? Settings.defaultCooldown : defaultCooldownSeconds;
+
+        private DetectiveAbility detectiveAbility => GetComponentInChildren<DetectiveAbility>();
 
         protected override void Awake()
         {
@@ -66,7 +68,6 @@ namespace ColorPicker.InGame
         [PunRPC]
         private void RPC_SyncCooldown(int viewID, double endTime)
         {
-            // ★ 클라측 로컬 캐시 반영(재접속/씬 재로딩 대비)
             cooldownEndTimes[viewID] = endTime;
             UIManager.Instance?.UpdateAbilityCooldownUI(viewID, GetRemainingCooldown(viewID));
         }
@@ -84,15 +85,6 @@ namespace ColorPicker.InGame
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            // ★ 스푸핑 방지: killerViewID의 소유자와 RPC 발신자 일치해야 함
-            var killerPV = PhotonView.Find(killerViewID);
-            if (killerPV == null || killerPV.OwnerActorNr != info.Sender?.ActorNumber)
-            {
-                Debug.LogWarning($"[Ability] Spoofed kill? sender={info.Sender?.ActorNumber}, killerPV.Owner={killerPV?.OwnerActorNr}");
-                return;
-            }
-
-            // ★ 쿨타임 체크(서버)
             if (IsOnCooldown(killerViewID))
             {
                 photonView.RPC(nameof(RPC_KillRejectedCooldown), info.Sender, GetRemainingCooldown(killerViewID));
@@ -104,6 +96,7 @@ namespace ColorPicker.InGame
                 !GameDataManager.Instance.TryGetUIDByViewID(killerViewID, out string killerUID))
             {
                 Debug.LogWarning("[Ability] UID mapping failed.");
+
                 return;
             }
 
@@ -155,10 +148,8 @@ namespace ColorPicker.InGame
             targetData.classType = (int)PlayerClassType.ghost;
             GameDataManager.Instance.UpdatePrivatePlayerData(targetData);
 
-            // ★ 킬 확정 브로드캐스트(연출/사운드/데스 처리)
             photonView.RPC(nameof(RPC_ConfirmKillResult), RpcTarget.All, targetViewID);
 
-            // ★ 쿨타임 시작은 "킬러"에게 (기존 코드의 버그 수정)
             StartCooldown(killerViewID, DefaultCooldownOrSettings);
         }
 
@@ -171,8 +162,8 @@ namespace ColorPicker.InGame
             var player = view.GetComponent<Player>();
             if (player)
             {
-                // TODO: 실제 사망 처리(애니메이션/컨트롤 비활성/스펙터 상태 전환 등)
-                // player.Die();
+                player.deathEvent?.CallDeathEvent();
+                Debug.Log($"[Ability] {player.name} has been killed.");
             }
 
         }
@@ -258,7 +249,7 @@ namespace ColorPicker.InGame
         private void ApplyMafiaLayer(int targetViewId)
         {
             PhotonView targetView = PhotonView.Find(targetViewId);
-            if(targetView.IsMine) return;
+            if (targetView.IsMine) return;
 
             if (targetView && targetView.gameObject)
             {
@@ -278,5 +269,70 @@ namespace ColorPicker.InGame
                 Debug.Log($"[MafiaAbility] Mafia Layer 적용 완료: {targetView.gameObject.name}");
             }
         }
+
+        //==== Detective Ability ======
+
+        public void RequestDetectiveInspectNearest(int requesterRootViewID, float radius)
+        {
+            photonView.RPC(nameof(RPC_RequestDetectiveInspectNearest), RpcTarget.MasterClient, requesterRootViewID, radius);
+        }
+
+        [PunRPC]
+        private void RPC_RequestDetectiveInspectNearest(int requesterRootViewID, float radius, PhotonMessageInfo info)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            var requester = PhotonView.Find(requesterRootViewID);
+
+            // ===== 최근접 대상 탐색 (서버/호스트 판단) =====
+            PhotonView nearest = null;
+            float nearestSqr = float.MaxValue;
+            Vector3 origin = requester.transform.position;
+            var myOwner = requester.Owner;
+
+            var allViews = GameObject.FindObjectsOfType<PhotonView>();
+            for (int i = 0; i < allViews.Length; i++)
+            {
+                var v = allViews[i];
+                if (!v || v.ViewID <= 0) continue;
+                if (v.Owner == null) continue;
+                if (v.ViewID == requesterRootViewID) continue; // 자기 자신 제외
+
+                float sqr = (v.transform.position - origin).sqrMagnitude;
+                if (sqr < nearestSqr && sqr <= radius * radius)
+                {
+                    nearestSqr = sqr;
+                    nearest = v;
+                }
+            }
+
+            if (!nearest)
+            {
+                photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, -1, -1);
+                return;
+            }
+
+            // 색상/데이터 조회
+            if (!GameDataManager.Instance.TryGetUIDByViewID(nearest.ViewID, out string targetUID) ||
+                !GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var priv))
+            {
+                photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, nearest.ViewID, -1);
+                return;
+            }
+
+            int colorId = priv.identityColorId;
+            photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, nearest.ViewID, colorId);
+        }
+
+        /// <summary>
+        /// 호스트 → 요청 클라 : 탐문 결과 회신 (viewID, colorId)
+        /// </summary>
+        [PunRPC]
+        private void RPC_DetectiveInspectResult(int targetViewID, int colorId)
+        {
+            // 클라 측에서 이벤트로 브릿지 (AbilityManager는 항상 활성)
+            detectiveAbility.HandleInspectResult(targetViewID, colorId);
+        }
     }
 }
+

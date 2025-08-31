@@ -33,7 +33,7 @@ namespace ColorPicker.InGame
             //AssignRoleToCount(shuffled, PlayerClassType.mafia, gameRules.mafiaAmount, ref assigned); // 랜덤으로 섞인 리스트 기준으로 마피아 수 만큼 할당
             //AssignRoleToCount(shuffled, PlayerClassType.detective, gameRules.detectiveAmount, ref assigned); // 랜덤으로 섞인 리스트 기준으로 탐정 수 만큼 할당
             AssignRoleToCount(shuffled, PlayerClassType.detective, 1, ref assigned); //test
-            AssignRoleToCount(shuffled, PlayerClassType.mafia, 2, ref assigned); // 랜덤으로 섞인 리스트 기준으로 마피아 수 만큼 할당
+            AssignRoleToCount(shuffled, PlayerClassType.mafia, 1, ref assigned); // 랜덤으로 섞인 리스트 기준으로 마피아 수 만큼 할당
 
 
             // 나머지 플레이어 시민으로 할당

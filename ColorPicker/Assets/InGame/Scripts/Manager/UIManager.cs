@@ -18,7 +18,7 @@ namespace ColorPicker.InGame
         [SerializeField] private Slider missionStatusBar;
 
         private UnityAction defaultClick; // 기본 콜백 캐싱
-
+        private MafiaAbility mafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
         protected override void Awake()
         {
             base.Awake();
@@ -108,12 +108,12 @@ namespace ColorPicker.InGame
             if (PaintInfoText)
                 PaintInfoText.text = $"x {paint}";
         }
-        
+
 
         public void BroadcastUpdateColorIcon()
         {
             photonView.RPC(nameof(UpdateColorIcon), RpcTarget.All);
-        } 
+        }
 
         [PunRPC]
         public void UpdateColorIcon()
@@ -124,9 +124,26 @@ namespace ColorPicker.InGame
                 colorIcon.color = HelperUtilities.ToUnityColor((ColorType)data.identityColorId);
         }
 
-        public void UpdateAbilityCooldownUI(int viewID, float v)
+        public void UpdateAbilityCooldownUI(int viewID, float remain)
         {
+            PhotonView targetView = PhotonView.Find(viewID);
+            if (targetView == null || targetView.Owner == null)
+            {
+                Debug.LogWarning($"[Ability] PhotonView {viewID} not found or has no owner.");
+                return;
+            }
 
+            int actorNum = targetView.OwnerActorNr;
+            var targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(actorNum);
+
+            photonView.RPC(nameof(RPC_UpdateAbilityCooldownUI), targetPlayer, remain);
+        }
+        
+        [PunRPC]
+        public void RPC_UpdateAbilityCooldownUI(float remain)
+        {
+            if (mafiaAbility)
+                mafiaAbility.StartCooldownUI(remain);
         }
     }
 }

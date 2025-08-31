@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
+    public enum AbilitySkillId
+    {
+        Default = 0,
+        MafiaKill = 1,
+        ColorPickerSKill = 2
+    }
+
     public enum PlayerClassType
     {
         citizen, // 0

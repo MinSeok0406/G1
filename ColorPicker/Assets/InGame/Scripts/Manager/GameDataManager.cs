@@ -29,7 +29,30 @@ namespace ColorPicker.InGame
 
         // ====== Utility ======
         private bool IsHost => PhotonNetwork.IsMasterClient;
+        private void Update()
+        {
+            // 런타임에 F1 키 눌러 확인
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                DumpViewIDMappings();
+            }
+        }
 
+        private void DumpViewIDMappings()
+        {
+            if (googleUIDByViewID.Count == 0)
+            {
+                Debug.Log("[GameDataManager] No ViewID→UID mappings registered.");
+                return;
+            }
+
+            Debug.Log("[GameDataManager] ==== ViewID→UID Mappings ====");
+            foreach (var kv in googleUIDByViewID)
+            {
+                string uid = kv.Value ?? "NULL";
+                Debug.Log($"ViewID={kv.Key}, UID={uid}");
+            }
+        }
         protected override void Awake()
         {
             base.Awake();
@@ -79,7 +102,7 @@ namespace ColorPicker.InGame
             privatePlayerDataDict[googleUID] = privateData; // upsert (호스트만 전체 보유)
 
             viewIDByGoogleUID[googleUID] = viewID; // upsert
-            googleUIDByViewID[viewID]    = googleUID; // upsert
+            googleUIDByViewID[viewID] = googleUID; // upsert
         }
 
         /// <summary>재접속 플레이어 ActorNumber 갱신 (Host Only)</summary>
