@@ -14,7 +14,6 @@ namespace ColorPicker.InGame
         [Header("UI")]
         [SerializeField] private Button inspectButton;
         [SerializeField] private TMP_Text resultText;
-        [SerializeField] private TMP_Text usageText;
 
         [Header("Target (auto-aim by ray)")]
         [SerializeField] private Material outlineMaterial;
@@ -45,7 +44,7 @@ namespace ColorPicker.InGame
             }
 
             if (resultText) resultText.text = "";
-            if (usageText) usageText.text = "Ready";
+
 
             usedThisRound = false;
             currentRoundIndex = 0;
@@ -70,7 +69,6 @@ namespace ColorPicker.InGame
                 inspectButton.gameObject.SetActive(false);
             }
             if (resultText) resultText.text = "";
-            if (usageText) usageText.text = "Ready";
             usedThisRound = false;
 
             ClearOutline();
@@ -91,7 +89,6 @@ namespace ColorPicker.InGame
 
         private void RefreshUI()
         {
-            if (usageText) usageText.text = usedThisRound ? "Used" : "Ready";
             if (inspectButton) inspectButton.interactable = !usedThisRound;
         }
 
@@ -119,7 +116,6 @@ namespace ColorPicker.InGame
             origin2D ??= PlayerManager.Instance.GetMyPlayer()?.transform;
             if (!origin2D) return;
 
-            // 원형 범위 안에서 가장 가까운 1명 선택 (Overlap은 순서 미보장)
             int hitCount = Physics2D.OverlapCircleNonAlloc(origin2D.position, aimRayLength, _buf, aimMask2D);
 
             PhotonView nearest = null;
@@ -149,7 +145,6 @@ namespace ColorPicker.InGame
 
             foreach (var kv in seen)
             {
-                // kv.Key = ViewID, kv.Value = min sqr distance
                 var candidate = PhotonView.Find(kv.Key);
                 if (!candidate) continue;
 
@@ -191,7 +186,6 @@ namespace ColorPicker.InGame
         {
             if (usedThisRound) return;
 
-            // 현재 지정된 타깃으로 요청
             var target = _outlinedView;
             if (!target)
             {
@@ -201,7 +195,7 @@ namespace ColorPicker.InGame
 
             var myViewID = PlayerManager.Instance.GetMyPlayer().photonView.ViewID;
 
-            AbilityManager.Instance.RequestDetectiveInspectNearest(myViewID, target.ViewID);
+            AbilityManager.Instance.RequestDetectiveInspectNearest(myViewID, target.ViewID, aimRayLength);
         }
 
         public void HandleInspectResult(int targetViewID, int colorId)

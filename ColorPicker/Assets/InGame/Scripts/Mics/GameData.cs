@@ -59,7 +59,8 @@ namespace ColorPicker.InGame
     {
         public bool isAlive = true;            // 생존 여부
         public bool hasVoted = false;          // 투표 여부
-        public int stickerCount = 0;
+        public int coinCount = 0;
+        public int paintCount = 0;
     }
 
     [System.Serializable]
@@ -74,7 +75,7 @@ namespace ColorPicker.InGame
     {
         public int mafiaAmount;
         public int detectiveAmount;
-
+        public int paintCost;
         public int maxMeetingTimeSec;
         public int maxPlayers;
     }

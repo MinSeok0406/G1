@@ -61,7 +61,8 @@ namespace ColorPicker.InGame
             currentGameRuleSettings = new GameRuleSettings()
             {
                 mafiaAmount = 1,
-                detectiveAmount = 0
+                detectiveAmount = 0,
+                paintCost = 1
             };
         }
 
@@ -535,6 +536,23 @@ namespace ColorPicker.InGame
         public InGameData GetInGameData(string uid)
             => inGameDataDict.TryGetValue(uid, out var data) ? data : null;
 
+        public bool TryGetInGameDataByActorId(int actorNum, out InGameData data)
+        {
+            data = null;
+
+            foreach (var kv in publicPlayerDataDict)
+            {
+                var p = kv.Value;
+                if (p.currentActorId == actorNum && !string.IsNullOrEmpty(p.googleUID))
+                {
+                    data = GetInGameData(p.googleUID);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool TryGetViewIDByUID(string googleUID, out int viewID)
             => viewIDByGoogleUID.TryGetValue(googleUID, out viewID);
 
@@ -564,8 +582,9 @@ namespace ColorPicker.InGame
         {
             return new GameRuleSettings
             {
-                mafiaAmount     = currentGameRuleSettings.mafiaAmount,
+                mafiaAmount = currentGameRuleSettings.mafiaAmount,
                 detectiveAmount = currentGameRuleSettings.detectiveAmount,
+                paintCost = currentGameRuleSettings.paintCost,
             };
         }
 
@@ -588,7 +607,7 @@ namespace ColorPicker.InGame
                 return false;
             }
 
-            inGameDataDict[playerUID].stickerCount++;
+            inGameDataDict[playerUID].coinCount++;
             return true;
         }
 

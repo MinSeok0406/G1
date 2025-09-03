@@ -52,3 +52,4 @@ MonoBehaviour:
   myChatContentPrefab: {fileID: 7677321529951086244, guid: 5a4213bea56df3b48b88440dc1ec37d7, type: 3}
   outlineMaterial: {fileID: 2100000, guid: 8c1d009f0c3bb8a43a98f32266329424, type: 2}
   interactiveMaterial: {fileID: 2100000, guid: c1d30f7c8a67a784599d244f28ad911d, type: 2}
+  deathVFXVolumeProfile: {fileID: 11400000, guid: 2b89bf9fc5a26174ebb7983c41aa875b, type: 2}

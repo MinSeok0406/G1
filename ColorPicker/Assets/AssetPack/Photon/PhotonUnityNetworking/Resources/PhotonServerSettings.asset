@@ -118,6 +118,8 @@ MonoBehaviour:
   - RPC_UpdateAbilityCooldownUI
   - RPC_DetectiveInspectResult
   - RPC_RequestDetectiveInspectNearest
+  - RPC_RequestExchange
+  - RPC_ReceiveExchangeResult
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

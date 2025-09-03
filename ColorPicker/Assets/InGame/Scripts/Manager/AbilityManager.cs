@@ -272,56 +272,44 @@ namespace ColorPicker.InGame
 
         //==== Detective Ability ======
 
-        public void RequestDetectiveInspectNearest(int requesterRootViewID, float radius)
+        public void RequestDetectiveInspectNearest(int requesterRootViewID, int targetViewID, float radius)
         {
-            photonView.RPC(nameof(RPC_RequestDetectiveInspectNearest), RpcTarget.MasterClient, requesterRootViewID, radius);
+            photonView.RPC(nameof(RPC_RequestDetectiveInspectNearest), RpcTarget.MasterClient, requesterRootViewID, targetViewID, radius);
         }
 
         [PunRPC]
-        private void RPC_RequestDetectiveInspectNearest(int requesterRootViewID, float radius, PhotonMessageInfo info)
+        private void RPC_RequestDetectiveInspectNearest(int requesterRootViewID, int targetViewID, float radius, PhotonMessageInfo info)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
             var requester = PhotonView.Find(requesterRootViewID);
+            var target = PhotonView.Find(targetViewID);
 
-            // ===== 최근접 대상 탐색 (서버/호스트 판단) =====
-            PhotonView nearest = null;
-            float nearestSqr = float.MaxValue;
-            Vector3 origin = requester.transform.position;
-            var myOwner = requester.Owner;
-
-            var allViews = GameObject.FindObjectsOfType<PhotonView>();
-            for (int i = 0; i < allViews.Length; i++)
+            if (!requester || !target)
             {
-                var v = allViews[i];
-                if (!v || v.ViewID <= 0) continue;
-                if (v.Owner == null) continue;
-                if (v.ViewID == requesterRootViewID) continue; // 자기 자신 제외
-
-                float sqr = (v.transform.position - origin).sqrMagnitude;
-                if (sqr < nearestSqr && sqr <= radius * radius)
-                {
-                    nearestSqr = sqr;
-                    nearest = v;
-                }
+                photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, -1, -1);
+                return;
             }
 
-            if (!nearest)
+            Vector3 origin = requester.transform.position;
+            Vector3 targetPos = target.transform.position;
+
+            if(radius > 0f && Vector3.SqrMagnitude(origin - targetPos) > ((radius * 1.2f) * (radius * 1.2f)))
             {
                 photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, -1, -1);
                 return;
             }
 
             // 색상/데이터 조회
-            if (!GameDataManager.Instance.TryGetUIDByViewID(nearest.ViewID, out string targetUID) ||
+            if (!GameDataManager.Instance.TryGetUIDByViewID(target.ViewID, out string targetUID) ||
                 !GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var priv))
             {
-                photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, nearest.ViewID, -1);
+                photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, target.ViewID, -1);
                 return;
             }
 
             int colorId = priv.identityColorId;
-            photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, nearest.ViewID, colorId);
+            photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, target.ViewID, colorId);
         }
 
         /// <summary>

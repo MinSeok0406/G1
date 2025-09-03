@@ -19,7 +19,7 @@ TagManager:
   - UI
   - CRT
   - Mafia
-  - 
+  - Ghost
   - 
   - 
   - 
@@ -67,4 +67,7 @@ TagManager:
     locked: 0
   - name: Lighting
     uniqueID: 1703569725
+    locked: 0
+  - name: UI
+    uniqueID: 3114267279
     locked: 0

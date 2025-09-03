@@ -9,8 +9,7 @@ namespace ColorPicker.InGame
         public static RectTransform rawImageRect;
         public static RectTransform targetRect;
         public static Camera rtCamera;
-        public static float zDepth = -10f;
-
+        public static float zDepth => (-rtCamera.transform.position.z);
         private static IDraggable currentDraggable = null;
 
         public static void ProcessInput()
@@ -24,17 +23,20 @@ namespace ColorPicker.InGame
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(rawImageRect, pointerPos, null, out Vector2 localPos);
 
-            float normX = localPos.x / rawImageRect.rect.width;
-            float normY = localPos.y / rawImageRect.rect.height;
+            var r = rawImageRect.rect;
+            float normX = Mathf.InverseLerp(r.xMin, r.xMax, localPos.x);
+            float normY = Mathf.InverseLerp(r.yMin, r.yMax, localPos.y);
 
-            Vector2 viewportPos = new Vector2(normX, normY);
-            Vector3 worldPos = rtCamera.ViewportToWorldPoint(new Vector3(viewportPos.x, viewportPos.y, zDepth));
+            float planeZ = 0f;
+            Ray ray = rtCamera.ViewportPointToRay(new Vector3(normX, normY, 0f));
+            float t = (planeZ - ray.origin.z) / ray.direction.z;
+            Vector3 worldPos = ray.origin + ray.direction * t;
 
             Vector2 targetPos = targetRect.InverseTransformPoint(worldPos);
 
             if (IsDown())
             {
-                Collider2D hit = Physics2D.OverlapPoint(worldPos);
+                Collider2D hit = Physics2D.OverlapPoint(worldPos,layerMask: LayerMask.GetMask("CRT"));
                 if (hit != null)
                 {
                     if (hit.TryGetComponent<IDraggable>(out var drag))

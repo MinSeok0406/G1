@@ -1,6 +1,7 @@
 ﻿
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ColorPicker.InGame
 {
@@ -29,15 +30,19 @@ namespace ColorPicker.InGame
 
         private void DeathEvent_OnDeathEvent(DeathEvent obj)
         {
-            PhotonNetwork.Instantiate(GameResources.Instance.playerDeathBodyPrefab.name, transform.position, Quaternion.identity);
-
             if (!player.photonView.IsMine)
             {
                 gameObject.SetActive(false);
             }
+            else
+            {
+                Camera.main.GetComponent<Volume>().profile = GameResources.Instance.deathVFXVolumeProfile;
+                AbilityManager.Instance.abilityBinder.DisableAllAbilities();
+            }
 
             if (!PhotonNetwork.IsMasterClient) return;
 
+            PhotonNetwork.Instantiate(GameResources.Instance.playerDeathBodyPrefab.name, transform.position, Quaternion.identity);
             //GameDataManager.Instance.TryGetPlayerDataByActorId(player.photonView.Owner.ActorNumber, out PlayerData playerData);
 
             //InGameData data = GameDataManager.Instance.GetInGameData(player.photonView);

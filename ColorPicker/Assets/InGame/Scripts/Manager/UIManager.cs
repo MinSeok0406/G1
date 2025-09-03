@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.Collections;
 
 namespace ColorPicker.InGame
 {
@@ -17,8 +18,18 @@ namespace ColorPicker.InGame
         [SerializeField] private Image colorIcon;
         [SerializeField] private Slider missionStatusBar;
 
+        [Header("UI References")]
+        [SerializeField] private TMP_Text messageText;    // TextMeshPro 텍스트
+
+        [Header("Animation Settings")]
+        [SerializeField] private float fadeDuration = 0.5f; // 페이드인/아웃 시간
+        [SerializeField] private float showDuration = 2.0f; // 표시 유지 시간
+
         private UnityAction defaultClick; // 기본 콜백 캐싱
+         private Coroutine currentToastRoutine;
+
         private MafiaAbility mafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
+
         protected override void Awake()
         {
             base.Awake();
@@ -39,6 +50,8 @@ namespace ColorPicker.InGame
             UpdateMissionStatusBarUI(0f);
             UpdateCoinInfo(0);
             UpdatePaintInfo(0);
+            
+            messageText.alpha = 0f;
         }
 
         /// <summary>
@@ -138,12 +151,58 @@ namespace ColorPicker.InGame
 
             photonView.RPC(nameof(RPC_UpdateAbilityCooldownUI), targetPlayer, remain);
         }
-        
+
         [PunRPC]
         public void RPC_UpdateAbilityCooldownUI(float remain)
         {
             if (mafiaAbility)
                 mafiaAbility.StartCooldownUI(remain);
         }
+
+        /// <summary>
+        /// 토스트 메시지 표시 (텍스트 알파로 페이드)
+        /// </summary>
+        public void ShowToast(string msg, Vector3 targetPos)
+        {
+            if (currentToastRoutine != null)
+                StopCoroutine(currentToastRoutine);
+
+            currentToastRoutine = StartCoroutine(Co_ShowToast(msg, targetPos));
+        }
+
+        private IEnumerator Co_ShowToast(string msg, Vector3 targetPos)
+        {
+            messageText.text = msg;
+            messageText.transform.position = targetPos;
+
+            yield return Fade(0f, 1f, fadeDuration);
+
+            yield return new WaitForSeconds(showDuration);
+
+            yield return Fade(1f, 0f, fadeDuration);
+
+            currentToastRoutine = null;
+        }
+
+        private IEnumerator Fade(float from, float to, float duration)
+        {
+            float t = 0f;
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                float alpha = Mathf.Lerp(from, to, t / duration);
+                SetAlpha(alpha);
+                yield return null;
+            }
+            SetAlpha(to);
+        }
+
+        private void SetAlpha(float a)
+        {
+            Color c = messageText.color;
+            c.a = a;
+            messageText.color = c;
+        }
     }
+    
 }

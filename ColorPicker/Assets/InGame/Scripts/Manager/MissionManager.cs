@@ -372,7 +372,7 @@ namespace ColorPicker.InGame
             if (string.IsNullOrEmpty(playerUID) || target == null) return;
 
             bool success = GameDataManager.Instance.TryAddMissionReward(playerUID);
-            int coinAmount = GameDataManager.Instance.GetInGameData(playerUID)?.stickerCount ?? 0;
+            int coinAmount = GameDataManager.Instance.GetInGameData(playerUID)?.coinCount ?? 0;
 
             if (success)
             {

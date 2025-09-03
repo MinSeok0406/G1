@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ColorPicker.InGame
 {
@@ -25,6 +26,7 @@ namespace ColorPicker.InGame
             // �巡�� ������ ��� (Ŭ�� ��ġ�� ������Ʈ �߽� �� �Ÿ�)
             dragOffset = objectWorldPos - pointerWorldPos;
 
+            Debug.Log("드래그시작");
         }
 
         public void OnDrag(Vector2 pointerPosition)
