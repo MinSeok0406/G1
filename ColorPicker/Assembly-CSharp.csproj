@@ -59,7 +59,7 @@
     <UnityVersion>2022.3.57f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Users\tnrbs\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.2\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\tnrbs\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.3\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="C:\Unity\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Unity\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -441,6 +441,7 @@
     <Compile Include="Assets\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider2D.cs" />
     <Compile Include="Assets\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldSimple.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Mesh.cs" />
+    <Compile Include="Assets\SuGyun\Scripts\UI\MainMenu\HorizontalSelector.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTag.cs" />
     <Compile Include="Assets\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer.cs" />
     <Compile Include="Assets\InGame\Scripts\Mics\RoomObjectMarker.cs" />
