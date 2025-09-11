@@ -65,6 +65,9 @@ TagManager:
   - name: FrontDecoration
     uniqueID: 1192120731
     locked: 0
+  - name: PaintApply
+    uniqueID: 2648575305
+    locked: 0
   - name: Lighting
     uniqueID: 1703569725
     locked: 0

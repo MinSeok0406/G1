@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime; // Player 타입 사용
+using Photon.Realtime;
+using Unity.VisualScripting; // Player 타입 사용
 // using ExitGames.Client.Photon; // RaiseEvent로 확장 시
 
 namespace ColorPicker.InGame
@@ -16,9 +17,9 @@ namespace ColorPicker.InGame
     public class GameDataManager : SingletonNetworkBehaviour<GameDataManager>
     {
         // ====== Core State ======
-        private readonly Dictionary<string, PublicPlayerData>  publicPlayerDataDict  = new Dictionary<string, PublicPlayerData>();  // UID -> Public
+        private readonly Dictionary<string, PublicPlayerData> publicPlayerDataDict = new Dictionary<string, PublicPlayerData>();  // UID -> Public
         private readonly Dictionary<string, PrivatePlayerData> privatePlayerDataDict = new Dictionary<string, PrivatePlayerData>(); // UID -> Private (각 클라 로컬은 "본인 것만" 보유)
-        private readonly Dictionary<string, InGameData>        inGameDataDict        = new Dictionary<string, InGameData>();        // UID -> InGame
+        private readonly Dictionary<string, InGameData> inGameDataDict = new Dictionary<string, InGameData>();        // UID -> InGame
         private Dictionary<string, PlayerMissionData> missionBackup;
 
         private readonly Dictionary<string, int> viewIDByGoogleUID = new Dictionary<string, int>();
@@ -99,7 +100,7 @@ namespace ColorPicker.InGame
                 identityColorId = (int)ColorType.White,
             };
 
-            publicPlayerDataDict[googleUID]  = publicData;  // upsert
+            publicPlayerDataDict[googleUID] = publicData;  // upsert
             privatePlayerDataDict[googleUID] = privateData; // upsert (호스트만 전체 보유)
 
             viewIDByGoogleUID[googleUID] = viewID; // upsert
@@ -124,7 +125,7 @@ namespace ColorPicker.InGame
 
             Debug.Log($"[GameDataManager] Rejoin start: UID={googleUID} -> Actor={newActorId}");
 
-            publicData.currentActorId  = newActorId;
+            publicData.currentActorId = newActorId;
             privateData.currentActorId = newActorId;
 
             UpdatePublicPlayerData(publicData);
@@ -142,8 +143,8 @@ namespace ColorPicker.InGame
 
             if (publicPlayerDataDict.TryGetValue(newData.googleUID, out var existing))
             {
-                existing.currentActorId    = newData.currentActorId;
-                existing.nickname          = newData.nickname;
+                existing.currentActorId = newData.currentActorId;
+                existing.nickname = newData.nickname;
                 existing.customizationData = newData.customizationData;
             }
             else
@@ -160,7 +161,7 @@ namespace ColorPicker.InGame
 
             if (privatePlayerDataDict.TryGetValue(newData.googleUID, out var existing))
             {
-                existing.classType       = newData.classType;
+                existing.classType = newData.classType;
                 existing.identityColorId = newData.identityColorId;
             }
             else
@@ -182,7 +183,7 @@ namespace ColorPicker.InGame
 
                 // 기획에 맞게 기본값 리셋
                 data.hasVoted = false;
-                data.isAlive  = true;
+                data.isAlive = true;
                 // stickerCount 등은 유지/리셋 여부를 기획에 맞춰 결정. 기본은 유지.
             }
         }
@@ -439,7 +440,7 @@ namespace ColorPicker.InGame
                     if (m != null && !string.IsNullOrEmpty(m.googleUID))
                     {
                         viewIDByGoogleUID[m.googleUID] = m.viewID;
-                        googleUIDByViewID[m.viewID]    = m.googleUID;
+                        googleUIDByViewID[m.viewID] = m.googleUID;
                     }
                 }
             }
@@ -628,5 +629,42 @@ namespace ColorPicker.InGame
         }
 
         #endregion
-    }
+
+
+        //========Paint===========
+        public Dictionary<int, int> paintColorMap = new Dictionary<int, int>();
+
+        public void RegistPaintObject(int viewID)
+        {
+            if (!paintColorMap.ContainsKey(viewID))
+            {
+                paintColorMap[viewID] = -1;
+            }
+        }
+
+        public void SetPaintObjectColor(int viewID, int colorType)
+        {
+            paintColorMap[viewID] = colorType;
+        }
+
+        public int GetPaintObjectColor(int viewID)
+        {
+            if (paintColorMap.ContainsValue(viewID))
+            {
+                return paintColorMap[viewID];
+            }
+
+            return -1;
+        }
+
+        public Dictionary<int, int> GetAllPaintObjectDictionary()
+        {
+            return paintColorMap;
+        }
+
+        public bool CheckAllPainted()
+        {
+            return paintColorMap.Values.All(colorType => colorType != -1);
+        }
+    }   
 }

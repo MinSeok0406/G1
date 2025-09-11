@@ -9,7 +9,7 @@ namespace ColorPicker.InGame
         [SerializeField] private Material outlineMaterial;
         [SerializeField] private Vector3 offset;
         private OutlineMarker outlineMarker;
-
+        
         private void Awake()
         {
             outlineMarker = GetComponentInChildren<OutlineMarker>();

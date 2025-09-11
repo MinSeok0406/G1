@@ -9,11 +9,6 @@ using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
-    /// <summary>
-    /// Host-authoritative Chat Manager
-    /// - S_ 접두사는 반드시 MasterClient에서만 실행
-    /// - C_ 접두사는 클라이언트 UI 갱신 전용
-    /// </summary>
     public sealed class ChatManager : SingletonNetworkBehaviour<ChatManager>, IInRoomCallbacks
     {
         [Header("UI Refs")]
@@ -24,6 +19,8 @@ namespace ColorPicker.InGame
         [Header("Prefabs (assign in GameResources or here)")]
         [SerializeField] private ChatBubbleView myChatPrefab;
         [SerializeField] private ChatBubbleView otherChatPrefab;
+        [SerializeField] private ChatBubbleView ghostMyChatPrefab;
+        [SerializeField] private ChatBubbleView ghostOtherChatPrefab;
 
         [Header("Limits & Rules")]
         [SerializeField, Min(10)] private int maxMessages = 150;
@@ -31,43 +28,27 @@ namespace ColorPicker.InGame
         [SerializeField, Range(0.1f, 5f)] private float minSendIntervalSec = 0.5f;
 
         // --- Runtime state ---
-        private readonly List<ChatMessage> _history = new();         // host에서만 쓰기
-        private readonly Dictionary<int, double> _lastSendAt = new(); // host: anti-spam
-        private int _seq; // host: monotonically increasing sequence for ordering
+        private readonly List<ChatMessage> history = new List<ChatMessage>(); // host에서만 기록
+        private readonly Dictionary<int, double> lastSendAt = new Dictionary<int, double>();
+        private int seq; // host: monotonically increasing sequence for ordering
 
         // cache
-        private bool _uiReady;
+        private bool uiReady;
 
         #region Unity Lifecycle
 
         protected override void Awake()
         {
             base.Awake();
-            // Null/assignment guards
             if (!scrollRect && chatContentRoot) scrollRect = chatContentRoot.GetComponentInParent<ScrollRect>();
         }
 
         private void Start()
         {
-            // 호스트는 히스토리 초기화
             S_InitHistory();
-
-            // 모든 클라 UI 초기화
             photonView.RPC(nameof(C_ClearChatUI), RpcTarget.AllViaServer);
-            _uiReady = true;
+            uiReady = true;
         }
-
-#if UNITY_EDITOR
-        private void Update()
-        {
-            // 에디터에서만 디버그 초기화
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                photonView.RPC(nameof(C_ClearChatUI), RpcTarget.AllViaServer);
-                if (PhotonNetwork.IsMasterClient) _history.Clear();
-            }
-        }
-#endif
 
         public override void OnEnable()
         {
@@ -85,21 +66,18 @@ namespace ColorPicker.InGame
 
         #region Public UI Entry
 
-        // UI 버튼에 연결
         public void C_TrySendMessage()
         {
             if (messageInputField == null) return;
 
             var raw = messageInputField.text;
             var msg = SanitizeMessage(raw, maxCharsPerMessage);
-            if (string.IsNullOrEmpty(msg)) // 빈 메시지 or 전부 공백
+            if (string.IsNullOrEmpty(msg))
             {
-                // 포커스 유지
                 messageInputField.ActivateInputField();
                 return;
             }
 
-            // 서버 타임스탬프 함께 전달 (정렬 보조)
             photonView.RPC(nameof(S_ReceiveMessage), RpcTarget.MasterClient,
                 PhotonNetwork.LocalPlayer.ActorNumber, msg, PhotonNetwork.ServerTimestamp);
 
@@ -113,7 +91,6 @@ namespace ColorPicker.InGame
         {
             var me = PlayerManager.Instance?.GetMyPlayer();
             if (!me) return;
-
             var pc = me.GetComponent<PlayerControl>();
             if (pc) pc.DisablePlayerControl(disableControl);
         }
@@ -125,46 +102,71 @@ namespace ColorPicker.InGame
         private void S_InitHistory()
         {
             if (!PhotonNetwork.IsMasterClient) return;
-            _history.Clear();
-            _seq = 0;
-            _lastSendAt.Clear();
+            history.Clear();
+            seq = 0;
+            lastSendAt.Clear();
         }
 
         [PunRPC]
         private void S_ReceiveMessage(int playerId, string message, int serverTs, PhotonMessageInfo info)
         {
-            // 안정성: 호스트만
             if (!PhotonNetwork.IsMasterClient) return;
 
-            // 신뢰성: 보낸 사람 검증 (스푸핑 방지)
+            // 보낸 사람 검증 (스푸핑 방지)
             if (info.Sender == null || info.Sender.ActorNumber != playerId) return;
 
             // 스팸 방지
-            var now = Time.realtimeSinceStartupAsDouble; // 호스트 로컬 시간
-            if (_lastSendAt.TryGetValue(playerId, out var lastAt))
+            var now = Time.realtimeSinceStartupAsDouble;
+            if (lastSendAt.TryGetValue(playerId, out var lastAt))
             {
                 if (now - lastAt < minSendIntervalSec) return;
             }
-            _lastSendAt[playerId] = now;
+            lastSendAt[playerId] = now;
 
-            // 길이 제한 (클라에서 이미 잘랐어도 한 번 더)
+            // 길이 제한
             if (string.IsNullOrEmpty(message)) return;
             if (message.Length > maxCharsPerMessage)
                 message = message.Substring(0, maxCharsPerMessage);
 
-            // 기록 추가
-            var msg = new ChatMessage(++_seq, playerId, message, serverTs);
-            _history.Add(msg);
-
-            // 히스토리 용량 제한
-            if (_history.Count > maxMessages)
+            // ==== 인게임 생존 여부 판별 ====
+            // 로비에서는 InGameData 자체가 없으므로 null이면 Global 채널로 처리
+            var channel = ChatChannel.Global;
+            if (TryIsAliveByActor(playerId, out var isAlive, out var hasInGameData))
             {
-                var removeCount = _history.Count - maxMessages;
-                _history.RemoveRange(0, removeCount);
+                // 인게임 데이터가 있을 때만 유령 채널 판정
+                if (hasInGameData && !isAlive)
+                    channel = ChatChannel.Ghost;
             }
 
-            // 전체 클라에 단건 브로드캐스트
-            photonView.RPC(nameof(C_ReceiveMessage), RpcTarget.AllViaServer, msg.seq, msg.playerId, msg.message, msg.serverTs);
+            // 기록 추가(채널 포함)
+            var msg = new ChatMessage(++seq, playerId, message, serverTs, channel);
+            history.Add(msg);
+
+            // 히스토리 용량 제한
+            if (history.Count > maxMessages)
+            {
+                var removeCount = history.Count - maxMessages;
+                history.RemoveRange(0, removeCount);
+            }
+
+            // ==== 타겟 전송 ====
+            if (channel == ChatChannel.Global)
+            {
+                // 살아있는 플레이어가 보낸 메시지: 모두에게(Dead도 볼 수 있음)
+                photonView.RPC(nameof(C_ReceiveMessage), RpcTarget.AllViaServer, msg.seq, msg.playerId, msg.message, msg.serverTs, false);
+            }
+            else
+            {
+                // 유령 채팅: Dead 플레이어에게만 전송
+                // (Alive 쪽은 수신하지 않으므로 자연스럽게 '살아있는 사람은 살아있는 채팅만' 규칙 충족)
+                foreach (var p in PhotonNetwork.PlayerList)
+                {
+                    if (TryIsAliveByActor(p.ActorNumber, out var targetAlive, out var targetHasData) && targetHasData && !targetAlive)
+                    {
+                        photonView.RPC(nameof(C_ReceiveMessage), p, msg.seq, msg.playerId, msg.message, msg.serverTs, true);
+                    }
+                }
+            }
         }
 
         // 신규 참여자/마스터 교체 시 배치로 싱크
@@ -173,16 +175,49 @@ namespace ColorPicker.InGame
             if (!PhotonNetwork.IsMasterClient) return;
             if (target == null) return;
 
-            // 최근순으로 잘라서 보냄 (패킷 크기 방지)
+            bool targetAlive = true;
+            bool hasInGame = TryIsAliveByActor(target.ActorNumber, out targetAlive, out var targetHasData) && targetHasData;
+
+            // 최근순으로 자르기
             const int kBatch = 50;
-            var slice = _history.Count > kBatch ? _history.Skip(_history.Count - kBatch).ToArray() : _history.ToArray();
+            var slice = history.Count > kBatch ? history.Skip(history.Count - kBatch) : history.AsEnumerable();
 
-            var seqs = slice.Select(m => m.seq).ToArray();
-            var pids = slice.Select(m => m.playerId).ToArray();
-            var texts = slice.Select(m => m.message).ToArray();
-            var tss = slice.Select(m => m.serverTs).ToArray();
+            // 타겟 가시성에 맞게 필터:
+            // - Global: 항상 포함
+            // - Ghost: Dead인 경우에만 포함
+            var filtered = hasInGame && !targetAlive
+                ? slice // Dead는 둘 다 받음
+                : slice.Where(m => m.channel == ChatChannel.Global); // Alive/로비는 Global만
 
-            photonView.RPC(nameof(C_BulkReceive), target, seqs, pids, texts, tss);
+            var arr = filtered.ToArray();
+            var seqs = arr.Select(m => m.seq).ToArray();
+            var pids = arr.Select(m => m.playerId).ToArray();
+            var texts = arr.Select(m => m.message).ToArray();
+            var tss = arr.Select(m => m.serverTs).ToArray();
+            var ghosts = arr.Select(m => m.channel == ChatChannel.Ghost).ToArray();
+
+            photonView.RPC(nameof(C_BulkReceive), target, seqs, pids, texts, tss, ghosts);
+        }
+
+        /// <summary>
+        /// sender/target의 생존 여부를 GameDataManager에서 조회.
+        /// hasInGameData=false면 로비 등으로 간주.
+        /// </summary>
+        private static bool TryIsAliveByActor(int actorNum, out bool isAlive, out bool hasInGameData)
+        {
+            isAlive = true;
+            hasInGameData = false;
+
+            var gdm = GameDataManager.Instance;
+            if (!gdm) return true; // 매니저 없으면 로비 취급(Global)
+
+            if (gdm.TryGetInGameDataByActorId(actorNum, out var data) && data != null)
+            {
+                hasInGameData = true;
+                // InGameData가 정의한 생존 플래그 사용(필드명은 프로젝트 기준으로 맞춰줘)
+                isAlive = data.isAlive; // <-- 프로젝트의 실제 필드명으로 교체 필요
+            }
+            return true;
         }
 
         #endregion
@@ -197,66 +232,91 @@ namespace ColorPicker.InGame
             {
                 Destroy(chatContentRoot.GetChild(i).gameObject);
             }
-            // 스크롤 맨 아래
             if (scrollRect) scrollRect.verticalNormalizedPosition = 0;
         }
 
         [PunRPC]
-        private void C_ReceiveMessage(int seq, int playerId, string message, int serverTs)
+        private void C_ReceiveMessage(int seq, int playerId, string message, int serverTs, bool isGhost)
         {
-            if (!_uiReady) return;
-            AddBubble(playerId, message);
+            if (!uiReady) return;
+            AddBubble(playerId, message, isGhost);
         }
 
         [PunRPC]
-        private void C_BulkReceive(int[] seqs, int[] playerIds, string[] messages, int[] serverTss)
+        private void C_BulkReceive(int[] seqs, int[] playerIds, string[] messages, int[] serverTss, bool[] isGhostFlags)
         {
-            if (!_uiReady) return;
+            if (!uiReady) return;
             if (seqs == null || messages == null) return;
 
-            // 순서 보장 (seq 기준)
-            var items = new List<(int seq, int pid, string msg, int ts)>();
+            var items = new List<(int seq, int pid, string msg, int ts, bool ghost)>(seqs.Length);
             for (int i = 0; i < seqs.Length; i++)
-            {
-                items.Add((seqs[i], playerIds[i], messages[i], serverTss[i]));
-            }
-            items.Sort((a, b) => a.seq.CompareTo(b.seq));
+                items.Add((seqs[i], playerIds[i], messages[i], serverTss[i], isGhostFlags != null && i < isGhostFlags.Length && isGhostFlags[i]));
 
+            items.Sort((a, b) => a.seq.CompareTo(b.seq));
             foreach (var it in items)
-                AddBubble(it.pid, it.msg);
+                AddBubble(it.pid, it.msg, it.ghost);
         }
 
-        private void AddBubble(int playerId, string message)
+        private void AddBubble(int playerId, string message, bool isGhost)
         {
             if (!chatContentRoot) return;
 
-            // 프리팹 결정 (직관적인 내/타인 구분)
             var isMine = PhotonNetwork.LocalPlayer != null && playerId == PhotonNetwork.LocalPlayer.ActorNumber;
 
-            // 리소스 경로/관리 방침에 따라 GameResources 사용 or 직접 SerializeField 된 프리팹 사용
-            var prefab = isMine
-                ? (myChatPrefab ? myChatPrefab : GameResources.Instance.myChatContentPrefab.GetComponent<ChatBubbleView>())
-                : (otherChatPrefab ? otherChatPrefab : GameResources.Instance.chatContentPrefab.GetComponent<ChatBubbleView>());
-
+            // -------- 프리팹 선택 분기 (4-way) --------
+            ChatBubbleView prefab = ResolveBubblePrefab(isMine, isGhost);
             if (!prefab)
             {
-                Debug.LogWarning("[ChatManager] ChatBubbleView prefab is missing.");
+                Debug.LogWarning("[ChatManager] ChatBubbleView prefab is missing for the requested state.");
                 return;
             }
 
             var view = Instantiate(prefab, chatContentRoot);
             view.Bind(playerId.ToString(), message);
 
-            // 컨테이너의 활성 상태에 맞춰 UI도 맞춤
             view.gameObject.SetActive(chatContentRoot.gameObject.activeSelf);
 
-            // 스크롤 맨 아래로
             if (scrollRect)
             {
-                // 한 프레임 뒤로 미루면 레이아웃 반영 후 정확히 바닥으로 내려감
                 Canvas.ForceUpdateCanvases();
                 scrollRect.verticalNormalizedPosition = 0;
             }
+        }
+
+        private ChatBubbleView ResolveBubblePrefab(bool isMine, bool isGhost)
+        {
+            // 1) 인스펙터에 직접 배치된 프리팹 우선
+            if (isGhost)
+            {
+                if (isMine && ghostMyChatPrefab) return ghostMyChatPrefab;
+                if (!isMine && ghostOtherChatPrefab) return ghostOtherChatPrefab;
+            }
+            else
+            {
+                if (isMine && myChatPrefab) return myChatPrefab;
+                if (!isMine && otherChatPrefab) return otherChatPrefab;
+            }
+
+            // 2) 폴백: 유령 프리팹 비었으면 일반 프리팹 사용
+            if (isGhost)
+            {
+                if (isMine && myChatPrefab) return myChatPrefab;
+                if (!isMine && otherChatPrefab) return otherChatPrefab;
+            }
+
+            // 3) 최종 폴백: GameResources (프로젝트 자원 정책에 맞춰 유지)
+            if (isMine)
+            {
+                var res = GameResources.Instance?.myChatContentPrefab?.GetComponent<ChatBubbleView>();
+                if (res) return res;
+            }
+            else
+            {
+                var res = GameResources.Instance?.chatContentPrefab?.GetComponent<ChatBubbleView>();
+                if (res) return res;
+            }
+
+            return null;
         }
 
         #endregion
@@ -266,7 +326,6 @@ namespace ColorPicker.InGame
         private static string SanitizeMessage(string src, int maxLen)
         {
             if (string.IsNullOrEmpty(src)) return string.Empty;
-            // 개행 정리, 앞뒤 공백 제거
             var s = src.Replace("\r", "").Trim();
             if (s.Length > maxLen) s = s.Substring(0, maxLen);
             return s;
@@ -281,11 +340,9 @@ namespace ColorPicker.InGame
         // 마스터 교체 시 새 마스터가 히스토리를 비게 되는 것을 방지
         void IInRoomCallbacks.OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
         {
-            // 새 마스터가 이 클라라면, UI는 그대로 두고 서버 역할만 인계됨.
             if (PhotonNetwork.LocalPlayer != null && newMasterClient.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
             {
-                // 아무 것도 하지 않아도 됨(이 인스턴스가 호스트로 승격). 필요하면 여기서 _lastSendAt 초기화 등 수행.
-                _lastSendAt.Clear();
+                lastSendAt.Clear();
             }
         }
 
@@ -295,6 +352,22 @@ namespace ColorPicker.InGame
         void IInRoomCallbacks.OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) { }
 
         #endregion
+
+        public void OnClick_DisableControl(bool isActive)
+        {
+            if (PlayerManager.Instance.GetMyPlayer()) {
+                PlayerManager.Instance.GetMyPlayer()?.playerControl?.DisablePlayerControl(isActive);
+            }
+            else {
+                PlayerManager.Instance.GetMyLobbyPlayer()?.playerControl.DisablePlayerControl(isActive);
+            }
+        }
+    }
+
+    public enum ChatChannel : byte
+    {
+        Global = 0, // Alive가 보낸 메시지
+        Ghost  = 1  // Dead만 가시
     }
 
     [Serializable]
@@ -304,13 +377,15 @@ namespace ColorPicker.InGame
         public int playerId;
         public string message;
         public int serverTs;   // Photon 서버 타임스탬프
+        public ChatChannel channel;
 
-        public ChatMessage(int seq, int playerId, string message, int serverTs)
+        public ChatMessage(int seq, int playerId, string message, int serverTs, ChatChannel channel)
         {
             this.seq = seq;
             this.playerId = playerId;
             this.message = message;
             this.serverTs = serverTs;
+            this.channel = channel;
         }
     }
 }

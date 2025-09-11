@@ -120,6 +120,12 @@ MonoBehaviour:
   - RPC_RequestDetectiveInspectNearest
   - RPC_RequestExchange
   - RPC_ReceiveExchangeResult
+  - RPC_PaintApply
+  - RPC_ReciveApplyPaintSing
+  - RPC_RequestPaintApply
+  - RPC_PaintUIUpdate
+  - CreatePlayerCard
+  - RPC_CreatePlayerCard
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

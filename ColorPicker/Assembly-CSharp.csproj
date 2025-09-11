@@ -105,6 +105,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Gradient\GradientText.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Others\ExitToSystem.cs" />
     <Compile Include="Assets\SuGyun\Scripts\UI\InGame\LeaveGameModule.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\MeetingProfileUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Slider\SliderRangeTransition.cs" />
     <Compile Include="Assets\DongJu\Random Placement.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleCheck.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanMiniGame.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarPattern.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Manager\LightingManager2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\ColorObjectManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldTransition.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerControl.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTrigger.cs" />
@@ -380,6 +382,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\LightCollider\LightCollider2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Lightmap\LightTexture2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Pair2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\MeetingUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitterMultiButton.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Lightmap\LightSprite2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\DayLightCollider2D\DayLightColliderShape.cs" />

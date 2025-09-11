@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Collections;
+using ColorPicker.inGame;
 
 namespace ColorPicker.InGame
 {
@@ -19,16 +20,22 @@ namespace ColorPicker.InGame
         [SerializeField] private Slider missionStatusBar;
 
         [Header("UI References")]
-        [SerializeField] private TMP_Text messageText;    // TextMeshPro 텍스트
+        [SerializeField] private TMP_Text messageText;
+        [SerializeField] private GameObject votePopup;
+        [SerializeField] private TMP_Text voteMessage;
 
         [Header("Animation Settings")]
-        [SerializeField] private float fadeDuration = 0.5f; // 페이드인/아웃 시간
-        [SerializeField] private float showDuration = 2.0f; // 표시 유지 시간
+        [SerializeField] private float fadeDuration = 0.5f;
+        [SerializeField] private float showDuration = 2.0f;
+
+        [Header("UI Script")]
+        [SerializeField] private MeetingUI meetingUI;
 
         private UnityAction defaultClick; // 기본 콜백 캐싱
-         private Coroutine currentToastRoutine;
+        private Coroutine currentToastRoutine;
 
         private MafiaAbility mafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
+        private int currentVoteActorNum = -1;
 
         protected override void Awake()
         {
@@ -50,7 +57,7 @@ namespace ColorPicker.InGame
             UpdateMissionStatusBarUI(0f);
             UpdateCoinInfo(0);
             UpdatePaintInfo(0);
-            
+
             messageText.alpha = 0f;
         }
 
@@ -203,6 +210,65 @@ namespace ColorPicker.InGame
             c.a = a;
             messageText.color = c;
         }
-    }
+
+        public void InitializedPlayerProfile()
+        {
+            // 1) 호스트 권한 보강
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogWarning("[Meeting] Only MasterClient can initialize profiles.");
+                return;
+            }
+
+            // 2) 초기화 전에 UI 컨테이너 비우기 (중복 생성 방지)
+            meetingUI?.ClearAllProfilesSafe();
+
+            // 3) 기존 흐름 유지: 플레이어 리스트 루프 → 항목별 RPC
+            var list = GameDataManager.Instance.GetAllPublicPlayerData();
+            foreach (var data in list)
+            {
+                if (data == null) continue;
+
+                // InGameData 조회 실패/지연 시 방어
+                if (!GameDataManager.Instance.TryGetInGameDataByActorId(data.currentActorId, out var inGameData) || inGameData == null)
+                    continue;
+
+                // 닉네임 널/공백 방어
+                var nickname = string.IsNullOrWhiteSpace(data.nickname) ? "Player" : data.nickname.Trim();
+
+                // 항목별 RPC(원래 구조 유지)
+                photonView.RPC(nameof(RPC_CreatePlayerCard), RpcTarget.All, data.currentActorId, nickname, inGameData.isAlive);
+            }
+        }
+
+        [PunRPC]
+        private void RPC_CreatePlayerCard(int actorNum, string nickname, bool isAlive)
+        {
+            meetingUI?.CreatePlayerCard(actorNum, nickname, isAlive);
+        }
+
+        #region  vote
+        public void ShowVotePopup(int actorNum, string nickname)
+        {
+            if (votePopup) votePopup.SetActive(true);
+            voteMessage.text = $"{nickname}님을 투표하시겠습니까 ?" ;
+            currentVoteActorNum = actorNum;
+        }
+
+        public void CloseVotePopup()
+        {
+            if (votePopup) votePopup.SetActive(false);
+            currentVoteActorNum = -1;
+        }
+
+        public void VotePlayer()
+        {
+            // TODO : vote player
+            Debug.Log($"{currentVoteActorNum}");
+            CloseVotePopup();
+        }
+        
+        #endregion
+    }   
     
 }

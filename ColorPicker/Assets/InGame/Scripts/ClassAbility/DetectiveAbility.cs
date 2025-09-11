@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -19,6 +20,8 @@ namespace ColorPicker.InGame
         [SerializeField] private Material outlineMaterial;
         [SerializeField] private LayerMask aimMask2D;
         [SerializeField] private float aimRayLength = 5f;
+
+        private readonly Dictionary<int, (PhotonView view, float sqr)> seen = new Dictionary<int, (PhotonView view, float sqr)>();
 
         private Transform origin2D;
         private PhotonView pv;
@@ -112,59 +115,60 @@ namespace ColorPicker.InGame
         }
 
         private void TryAcquireTargetByRay()
+{
+    origin2D ??= PlayerManager.Instance.GetMyPlayer()?.transform;
+    if (!origin2D) return;
+
+    int hitCount = Physics2D.OverlapCircleNonAlloc(origin2D.position, aimRayLength, _buf, aimMask2D);
+
+    seen.Clear();
+
+    PhotonView nearest = null;
+    float bestSqr = float.MaxValue;
+
+    for (int i = 0; i < hitCount; i++)
+    {
+        var col = _buf[i];
+        if (!col) continue;
+
+        var view = col.GetComponentInParent<PhotonView>();
+        if (!view || view.ViewID <= 0 || view.IsMine) continue;
+
+        float sqr = (view.transform.position - origin2D.position).sqrMagnitude;
+
+        // 같은 뷰가 여러 콜라이더로 잡힐 수 있으니, 더 가까운 값만 유지
+        if (seen.TryGetValue(view.ViewID, out var cur))
         {
-            origin2D ??= PlayerManager.Instance.GetMyPlayer()?.transform;
-            if (!origin2D) return;
-
-            int hitCount = Physics2D.OverlapCircleNonAlloc(origin2D.position, aimRayLength, _buf, aimMask2D);
-
-            PhotonView nearest = null;
-            float bestSqr = float.MaxValue;
-            
-            var seen = new System.Collections.Generic.Dictionary<int, float>();
-
-            for (int i = 0; i < hitCount; i++)
-            {
-                var col = _buf[i];
-                if (!col) continue;
-
-                var view = col.GetComponentInParent<PhotonView>();
-                if (!view || view.ViewID <= 0 || view.IsMine) continue;
-
-                float sqr = (view.transform.position - origin2D.position).sqrMagnitude;
-
-                if (seen.TryGetValue(view.ViewID, out float prev))
-                {
-                    if (sqr < prev) seen[view.ViewID] = sqr;
-                }
-                else
-                {
-                    seen.Add(view.ViewID, sqr);
-                }
-            }
-
-            foreach (var kv in seen)
-            {
-                var candidate = PhotonView.Find(kv.Key);
-                if (!candidate) continue;
-
-                if (kv.Value < bestSqr)
-                {
-                    bestSqr = kv.Value;
-                    nearest = candidate;
-                }
-            }
-
-            if (nearest && nearest != _outlinedView)
-            {
-                ClearOutline();
-                ApplyOutline(nearest);
-            }
-            else if (!nearest)
-            {
-                ClearOutline();
-            }
+            if (sqr < cur.sqr) seen[view.ViewID] = (view, sqr);
         }
+        else
+        {
+            seen.Add(view.ViewID, (view, sqr));
+        }
+    }
+
+    foreach (var kv in seen.Values)
+    {
+        if (kv.sqr < bestSqr)
+        {
+            bestSqr = kv.sqr;
+            nearest = kv.view; // 이미 확보한 view 재사용 (PhotonView.Find 불필요)
+        }
+    }
+
+    if (nearest && nearest != _outlinedView)
+    {
+        ClearOutline();
+        ApplyOutline(nearest);
+    }
+    else if (!nearest)
+    {
+        ClearOutline();
+    }
+
+    // 타깃이 있을 때만 버튼 활성
+    inspectButton.interactable = (nearest != null);
+}
 
         private void ApplyOutline(PhotonView view)
         {

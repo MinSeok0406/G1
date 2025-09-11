@@ -1,6 +1,4 @@
-﻿
-using Photon.Pun;
-using System.Diagnostics;
+﻿using Photon.Pun;
 
 namespace ColorPicker.InGame
 {
