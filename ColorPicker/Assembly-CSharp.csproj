@@ -129,7 +129,6 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Sprite.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightCollider.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitter.cs" />
-    <Compile Include="Assets\VolFx\Samples\ScreenFx\Scrips\WeatherSettings.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowInputField.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\TabView\TabViewGroup.cs" />
     <Compile Include="Assets\DongJu\EndDetection.cs" />
@@ -157,6 +156,7 @@
     <Compile Include="Assets\InGame\Scripts\MiniGame\Clean\CleanMiniGame.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarPattern.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Manager\LightingManager2D.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\ColorPickButton.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\ColorObjectManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldTransition.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerControl.cs" />
@@ -298,6 +298,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\SoftShadowEngine.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowRadioButtonUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\Manager.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\PlayerCardUI.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\Player.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DCollider2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Rendering\Night\Room.cs" />
@@ -340,6 +341,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Events\TimedEvent.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapShaders.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\Demos - SmartLighting2D\Scripts\DemoLightColorChange.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\DeductionUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\NoSort.cs" />
     <Compile Include="Assets\InGame\Scripts\Interactive\InteractiveObjectEffect.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Misc\LightingRender2D.cs" />
@@ -420,7 +422,6 @@
     <Compile Include="Assets\InGame\Scripts\Manager\AESKeyManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Camera\LightmapMaterials.cs" />
     <Compile Include="Assets\DongJu\color_script\ObjectColor.cs" />
-    <Compile Include="Assets\VolFx\Samples\ScreenFx\Scrips\WeatherManager.cs" />
     <Compile Include="Assets\InGame\Scripts\UI\RoomCodeUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleSwap.cs" />
     <Compile Include="Assets\Retro Shaders Pro\Scripts\Shaders\Settings\CRTSettings.cs" />
@@ -703,7 +704,6 @@
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Multiply.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\DayDepth\DepthPass.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
-    <None Include="Assets\VolFx\Samples\ScreenFx\Sprites\readme.TXT" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\Day\DayBump.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\Mask\MaskTranslucency.shader" />
     <None Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Shaders\UI Blur.shader" />
@@ -1654,7 +1654,6 @@
     <ProjectReference Include="Unity.2D.Animation.Editor.csproj" />
     <ProjectReference Include="Unity.2D.IK.Editor.csproj" />
     <ProjectReference Include="Tools.Runtime.csproj" />
-    <ProjectReference Include="VolFx.Samples.csproj" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <ItemGroup>

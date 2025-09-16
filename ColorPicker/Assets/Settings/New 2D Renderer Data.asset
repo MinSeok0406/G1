@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _active: 1
   _shader: {fileID: 4800000, guid: fc78cc8bb01197248b8a758ee38592b9, type: 3}
+  _material: {fileID: 0}
+  _isActive: 0
 --- !u!114 &-7011818738561309302
 MonoBehaviour:
   m_ObjectHideFlags: 3

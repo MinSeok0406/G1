@@ -1,8 +1,7 @@
-using ColorPicker.InGame;
 using TMPro;
 using UnityEngine;
 
-namespace ColorPicker.inGame
+namespace ColorPicker.InGame
 {
     public class MeetingProfileUI : MonoBehaviour
     {

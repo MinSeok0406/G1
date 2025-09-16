@@ -1,5 +1,4 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,18 +6,15 @@ namespace ColorPicker.InGame
 {
     public sealed class AbilityManager : SingletonNetworkBehaviour<AbilityManager>
     {
-        // ★ 서버시간 기반(동기화됨). viewID -> cooldownEnd(초, PhotonNetwork.Time)
         private readonly Dictionary<int, double> cooldownEndTimes = new();
 
-        // ====== Config ======
         [Header("Kill Config")]
-        [SerializeField, Min(0f)] private float defaultCooldownSeconds = 20f;   // ★ Settings 참조 유지 가능
-        [SerializeField] private float minKillDistance = 1f;                  // 필요 시 0으로
+        [SerializeField, Min(0f)] private float defaultCooldownSeconds = Settings.defaultCooldown;
+        [SerializeField] private float minKillDistance = 1f;
         [SerializeField] private bool validateDistance = false;
 
         [HideInInspector] public AbilityBinder abilityBinder;
 
-        // 외부 Settings와의 호환(기존 코드가 Settings.defaultCooldown 참조 시)
         private float DefaultCooldownOrSettings =>
             (Settings.defaultCooldown > 0f) ? Settings.defaultCooldown : defaultCooldownSeconds;
 
@@ -30,28 +26,28 @@ namespace ColorPicker.InGame
             abilityBinder = FindObjectOfType<AbilityBinder>();
         }
 
-        // ====== Cooldown ======
-
-        /// <summary> 현재 플레이어(viewID)가 쿨타임 중인가? (클라/호스트 공용 조회) </summary>
+        #region Cooldown Timer
+        /// <summary> 현재 플레이어(viewID)가 쿨타임 중인지 조회하는 함수</summary>
         public bool IsOnCooldown(int viewID)
         {
             return cooldownEndTimes.TryGetValue(viewID, out double end) && PhotonNetwork.Time < end;
         }
 
         /// <summary>
-        /// [호스트 전용] 스킬 사용 시 쿨다운 시작
+        /// [호스트 전용] 특정 actorNum을 가지고 쿨다운을 시작
         /// </summary>
+        /// <param name="viewID"></param>
+        /// <param name="skillCooldownDuration"></param>
         public void StartCooldown(int viewID, float skillCooldownDuration)
         {
             if (!PhotonNetwork.IsMasterClient) return;
             double duration = Mathf.Max(0f, skillCooldownDuration);
             cooldownEndTimes[viewID] = PhotonNetwork.Time + duration;
 
-            // ★ 클라 동기화(해당 소유자에게만 전송)
-            var pv = PhotonView.Find(viewID);
-            if (pv != null && pv.Owner != null)
+            PhotonView photonView = PhotonView.Find(viewID);
+            if (photonView != null && photonView.Owner != null)
             {
-                photonView.RPC(nameof(RPC_SyncCooldown), pv.Owner, viewID, cooldownEndTimes[viewID]);
+                photonView.RPC(nameof(RPC_SyncCooldown), photonView.Owner, viewID, cooldownEndTimes[viewID]);
             }
         }
 
@@ -71,6 +67,8 @@ namespace ColorPicker.InGame
             cooldownEndTimes[viewID] = endTime;
             UIManager.Instance?.UpdateAbilityCooldownUI(viewID, GetRemainingCooldown(viewID));
         }
+
+        #endregion
 
         // ====== Kill Flow ======
 
@@ -294,7 +292,7 @@ namespace ColorPicker.InGame
             Vector3 origin = requester.transform.position;
             Vector3 targetPos = target.transform.position;
 
-            if(radius > 0f && Vector3.SqrMagnitude(origin - targetPos) > ((radius * 1.2f) * (radius * 1.2f)))
+            if (radius > 0f && Vector3.SqrMagnitude(origin - targetPos) > ((radius * 1.2f) * (radius * 1.2f)))
             {
                 photonView.RPC(nameof(RPC_DetectiveInspectResult), info.Sender, -1, -1);
                 return;
@@ -323,4 +321,3 @@ namespace ColorPicker.InGame
         }
     }
 }
-

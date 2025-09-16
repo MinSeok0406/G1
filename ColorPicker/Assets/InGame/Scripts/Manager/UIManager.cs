@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Photon.Pun;
 using System.Collections;
 using ColorPicker.inGame;
+using Unity.VisualScripting;
+using System.Collections.Generic;
 
 namespace ColorPicker.InGame
 {
@@ -23,6 +25,8 @@ namespace ColorPicker.InGame
         [SerializeField] private TMP_Text messageText;
         [SerializeField] private GameObject votePopup;
         [SerializeField] private TMP_Text voteMessage;
+        [SerializeField] private GameObject pickerUI;
+        [SerializeField] private List<ColorPickButton> colorPickButtons;
 
         [Header("Animation Settings")]
         [SerializeField] private float fadeDuration = 0.5f;
@@ -30,12 +34,15 @@ namespace ColorPicker.InGame
 
         [Header("UI Script")]
         [SerializeField] private MeetingUI meetingUI;
+        [SerializeField] private DeductionUI deductionUI;
+
 
         private UnityAction defaultClick; // 기본 콜백 캐싱
         private Coroutine currentToastRoutine;
 
         private MafiaAbility mafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
         private int currentVoteActorNum = -1;
+        private PlayerCardUI currentPlayerCard;
 
         protected override void Awake()
         {
@@ -222,6 +229,7 @@ namespace ColorPicker.InGame
 
             // 2) 초기화 전에 UI 컨테이너 비우기 (중복 생성 방지)
             meetingUI?.ClearAllProfilesSafe();
+            deductionUI.ClearAllProfilesSafe();
 
             // 3) 기존 흐름 유지: 플레이어 리스트 루프 → 항목별 RPC
             var list = GameDataManager.Instance.GetAllPublicPlayerData();
@@ -245,13 +253,45 @@ namespace ColorPicker.InGame
         private void RPC_CreatePlayerCard(int actorNum, string nickname, bool isAlive)
         {
             meetingUI?.CreatePlayerCard(actorNum, nickname, isAlive);
+            deductionUI?.CreatePlayerCard(actorNum, nickname, isAlive);
         }
+
+        public PlayerCardUI GetPlayerCard()
+        {
+            return currentPlayerCard;
+        }
+
+        public void ShowDeductionPickerUI(PlayerCardUI playerCard)
+        {
+            currentPlayerCard = playerCard;
+            pickerUI.SetActive(true);
+        }
+
+        public void InitializeButtonIcon()
+        {
+            for (int i = 0; i < colorPickButtons.Count; i++)
+            {
+                colorPickButtons[i].DisableIcon();
+            }
+        }
+
+        public void SetDeductionColor(ColorType color)
+        {
+            currentPlayerCard.SetDeductionColor(color);
+        }
+
+        public void DisableDeductionPickerUI()
+        {
+            currentPlayerCard = null;
+            pickerUI.SetActive(false);
+        }
+
 
         #region  vote
         public void ShowVotePopup(int actorNum, string nickname)
         {
             if (votePopup) votePopup.SetActive(true);
-            voteMessage.text = $"{nickname}님을 투표하시겠습니까 ?" ;
+            voteMessage.text = $"{nickname}님을 투표하시겠습니까 ?";
             currentVoteActorNum = actorNum;
         }
 

@@ -1,18 +1,15 @@
 using System.Collections.Generic;
-using FunkyCode.LightingSettings;
-using Photon.Pun;
 using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class MeetingUI : MonoBehaviour
+    public class DeductionUI : MonoBehaviour
     {
-        [SerializeField] private Transform playerProfileContainer; // Transform로 받는 게 안전
+        [SerializeField] private Transform playerProfileContainer;
         [SerializeField] private GameObject playerProfilePrefab;
+        
+        private Dictionary<int, PlayerCardUI> playerCardUIMap = new Dictionary<int, PlayerCardUI>();
 
-        private Dictionary<int, MeetingProfileUI> meetingProfiles =  new Dictionary<int, MeetingProfileUI>();
-        
-        
         public void ClearAllProfilesSafe()
         {
             if (!playerProfileContainer) return;
@@ -32,25 +29,25 @@ namespace ColorPicker.InGame
             }
 
             var go = Instantiate(playerProfilePrefab, playerProfileContainer);
-            var profileUI = go.GetComponent<MeetingProfileUI>();
-            if (!profileUI)
+            var playerCardUI = go.GetComponent<PlayerCardUI>();
+            if (!playerCardUI)
             {
                 Debug.LogError("[MeetingUI] MeetingProfileUI component missing on prefab.");
                 Destroy(go);
                 return;
             }
 
-            profileUI.Initialize(actorNum, nickname, isAlive);
-            meetingProfiles[actorNum] = profileUI;
+            playerCardUI.Initialize(actorNum, nickname, isAlive);
+            playerCardUIMap[actorNum] = playerCardUI;
         }
 
         public void ClearPlayerCard()
         {
-            foreach (var actorNum in meetingProfiles.Keys)
+            foreach (var actorNum in playerCardUIMap.Keys)
             {
-                var profile = meetingProfiles[actorNum];
-                meetingProfiles.Remove(actorNum);
-                Destroy(profile);
+                var playerCard = playerCardUIMap[actorNum];
+                playerCardUIMap.Remove(actorNum);
+                Destroy(playerCard);
             }
         }
     }

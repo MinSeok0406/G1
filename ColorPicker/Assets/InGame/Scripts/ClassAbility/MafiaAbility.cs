@@ -2,7 +2,6 @@ using System.Collections;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace ColorPicker.InGame
@@ -16,6 +15,9 @@ namespace ColorPicker.InGame
         [Header("UI")]
         [SerializeField] private Button killButton;
         [SerializeField] private TMP_Text cooldownText;
+
+        [Header("ColorPicker")]
+        [SerializeField] private GameObject colorPickerButton;
 
         [Header("Targeting (2D circle)")]
         [SerializeField] private Material outlineMaterial;
@@ -100,7 +102,7 @@ namespace ColorPicker.InGame
             uiTick += Time.unscaledDeltaTime;
             if (uiTick >= 1f)
             {
-                uiTick = 0f;
+                uiTick -= 1f;
                 UpdateButtonInteractable();
             }
 
@@ -108,7 +110,7 @@ namespace ColorPicker.InGame
             aimTick += Time.unscaledDeltaTime;
             if (aimTick >= 0.1f)
             {
-                aimTick = 0f;
+                aimTick -= 0.1f;
                 TryAcquireTarget();
             }
         }
@@ -232,5 +234,55 @@ namespace ColorPicker.InGame
         }
 
         public Player GetCurrentPlayer() => currentPlayer;
+
+        #region  ColorPicker
+
+        private void TryRequestColorPick()
+        {
+            PlayerCardUI playerCard = UIManager.Instance.GetPlayerCard();
+
+            if (!playerCard)
+            {
+                Debug.Log("Not found PlayerCard Data");
+                return;
+            }
+
+            int targetActorNum = playerCard.GetActorNum();
+            int deductionColor = playerCard.GetColor();
+
+            photonView.RPC(nameof(RPC_TryRequestColorPick), RpcTarget.MasterClient, targetActorNum, deductionColor);
+        }
+
+        [PunRPC]
+        private void RPC_TryRequestColorPick(int targetActorNum, int deductionColor, PhotonMessageInfo info)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(targetActorNum, out var data))
+            {
+                Debug.Log($"not found {targetActorNum} data");
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, -1, 0f);
+            }
+
+            if (data.identityColorId == deductionColor)
+            {
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, 1, 0f);
+            }
+            else
+            {
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, 0, Settings.defaultCooldown);   
+            }
+        }
+
+        [PunRPC]
+        private void RPC_ClientOnColorPickResult(int resultCode, float cooldown)
+        {
+            //result code : error = -1 / fail = 0 / success = 1
+            StartCooldownUI(cooldown);
+
+            
+        }   
+
+        #endregion
     }
 }
