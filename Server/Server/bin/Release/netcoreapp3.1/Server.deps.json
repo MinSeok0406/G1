@@ -15,7 +15,8 @@
           "Microsoft.Extensions.Logging.Console": "3.1.32",
           "Newtonsoft.Json": "13.0.3",
           "ServerCore": "1.0.0",
-          "SharedDB": "1.0.0"
+          "SharedDB": "1.0.0",
+          "StackExchange.Redis.Extender": "1.0.5"
         },
         "runtime": {
           "Server.dll": {}
@@ -439,6 +440,26 @@
             "rid": "win-x86",
             "assetType": "native",
             "fileVersion": "4.6.25512.1"
+          }
+        }
+      },
+      "StackExchange.Redis/1.0.481": {
+        "runtime": {
+          "lib/net45/StackExchange.Redis.dll": {
+            "assemblyVersion": "1.0.316.0",
+            "fileVersion": "1.0.481.0"
+          }
+        }
+      },
+      "StackExchange.Redis.Extender/1.0.5": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3",
+          "StackExchange.Redis": "1.0.481"
+        },
+        "runtime": {
+          "lib/StackExchange.Redis.Extender.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -1319,6 +1340,20 @@
       "sha512": "sha512-YhEdSQUsTx+C8m8Bw7ar5/VesXvCFMItyZF7G1AUY+OM0VPZUOeAVpJ4Wl6fydBGUYZxojTDR3I6Bj/+BPkJNA==",
       "path": "runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0",
       "hashPath": "runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
+    },
+    "StackExchange.Redis/1.0.481": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WdcE2xngO+YBt9A37dzGqSddZOv04KrFWJwTORbN5x9L6tU7MBsz3Lfi4bl9kPMnHcsrK0Wqnzmbwyrn1IzzkQ==",
+      "path": "stackexchange.redis/1.0.481",
+      "hashPath": "stackexchange.redis.1.0.481.nupkg.sha512"
+    },
+    "StackExchange.Redis.Extender/1.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ohqehh1qkiyDVskoE5ui6Ws1wkyuzy2Ur4k4cwnI5XAGODYDUB+D0oGZ3Wp6tkTmYF9GdBpvwkLVgI4qjfluEA==",
+      "path": "stackexchange.redis.extender/1.0.5",
+      "hashPath": "stackexchange.redis.extender.1.0.5.nupkg.sha512"
     },
     "System.Collections/4.3.0": {
       "type": "package",

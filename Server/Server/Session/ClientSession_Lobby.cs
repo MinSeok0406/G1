@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using StackExchange.Redis;
+using SharedDB;
 
 namespace Server
 {
@@ -15,7 +17,7 @@ namespace Server
         public int AccountDbId { get; private set; }
         public List<LobbyPlayerInfo> LobbyPlayers { get; set; } = new List<LobbyPlayerInfo>();
 
-        public void HandleLogin(C_Login loginPacket)
+        /*public void HandleLogin(C_Login loginPacket)
         {
             // TODO : 이런 저런 보안 체크
             if (ServerState != PlayerServerState.ServerStateLogin)
@@ -77,7 +79,7 @@ namespace Server
                     ServerState = PlayerServerState.ServerStateLobby;
                 }
             }
-        }
+        }*/
         public void HandleEnterGame(C_EnterGame enterGamePacket)
         {
             if (ServerState != PlayerServerState.ServerStateLobby)
@@ -180,6 +182,124 @@ namespace Server
                     Send(newPlayer);
                 }
             }
+        }
+
+        public void HandleAuth(C_Auth req)
+        {
+            // 로그인 상태에서만 허용
+            if (ServerState != PlayerServerState.ServerStateLogin)
+                return;
+
+            // 기본 검증
+            if (req.AccountId <= 0 || req.Token <= 0)
+            {
+                Send(new S_Auth { Ok = false });
+                return;
+            }
+
+            bool ok = ValidateToken(req.AccountId, req.Token);
+            if (!ok)
+            {
+                Send(new S_Auth { Ok = false });
+                // 필요하면 즉시 끊기: Disconnect();
+                return;
+            }
+
+            // 인증 성공 → 세션에 바인딩
+            IsAuthed = true;
+            GoogleId = req.GoogleId ?? string.Empty;
+            UserName = req.Name ?? string.Empty;
+
+            // === 로컬(Game DB) 계정 동기화 ===
+            // 기존엔 UniqueId(디바이스ID)로 찾았지만, 이제는 GoogleId를 키로 삼는다.
+            // (GoogleId가 없으면 이름, 둘 다 없으면 외부ID 기반 문자열)
+            string accountKey = !string.IsNullOrWhiteSpace(GoogleId)
+                                ? GoogleId
+                                : (!string.IsNullOrWhiteSpace(UserName) ? UserName : $"ext_{req.AccountId}");
+
+            LobbyPlayers.Clear();
+
+            using (AppDbContext db = new AppDbContext())
+            {
+                // GoogleId(=accountKey)로 계정 찾기
+                AccountDb findAccount = db.Accounts
+                    .Include(a => a.Players)
+                    .Where(a => a.AccountName == accountKey)
+                    .FirstOrDefault();
+
+                if (findAccount == null)
+                {
+                    // 없으면 생성 (기존 UniqueId 흐름과 동일한 동작 보장)
+                    var newAccount = new AccountDb { AccountName = accountKey };
+                    db.Accounts.Add(newAccount);
+                    bool created = db.SaveChangesEx();
+                    if (!created)
+                    {
+                        Send(new S_Auth { Ok = false });
+                        return;
+                    }
+                    findAccount = newAccount;
+                }
+
+                // 로컬(Game DB)의 AccountDbId를 세션에 보관
+                AccountDbId = findAccount.AccountDbId;
+
+                // 인증 OK 응답
+                Send(new S_Auth { Ok = true });
+
+                // === 기존 로그인 스냅샷(S_Login) 내려주기 ===
+                S_Login loginOk = new S_Login() { LoginOk = 1 };
+                foreach (PlayerDb playerDb in findAccount.Players)
+                {
+                    var lobbyPlayer = new LobbyPlayerInfo
+                    {
+                        PlayerDbId = playerDb.PlayerDbId,
+                        Name = playerDb.PlayerName,
+                        Speed = playerDb.Speed
+                    };
+
+                    LobbyPlayers.Add(lobbyPlayer);
+                    loginOk.Players.Add(lobbyPlayer);
+                }
+                Send(loginOk);
+
+                // 로비로 전환
+                ServerState = PlayerServerState.ServerStateLobby;
+            }
+        }
+
+        private bool ValidateToken(int accountId, int token)
+        {
+            // 1) Redis fast-path
+            try
+            {
+                if (RedisDb != null)
+                {
+                    string key = $"acc:token:{accountId}";
+                    var val = RedisDb.StringGet(key);
+                    if (val.HasValue && int.TryParse(val.ToString(), out var cached) && cached == token)
+                        return true;
+                }
+            }
+            catch { /* 로그 옵션 */ }
+
+            // 2) Fallback: SharedDB (만료 포함)
+            try
+            {
+                if (SharedDbFactory != null)
+                {
+                    using var shared = SharedDbFactory();
+                    var rec = shared.Tokens
+                        .AsNoTracking()
+                        .FirstOrDefault(t => t.AccountDbId == accountId && t.Expired > DateTime.UtcNow);
+
+                    if (rec != null && rec.Token == token)
+                        return true;
+                }
+            }
+            catch { /* 로그 옵션 */ }
+
+            return false;
         }
     }
 }

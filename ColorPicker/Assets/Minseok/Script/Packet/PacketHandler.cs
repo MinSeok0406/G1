@@ -62,10 +62,28 @@ namespace Minseok
 
         public static void S_ConnectedHandler(PacketSession session, IMessage packet)
         {
-            Debug.Log("S_ConnectedHandler");
-            C_Login loginPacket = new C_Login();
-            loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
-            Managers.Network.Send(loginPacket);
+            C_Auth cAuth = new C_Auth
+            {
+                AccountId = Managers.Network.AccountId,
+                Token = Managers.Network.Token,
+                GoogleId = Managers.Network.GoogleID ?? string.Empty,
+                Name = Managers.Network.UserName ?? string.Empty,
+            };
+
+            Managers.Network.Send(cAuth);
+        }
+
+        public static void S_AuthHandler(PacketSession session, IMessage packet)
+        {
+            S_Auth authPacket = (S_Auth)packet;
+
+            Debug.Log($"AuthOK: {authPacket.Ok}");
+
+            if (!authPacket.Ok)
+            {
+                // 인증 실패 → UI 안내/재로그인 유도
+                return;
+            }
         }
 
         public static void S_LoginHandler(PacketSession session, IMessage packet)

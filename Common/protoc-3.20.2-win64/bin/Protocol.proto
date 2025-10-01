@@ -22,6 +22,8 @@ enum MsgId {
   C_CHAT = 14;
   S_CHAT = 15;
   S_ACHIEVEMENT_LIST = 16;
+  C_AUTH = 17;
+  S_AUTH = 18;
 }
 
 enum CreatureState {
@@ -110,6 +112,17 @@ message C_Login {
 message S_Login {
   int32 loginOk = 1;
   repeated LobbyPlayerInfo players = 2;
+}
+
+message C_Auth {
+  int32 account_id = 1;
+  int32 token      = 2;
+  string google_id = 3; // (선택) 추적용
+  string name      = 4; // (선택)
+}
+
+message S_Auth {
+  bool ok = 1;
 }
 
 message C_CreatePlayer {

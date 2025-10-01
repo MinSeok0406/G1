@@ -450,6 +450,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Shape.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\LightMainBuffer2D.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\UIManager.cs" />
+    <Compile Include="Assets\Minseok\Script\Sever\Utils\ServerConfig.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListener.cs" />
     <Compile Include="Assets\Minseok\Script\Packet\PacketHandler.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\TilemapEvents.cs" />

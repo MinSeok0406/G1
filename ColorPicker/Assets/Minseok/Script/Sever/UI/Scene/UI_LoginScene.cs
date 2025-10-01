@@ -31,6 +31,8 @@ namespace Minseok
         {
             base.Init();
 
+            Managers.Web.ConfigureBase("http", ServerConfig.Host, ServerConfig.Port, "/api/");
+
             Button.SetActive(false);
             PlayGamesPlatform.Instance.Authenticate(OnClickCreateButton);
         }
@@ -42,12 +44,13 @@ namespace Minseok
                 string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
                 string account = PlayGamesPlatform.Instance.GetUserId();
 
-                googleID.text = account;
-                Name.text = displayName;
+                googleID.text = account ?? "(null)";
+                Name.text = displayName ?? "(null)";
 
-                if (account == null)
+                if (string.IsNullOrEmpty(account))
                 {
-                    Debug.Log("실패");
+                    Debug.Log("구글 로그인은 성공했지만 account(UserId)가 없음");
+                    test.text = "account가 없음";
                     return;
                 }
 
@@ -61,9 +64,8 @@ namespace Minseok
                 {
                     Debug.Log(res.CreateOk);
                     test.text = res.CreateOk.ToString();
+                    Button.SetActive(true);
                 });
-
-                Button.SetActive(true);
             }
             else
             {
@@ -74,6 +76,7 @@ namespace Minseok
             }
         }
 
+        // 버튼 클릭 시 작동
         public void OnClickLoginButton()
         {
             string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
@@ -91,15 +94,33 @@ namespace Minseok
 
                 if (res.LoginOk)
                 {
+                    test.text = "LoginOk 여기까지 옴";
                     Managers.Network.AccountId = res.AccountId;
                     Managers.Network.Token = res.Token;
                     Managers.Network.GoogleID = res.GoogleID;
                     Managers.Network.UserName = res.Name;
 
-                    for (int i = 0; i < res.ServerList.Count; i++)
+                    ServerInfo chosen = null;
+                    if (res.ServerList != null && res.ServerList.Count > 0)
                     {
-                        Info = res.ServerList[i];
+                        res.ServerList.Sort((a, b) => a.BusyScore.CompareTo(b.BusyScore));
+                        chosen = res.ServerList[0];
+                        test.text = "chosen 없어서 여기 옴";
                     }
+                    else
+                    {
+                        chosen = new ServerInfo
+                        {
+                            Name = "Fallback",
+                            IpAddress = ServerConfig.GameHostFallback,
+                            Port = ServerConfig.GamePortFallback,
+                            BusyScore = 0
+                        };
+
+                        test.text = "chosen 있어서 여기 옴";
+                    }
+
+                    Info = chosen;
 
                     Managers.Network.ConnectToGame(Info);
                     Managers.Scene.LoadScene(Define.Scene.Lobby);

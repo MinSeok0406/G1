@@ -9,11 +9,21 @@ using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
 using Server.Game;
+using StackExchange.Redis;
+using SharedDB;
 
 namespace Server
 {
     public partial class ClientSession : PacketSession
 	{
+        // ClientSession 클래스 안(필드 영역)에 추가: 외부에서 주입할 정적 의존성
+        public static IDatabase RedisDb { get; set; }                          // Startup에서 mux.GetDatabase() 주입
+        public static Func<SharedDbContext> SharedDbFactory { get; set; }      // Startup에서 팩토리 주입
+
+        public bool IsAuthed { get; private set; }                             // 인증 게이트 용
+        public string GoogleId { get; private set; }
+        public string UserName { get; private set; }
+
         public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
 
         public Player MyPlayer { get; set; }

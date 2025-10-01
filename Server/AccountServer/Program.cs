@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace AccountServer
 {
@@ -17,18 +13,49 @@ namespace AccountServer
             CreateHostBuilder(args).Build().Run();
         }
 
+        // 환경설정 우선순위
+        // 1) ASPNETCORE_URLS (예: http://0.0.0.0:51000;https://0.0.0.0:51001)
+        // 2) PORT / LISTEN_HOST (환경변수 또는 구성값)
+        // 3) 기본값: 0.0.0.0:51000
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((ctx, cfg) =>
+                {
+                    // appsettings.json / appsettings.{ENV}.json / 환경변수 / 커맨드라인 순차 포함
+                    cfg.AddEnvironmentVariables();
+                    if (args != null) cfg.AddCommandLine(args);
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var portStr = Environment.GetEnvironmentVariable("PORT") ?? "51000"; // 원하는 포트
-                    if (!int.TryParse(portStr, out var port)) port = 51000;
-
-                    webBuilder.ConfigureKestrel(o =>
+                    // 1) ASPNETCORE_URLS 최우선 (존재하면 Kestrel 수동 바인딩을 생략)
+                    var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+                    if (!string.IsNullOrWhiteSpace(urls))
                     {
-                        // ✅ 여기에만 바인딩(IPv4 Any). ASPNETCORE_URLS 설정이 있어도 이 설정이 우선됩니다.
-                        o.Listen(IPAddress.Any, port);
-                    });
+                        webBuilder.UseUrls(urls);
+                    }
+                    else
+                    {
+                        // 2) PORT / LISTEN_HOST 로 Kestrel 리슨 설정
+                        var portStr = Environment.GetEnvironmentVariable("PORT")
+                                      ?? webBuilder.GetSetting("PORT")
+                                      ?? "51000";
+                        if (!int.TryParse(portStr, out var port)) port = 51000;
+
+                        var hostStr = Environment.GetEnvironmentVariable("LISTEN_HOST")
+                                       ?? webBuilder.GetSetting("LISTEN_HOST")
+                                       ?? "0.0.0.0";
+
+                        if (!IPAddress.TryParse(hostStr, out var ip))
+                            ip = IPAddress.Any; // 0.0.0.0
+
+                        webBuilder.ConfigureKestrel(o =>
+                        {
+                            o.AddServerHeader = false; // Server 헤더 숨김
+                            o.Listen(ip, port);
+                            // 필요 시 HTTPS/추가 엔드포인트(o.Listen(IPAddress.Any, 51001, lo => lo.UseHttps());) 여기에 추가
+                        });
+                    }
+
                     webBuilder.UseStartup<Startup>();
                 });
     }

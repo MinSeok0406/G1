@@ -1,6 +1,7 @@
 using AccountServer.DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,11 @@ namespace AccountServer
 
         public IConfiguration Configuration { get; }
 
+        public class PublicUrlOptions
+        {
+            public string BaseUrl { get; set; } = "";
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -36,12 +42,31 @@ namespace AccountServer
             string shared = Environment.GetEnvironmentVariable("SharedConnection")
                             ?? cfg.GetConnectionString("SharedConnection");
 
-            services.AddDbContext<AppDbContext>(o => o.UseSqlServer(acc));
-            services.AddDbContext<SharedDbContext>(o => o.UseSqlServer(shared));
+            if (string.IsNullOrWhiteSpace(acc))
+                throw new InvalidOperationException("AccountConnection이 설정되지 않았습니다.");
+            if (string.IsNullOrWhiteSpace(shared))
+                throw new InvalidOperationException("SharedConnection이 설정되지 않았습니다.");
+
+            services.AddDbContext<AppDbContext>(o => o.UseSqlServer(acc, sql =>
+            {
+                sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            }));
+            services.AddDbContext<SharedDbContext>(o => o.UseSqlServer(shared, sql =>
+            {
+                sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            }));
+
+            var publicBaseUrl = Environment.GetEnvironmentVariable("ACCOUNTSERVER_PUBLIC_BASEURL")
+                                ?? cfg["PublicBaseUrl"]   // appsettings.json 에서도 받을 수 있게
+                                ?? "http://api.colorpicker:51000/api/"; // 마지막 기본값(필요 시 교체)
+
+            if (!publicBaseUrl.EndsWith("/")) publicBaseUrl += "/";
+            services.AddSingleton(new PublicUrlOptions { BaseUrl = publicBaseUrl });
 
             var redisEndpoint = System.Environment.GetEnvironmentVariable("REDIS_ENDPOINT");   // host:port
             var redisPassword = System.Environment.GetEnvironmentVariable("REDIS_PASSWORD");   // AUTH token
-            var useTls = (System.Environment.GetEnvironmentVariable("REDIS_USE_TLS") ?? "true").ToLower() == "true";
+            var useTls = (Environment.GetEnvironmentVariable("REDIS_USE_TLS") ?? "true")
+                .Equals("true", StringComparison.OrdinalIgnoreCase);
 
             if (string.IsNullOrWhiteSpace(redisEndpoint))
                 throw new InvalidOperationException("REDIS_ENDPOINT가 비어 있습니다. EC2 환경변수 또는 appsettings에 설정하세요.");
@@ -62,6 +87,17 @@ namespace AccountServer
                 return ConnectionMultiplexer.Connect(options);
             });
 
+            services.AddCors(opt =>
+            {
+                opt.AddDefaultPolicy(p => p
+                    .WithOrigins(
+                        "http://localhost", "http://localhost:51000",
+                        "http://api.colorpicker", "http://api.colorpicker:51000"
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+            });
+
             services.AddControllers();
         }
 
@@ -74,7 +110,15 @@ namespace AccountServer
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync("{\"error\":\"An error occurred.\"}");
+                    });
+                });
                 app.UseHsts();
             }
 
@@ -83,6 +127,7 @@ namespace AccountServer
 
             app.UseRouting();
 
+            app.UseCors();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

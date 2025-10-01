@@ -36,8 +36,16 @@ class PacketHandler
     {
         C_Login loginPacket = packet as C_Login;
         ClientSession clientSession = session as ClientSession;
-        clientSession.HandleLogin(loginPacket);
+        //clientSession.HandleLogin(loginPacket);
     }
+
+    public static void C_AuthHandler(PacketSession session, IMessage packet)
+    {
+        C_Auth loginPacket = packet as C_Auth;
+        ClientSession clientSession = session as ClientSession;
+        clientSession.HandleAuth(loginPacket);
+    }
+    
 
     public static void C_EnterGameHandler(PacketSession session, IMessage packet)
     {
@@ -65,6 +73,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
+
 
         chatPacket.Success = true;
         room.Push(room.HandleChat, player, chatPacket);

@@ -1,7 +1,9 @@
 ﻿using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 using Google.Protobuf;
 
@@ -23,7 +25,17 @@ namespace Minseok
 
         public void ConnectToGame(ServerInfo info)
         {
-            IPAddress ipAddr = IPAddress.Parse(info.IpAddress);
+            IPAddress ipAddr;
+            if (!IPAddress.TryParse(info.IpAddress, out ipAddr))
+            {
+                var addrs = Dns.GetHostAddresses(string.IsNullOrWhiteSpace(info.IpAddress)
+                    ? ServerConfig.GameHostFallback
+                    : info.IpAddress);
+
+                ipAddr = addrs.First(a => a.AddressFamily == AddressFamily.InterNetwork); // IPv4
+            }
+
+            int port = (info.Port > 0) ? info.Port : ServerConfig.GamePortFallback;
             IPEndPoint endPoint = new IPEndPoint(ipAddr, info.Port);
 
             Connector connector = new Connector();

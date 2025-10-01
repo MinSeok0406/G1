@@ -1,14 +1,23 @@
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Text;
 
 namespace Minseok
 {
     public class WebManager
     {
-        public string BaseUrl { get; set; } = "https://localhost:5001/api";
+        // 기존 ConfigureBase/BuildUrl 시그니처 유지 → 내부적으로 ServerConfig 사용
+        public void ConfigureBase(string scheme, string host, int port, string basePath = "/api/")
+        {
+            ServerConfig.Configure(scheme, host, port, basePath);
+        }
+
+        public string BuildUrl(string path)
+        {
+            return ServerConfig.Combine(path);
+        }
 
         public void SendPostRequest<T>(string url, object obj, Action<T> res)
         {
@@ -17,32 +26,49 @@ namespace Minseok
 
         IEnumerator CoSendWebRequest<T>(string url, string method, object obj, Action<T> res)
         {
-            string sendUrl = $"{BaseUrl}/{url}";
+            var sendUrl = BuildUrl(url);
 
             byte[] jsonBytes = null;
             if (obj != null)
             {
                 string jsonStr = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
-                //jsonBytes = Encoding.UTF8.GetBytes(jsonStr);
-                jsonBytes = new System.Text.UTF8Encoding().GetBytes(jsonStr);
+                jsonBytes = Encoding.UTF8.GetBytes(jsonStr);
             }
 
             using (var uwr = new UnityWebRequest(sendUrl, method))
             {
-                uwr.uploadHandler = new UploadHandlerRaw(jsonBytes);
-                uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+                uwr.uploadHandler = (jsonBytes != null) ? new UploadHandlerRaw(jsonBytes) : null;
+                uwr.downloadHandler = new DownloadHandlerBuffer();
                 uwr.SetRequestHeader("Content-Type", "application/json");
+
+                Debug.Log($"[HTTP] {method} {sendUrl}");
 
                 yield return uwr.SendWebRequest();
 
-                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+#if UNITY_2020_2_OR_NEWER
+                bool hasError = uwr.result == UnityWebRequest.Result.ConnectionError ||
+                                uwr.result == UnityWebRequest.Result.ProtocolError;
+#else
+        bool hasError = uwr.isNetworkError || uwr.isHttpError;
+#endif
+                if (hasError)
                 {
-                    Debug.Log(uwr.error);
+                    Debug.LogError($"[HTTP][ERR] code={uwr.responseCode}, error={uwr.error}, text={uwr.downloadHandler?.text}");
+                    yield break;
                 }
-                else
+
+                // 응답 본문을 try 바깥 변수에 담아 catch에서도 접근 가능하게
+                string responseText = uwr.downloadHandler?.text;
+
+                try
                 {
-                    T resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(uwr.downloadHandler.text);
-                    res.Invoke(resObj);
+                    T resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText);
+                    res?.Invoke(resObj);
+                }
+                catch (Exception e)
+                {
+                    // 단순 라벨 출력은 보간 바깥에서 쓰면 됨. (서식 지정자 아님)
+                    Debug.LogError($"[HTTP][PARSE] {e.Message}\ntext: {responseText}");
                 }
             }
         }
