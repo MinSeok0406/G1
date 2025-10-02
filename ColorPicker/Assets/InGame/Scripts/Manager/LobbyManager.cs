@@ -38,6 +38,8 @@ namespace ColorPicker.InGame
         private string sceneLobby => Settings.inGameLobbyScene;
         private string sceneMain  => Settings.testMainScene;
 
+        private bool isHostInitialized = false; 
+
         protected override void Awake()
         {
             base.Awake();
@@ -223,9 +225,10 @@ namespace ColorPicker.InGame
             }
 
             // 소유자 확정 후 초기화 호출(호스트에서만)
-            if (view.TryGetComponent(out LobbyPlayer player) && PhotonNetwork.IsMasterClient)
+            if (view.TryGetComponent(out LobbyPlayer player) && PhotonNetwork.IsMasterClient && !isHostInitialized)
             {
                 player.InitializedPlayer();
+                isHostInitialized = true;
             }
         }
 

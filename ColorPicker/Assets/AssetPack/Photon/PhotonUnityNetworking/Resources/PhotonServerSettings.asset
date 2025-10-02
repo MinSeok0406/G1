@@ -126,6 +126,12 @@ MonoBehaviour:
   - RPC_PaintUIUpdate
   - CreatePlayerCard
   - RPC_CreatePlayerCard
+  - RPC_TryRequestColorPick
+  - RPC_ClientOnColorPickResult
+  - InitializeAssignSceneUI
+  - RPC_AddMeetingTime
+  - RPC_SyncMeetingTimer
+  - RPC_SubmitVote
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

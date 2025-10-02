@@ -30,6 +30,10 @@ namespace ColorPicker.InGame
         public const float moveSpeed = 4f;
 
         public const float defaultCooldown = 120f;
+        public const float killCooldownSeconds = 120f;
+
+        public const float defaultAddTime = 30f;
+        public const float defaultMeetingTime = 120f;
 
         public const string mafiaAbilityComponentName = "ColorPicker.InGame.MafiaAbility";
         public const string citizenAbilityComponentName = "ColorPicker.InGame.CitizenAbility";

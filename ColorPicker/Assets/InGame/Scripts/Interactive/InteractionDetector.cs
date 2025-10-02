@@ -64,7 +64,6 @@ namespace ColorPicker.InGame
 
             if (nearby.Remove(target))
             {
-                // 제거 대상 하이라이트 해제
                 target.ToggleHighlight(false);
             }
 

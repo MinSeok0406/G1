@@ -499,8 +499,8 @@
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Data\Implementation\GraphObject.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Drawing\Interfaces\ISGViewModel.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Data\Graphs\CategoryData.cs" />
-    <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Data\Nodes\Input\Scene\ObjectNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Generation\TargetResources\FieldDependencies.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Data\Nodes\Input\Scene\ObjectNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Util\MessageManager.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Data\Implementation\SlotType.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@14.0.11\Editor\Data\Legacy\ShaderInput0.cs" />

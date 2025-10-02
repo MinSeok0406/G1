@@ -185,6 +185,7 @@
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Effects\LightBlink.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\LoadingScreenUI.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\CacheDataManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Components\TilemapRoom2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Rectangle.cs" />
@@ -243,7 +244,6 @@
     <Compile Include="Assets\InGame\Scripts\GameState\PlayingGameState.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Others\LaunchURL.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Tooltip\Tooltip.cs" />
-    <Compile Include="Assets\InGame\Scripts\ClassAbility\KillEvent.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerBackground.cs" />
     <Compile Include="Assets\InGame\Scripts\ClassAbility\DetectiveAbility.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Occlusion\LightOcclusion2D.cs" />
@@ -295,6 +295,7 @@
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\1 - Demo Dungeon\Scripts\DungeonPlayerController.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowMultiButtonUI.cs" />
+    <Compile Include="Assets\InGame\Scripts\Interactive\InteractiveMeeting.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\SoftShadowEngine.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowRadioButtonUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\Manager.cs" />
@@ -373,6 +374,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Event Handling\CollisionEvent.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpriteShape.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Misc\LightTexture.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\ColorPickKillButton.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\CanvasManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Mask.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Isometric.cs" />
@@ -444,6 +446,7 @@
     <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\Hover.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Main.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightingOcclusionShape.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\MeetingManager.cs" />
     <Compile Include="Assets\InGame\Scripts\ClassAbility\CitizenAbility.cs" />
     <Compile Include="Assets\InGame\Scripts\Interactive\PaintApplyTrigger.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DListCollider3D.cs" />
@@ -513,7 +516,6 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Rendering.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\TilemapProperties.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightCollider2D\LightColliderTransform.cs" />
-    <Compile Include="Assets\InGame\Scripts\GameState\VotingState.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerCustomization.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Main.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationContentFitterWithButtonUI.cs" />

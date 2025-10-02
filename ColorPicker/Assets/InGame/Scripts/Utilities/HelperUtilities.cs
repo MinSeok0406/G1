@@ -83,8 +83,6 @@ namespace ColorPicker.InGame
                     return GameStateType.Playing;
                 case MeetingState:
                     return GameStateType.Meeting;
-                case VotingState:
-                    return GameStateType.Voting;
 
                 default:
                     Debug.Log($"Unknown GameState: {state.GetType().Name}");
@@ -106,8 +104,6 @@ namespace ColorPicker.InGame
                     return GameManager.Instance.PlayingGameState;
                 case GameStateType.Meeting:
                     return GameManager.Instance.MeetingState;
-                case GameStateType.Voting:
-                    return GameManager.Instance.VotingState;
 
                 default:
                     Debug.Log($"Not find state : {phase}");

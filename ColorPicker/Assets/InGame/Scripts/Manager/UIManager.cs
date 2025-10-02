@@ -23,10 +23,15 @@ namespace ColorPicker.InGame
 
         [Header("UI References")]
         [SerializeField] private TMP_Text messageText;
+        [SerializeField] private TMP_Text screenMessageText;
+        [SerializeField] private Image screenMessagePenel;
         [SerializeField] private GameObject votePopup;
         [SerializeField] private TMP_Text voteMessage;
         [SerializeField] private GameObject pickerUI;
         [SerializeField] private List<ColorPickButton> colorPickButtons;
+        [SerializeField] private TMP_Text meetingTimerText;
+
+        [SerializeField] private GameObject meetingOBJ;
 
         [Header("Animation Settings")]
         [SerializeField] private float fadeDuration = 0.5f;
@@ -35,10 +40,12 @@ namespace ColorPicker.InGame
         [Header("UI Script")]
         [SerializeField] private MeetingUI meetingUI;
         [SerializeField] private DeductionUI deductionUI;
-
+        [SerializeField] private LoadingScreenUI loadingScreenUI;
 
         private UnityAction defaultClick; // 기본 콜백 캐싱
         private Coroutine currentToastRoutine;
+        private Coroutine currentScreenToastRoutine;
+        private Coroutine meetingTimerCo;
 
         private MafiaAbility mafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
         private int currentVoteActorNum = -1;
@@ -184,6 +191,14 @@ namespace ColorPicker.InGame
             currentToastRoutine = StartCoroutine(Co_ShowToast(msg, targetPos));
         }
 
+        public void ShowToastToScreen(string msg)
+        {
+            if (currentScreenToastRoutine != null)
+                StopCoroutine(currentScreenToastRoutine);
+
+            currentScreenToastRoutine = StartCoroutine(Co_ScreenShowToast(msg));
+        }
+
         private IEnumerator Co_ShowToast(string msg, Vector3 targetPos)
         {
             messageText.text = msg;
@@ -198,6 +213,19 @@ namespace ColorPicker.InGame
             currentToastRoutine = null;
         }
 
+        private IEnumerator Co_ScreenShowToast(string msg)
+        {
+            screenMessageText.text = msg;
+
+            yield return FadeScreenText(0f, 1f, fadeDuration);
+
+            yield return new WaitForSeconds(showDuration);
+
+            yield return FadeScreenText(1f, 0f, fadeDuration);
+
+            currentScreenToastRoutine = null;
+        }
+
         private IEnumerator Fade(float from, float to, float duration)
         {
             float t = 0f;
@@ -209,6 +237,31 @@ namespace ColorPicker.InGame
                 yield return null;
             }
             SetAlpha(to);
+        }
+
+        private IEnumerator FadeScreenText(float from, float to, float duration)
+        {
+            float t = 0f;
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                float alpha = Mathf.Lerp(from, to, t / duration);
+                SetAlphaForScreen(alpha);
+                yield return null;
+            }
+            SetAlphaForScreen(to);
+        }
+
+        private void SetAlphaForScreen(float a)
+        {
+            Color c = screenMessageText.color;
+            Color PenelColor = screenMessagePenel.color;
+
+            PenelColor.a = a;
+            c.a = a;
+
+            screenMessagePenel.color = PenelColor;
+            screenMessageText.color = c;
         }
 
         private void SetAlpha(float a)
@@ -254,6 +307,7 @@ namespace ColorPicker.InGame
         {
             meetingUI?.CreatePlayerCard(actorNum, nickname, isAlive);
             deductionUI?.CreatePlayerCard(actorNum, nickname, isAlive);
+
         }
 
         public PlayerCardUI GetPlayerCard()
@@ -287,7 +341,7 @@ namespace ColorPicker.InGame
         }
 
 
-        #region  vote
+        #region vote
         public void ShowVotePopup(int actorNum, string nickname)
         {
             if (votePopup) votePopup.SetActive(true);
@@ -307,8 +361,102 @@ namespace ColorPicker.InGame
             Debug.Log($"{currentVoteActorNum}");
             CloseVotePopup();
         }
-        
+
         #endregion
-    }   
-    
+
+        #region meeting
+        public void BoradcastInitializeAssignSceneUI()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            photonView.RPC(nameof(InitializeAssignSceneUI), RpcTarget.All);
+        }
+
+        [PunRPC]
+        public void InitializeAssignSceneUI()
+        {
+            int actorId = PhotonNetwork.LocalPlayer?.ActorNumber ?? -1;
+            if (actorId < 0) return;
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(actorId, out var pdata)) { return; }
+
+            loadingScreenUI.ShowAssignScene(pdata.classType);
+        }
+
+        /// <summary>
+        /// 각 클라 로컬에서만 UI 카운트다운(표시용) 시작
+        /// </summary>
+        public void StartMeetingTimerUI(float duration)
+        {
+            if (float.IsNaN(duration) || float.IsInfinity(duration) || duration <= 0f)
+            {
+                SetMeetingTimerText(0f);
+                return;
+            }
+
+            if (meetingTimerCo != null) StopCoroutine(meetingTimerCo);
+            meetingTimerCo = StartCoroutine(Co_MeetingTimer(duration));
+        }
+
+        public void StopMeetingTimerUI()
+        {
+            if (meetingTimerCo != null)
+            {
+                StopCoroutine(meetingTimerCo);
+                meetingTimerCo = null;
+            }
+        }
+
+        private IEnumerator Co_MeetingTimer(float duration)
+        {
+            float t = duration;
+            while (t > 0f)
+            {
+                t -= Time.deltaTime;
+                SetMeetingTimerText(t);
+                yield return null;
+            }
+            SetMeetingTimerText(0f);
+            meetingTimerCo = null;
+        }
+
+        private void SetMeetingTimerText(float t)
+        {
+            if (!meetingTimerText) return;
+            t = Mathf.Max(0f, t);
+            int m = (int)(t / 60f);
+            int s = (int)(t % 60f);
+            meetingTimerText.text = $"{m:00}:{s:00}";
+
+            meetingTimerText.color = (m == 0 && s <= 10) ? Color.red : Color.white;
+        }
+
+
+        public void ShowMeetingUI(bool isActive)
+        {
+            meetingOBJ.SetActive(isActive);
+        }
+
+        #endregion
+
+        public void OnClick_Vote()
+        {
+            if (currentVoteActorNum == -1)
+            {
+                Debug.Log("NullActorNum");
+                return;
+            }
+
+            GameManager.Instance.RequestVote(currentVoteActorNum);
+        }
+
+        public void ApplyVoteState()
+        {
+
+        }
+
+        public void InitializedVoteState()
+        {
+            
+        }
+    }    
 }

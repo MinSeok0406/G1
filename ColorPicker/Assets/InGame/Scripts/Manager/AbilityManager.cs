@@ -8,23 +8,21 @@ namespace ColorPicker.InGame
     {
         private readonly Dictionary<int, double> cooldownEndTimes = new();
 
-        [Header("Kill Config")]
-        [SerializeField, Min(0f)] private float defaultCooldownSeconds = Settings.defaultCooldown;
-        [SerializeField] private float minKillDistance = 1f;
-        [SerializeField] private bool validateDistance = false;
+        [Header("Config")]
+        [SerializeField, Min(0f)] private float killCooldownSeconds = Settings.killCooldownSeconds;
 
-        [HideInInspector] public AbilityBinder abilityBinder;
 
-        private float DefaultCooldownOrSettings =>
-            (Settings.defaultCooldown > 0f) ? Settings.defaultCooldown : defaultCooldownSeconds;
+        [HideInInspector] public AbilityBinder abilityBinder => GetComponent<AbilityBinder>();
 
         private DetectiveAbility detectiveAbility => GetComponentInChildren<DetectiveAbility>();
 
+        #region  Unity life time
         protected override void Awake()
         {
             base.Awake();
-            abilityBinder = FindObjectOfType<AbilityBinder>();
         }
+
+        #endregion
 
         #region Cooldown Timer
         /// <summary> 현재 플레이어(viewID)가 쿨타임 중인지 조회하는 함수</summary>
@@ -34,20 +32,21 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// [호스트 전용] 특정 actorNum을 가지고 쿨다운을 시작
+        /// [호스트 전용] 특정 viewID을 가지고 쿨다운을 시작
         /// </summary>
         /// <param name="viewID"></param>
         /// <param name="skillCooldownDuration"></param>
         public void StartCooldown(int viewID, float skillCooldownDuration)
         {
             if (!PhotonNetwork.IsMasterClient) return;
+
             double duration = Mathf.Max(0f, skillCooldownDuration);
             cooldownEndTimes[viewID] = PhotonNetwork.Time + duration;
 
-            PhotonView photonView = PhotonView.Find(viewID);
+            Photon.Realtime.Player targetPlayer = PhotonView.Find(viewID)?.Owner;
             if (photonView != null && photonView.Owner != null)
             {
-                photonView.RPC(nameof(RPC_SyncCooldown), photonView.Owner, viewID, cooldownEndTimes[viewID]);
+                photonView.RPC(nameof(RPC_SyncCooldown), targetPlayer, viewID, cooldownEndTimes[viewID]);
             }
         }
 
@@ -57,8 +56,7 @@ namespace ColorPicker.InGame
         public float GetRemainingCooldown(int viewID)
         {
             return cooldownEndTimes.TryGetValue(viewID, out double end)
-                ? Mathf.Max(0f, (float)(end - PhotonNetwork.Time))
-                : 0f;
+                ? Mathf.Max(0f, (float)(end - PhotonNetwork.Time)) : 0f;
         }
 
         [PunRPC]
@@ -70,19 +68,24 @@ namespace ColorPicker.InGame
 
         #endregion
 
-        // ====== Kill Flow ======
+        #region Kill Flow (Mafia)
 
-        /// <summary> 클라 → 호스트: 킬 요청 </summary>
-        public void TryRequestKill(int targetViewID, int killerViewID)
+        /// <summary>
+        /// 클라이언트 => 서버 킬 요청
+        /// </summary>
+        /// <param name="targetViewID"></param>
+        /// <param name="killerViewID"></param>
+        public void TryRequestKill(int targetViewID, int killerViewID, float killRadius)
         {
-            photonView.RPC(nameof(RPC_RequestKill), RpcTarget.MasterClient, targetViewID, killerViewID);
+            photonView.RPC(nameof(RPC_RequestKill), RpcTarget.MasterClient, targetViewID, killerViewID, killRadius);
         }
 
         [PunRPC]
-        private void RPC_RequestKill(int targetViewID, int killerViewID, PhotonMessageInfo info)
+        private void RPC_RequestKill(int targetViewID, int killerViewID, float killRadius, PhotonMessageInfo info)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
+            // 쿨타임 체크
             if (IsOnCooldown(killerViewID))
             {
                 photonView.RPC(nameof(RPC_KillRejectedCooldown), info.Sender, GetRemainingCooldown(killerViewID));
@@ -99,7 +102,7 @@ namespace ColorPicker.InGame
             }
 
             // 유효성 검증
-            if (!IsKillValid(targetUID, killerUID, targetViewID, killerViewID))
+            if (!IsKillValid(targetUID, killerUID, targetViewID, killerViewID, killRadius))
                 return;
 
             // 적용
@@ -112,7 +115,7 @@ namespace ColorPicker.InGame
             UIManager.Instance?.UpdateAbilityCooldownUI(PhotonNetwork.LocalPlayer.ActorNumber, remaining);
         }
 
-        private bool IsKillValid(string targetUID, string killerUID, int targetViewID, int killerViewID)
+        private bool IsKillValid(string targetUID, string killerUID, int targetViewID, int killerViewID, float killRadius)
         {
             if (!GameDataManager.Instance.TryGetPrivatePlayerData(killerUID, out var killerData) ||
                 !GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var targetData))
@@ -123,15 +126,15 @@ namespace ColorPicker.InGame
             if (targetData.classType == (int)PlayerClassType.ghost) return false;
 
             // 거리 검증 옵션
-            if (validateDistance && minKillDistance > 0f)
+            if (killRadius > 0f)
             {
-                var kv = PhotonView.Find(killerViewID);
-                var tv = PhotonView.Find(targetViewID);
-                if (kv == null || tv == null) return false;
+                var killerView = PhotonView.Find(killerViewID);
+                var targetView = PhotonView.Find(targetViewID);
+                if (killerView == null || targetView == null) return false;
 
-                var kp = kv.transform.position;
-                var tp = tv.transform.position;
-                if (Vector3.SqrMagnitude(kp - tp) > (minKillDistance * minKillDistance))
+                var killerPos = killerView.transform.position;
+                var targetPos = targetView.transform.position;
+                if (Vector3.SqrMagnitude(killerPos - targetPos) > (killRadius * killRadius))
                     return false;
             }
 
@@ -142,13 +145,32 @@ namespace ColorPicker.InGame
         {
             if (!GameDataManager.Instance.TryGetPrivatePlayerData(targetUID, out var targetData)) return;
 
-            // 상태 전환
             targetData.classType = (int)PlayerClassType.ghost;
             GameDataManager.Instance.UpdatePrivatePlayerData(targetData);
 
             photonView.RPC(nameof(RPC_ConfirmKillResult), RpcTarget.All, targetViewID);
 
-            StartCooldown(killerViewID, DefaultCooldownOrSettings);
+            StartCooldown(killerViewID, killCooldownSeconds);
+        }
+
+        private void ApplyKillByColorPicker(int targetActorID, int killerActorID)
+        {
+
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(targetActorID, out var targetPrivateData)) return;
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(killerActorID, out var killerPrivateData)) return;
+
+            targetPrivateData.classType = (int)PlayerClassType.ghost;
+            GameDataManager.Instance.UpdatePrivatePlayerData(targetPrivateData);
+
+            killerPrivateData.identityColorId = targetPrivateData.identityColorId;
+            GameDataManager.Instance.UpdatePrivatePlayerData(killerPrivateData);
+
+            GameDataManager.Instance.TryGetViewIDByUID(targetPrivateData.googleUID, out int targetViewID);
+            GameDataManager.Instance.TryGetViewIDByUID(killerPrivateData.googleUID, out int killerViewID);
+
+            photonView.RPC(nameof(RPC_ConfirmKillResult), RpcTarget.All, targetViewID);
+
+            StartCooldown(killerViewID, 3f);
         }
 
         [PunRPC]
@@ -158,6 +180,7 @@ namespace ColorPicker.InGame
             if (!view) return;
 
             var player = view.GetComponent<Player>();
+
             if (player)
             {
                 player.deathEvent?.CallDeathEvent();
@@ -165,6 +188,8 @@ namespace ColorPicker.InGame
             }
 
         }
+
+        #endregion
 
         // ====== 재접속/유지보수 ======
 
@@ -319,5 +344,88 @@ namespace ColorPicker.InGame
             // 클라 측에서 이벤트로 브릿지 (AbilityManager는 항상 활성)
             detectiveAbility.HandleInspectResult(targetViewID, colorId);
         }
+
+
+
+        #region ColorPicker
+        public void TryRequestColorPick()
+        {
+            PlayerCardUI playerCard = UIManager.Instance.GetPlayerCard();
+
+            if (!playerCard)
+            {
+                Debug.Log("Not found PlayerCard Data");
+                return;
+            }
+
+            int targetActorNum = playerCard.GetActorNum();
+            int deductionColor = playerCard.GetColor();
+
+            photonView.RPC(nameof(RPC_TryRequestColorPick), RpcTarget.MasterClient, targetActorNum, deductionColor);
+        }
+
+
+        [PunRPC]
+        private void RPC_TryRequestColorPick(int targetActorNum, int deductionColor, PhotonMessageInfo info)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(targetActorNum, out var data))
+            {
+                Debug.Log($"not found {targetActorNum} data");
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, -1);
+            }
+
+            if (!ColorPickValidation(targetActorNum, info.Sender.ActorNumber))
+            {
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, -1);
+
+                return;
+            }
+            if (data.identityColorId == deductionColor)
+            {
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, 1);
+
+                ApplyKillByColorPicker(targetActorNum, info.Sender.ActorNumber);
+            }
+            else
+            {
+                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, 0);
+
+                if (!GameDataManager.Instance.TryGetPublicPlayerDataByActorId(info.Sender.ActorNumber, out var killerPublicData)) return;
+
+                GameDataManager.Instance.TryGetViewIDByUID(killerPublicData.googleUID, out int killerViewID);
+
+                StartCooldown(killerViewID, Settings.killCooldownSeconds);
+            }
+        }
+
+        private bool ColorPickValidation(int targetActorID, int killerActorID)
+        {
+            if (!PhotonNetwork.IsMasterClient) return false;
+
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(targetActorID, out var targetPrivateData)) return false;
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(killerActorID, out var killerPrivateData)) return false;
+
+            if (targetPrivateData.classType == (int)PlayerClassType.mafia) return false;
+            if (targetPrivateData.classType == (int)PlayerClassType.ghost) return false;
+
+            GameDataManager.Instance.TryGetViewIDByUID(killerPrivateData.googleUID, out var killerViewID);
+
+            if (IsOnCooldown(killerViewID)) return false;
+
+            return true;
+        }
+
+        [PunRPC]
+        private void RPC_ClientOnColorPickResult(int resultCode)
+        {
+            //result code : error = -1 / fail = 0 / success = 1
+            if (resultCode == -1) { UIManager.Instance.ShowToastToScreen("지정할 수 없는 대상입니다."); return; }
+            if (resultCode == 0) { UIManager.Instance.ShowToastToScreen("hello"); return; }
+            if (resultCode == 1) { UIManager.Instance.ShowToastToScreen("hi"); return; }
+        }   
+
+        #endregion
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Photon.Pun;
 using TMPro;
@@ -15,40 +16,42 @@ namespace ColorPicker.InGame
         [Header("UI")]
         [SerializeField] private Button killButton;
         [SerializeField] private TMP_Text cooldownText;
-
-        [Header("ColorPicker")]
-        [SerializeField] private GameObject colorPickerButton;
+        [SerializeField] private ColorPickKillButton colorPickKillButton;
 
         [Header("Targeting (2D circle)")]
         [SerializeField] private Material outlineMaterial;
-        [SerializeField] private float aimRadius = 1f;
+        [SerializeField] private float killRadius = 1f;
         [SerializeField] private LayerMask aimMask2D;
 
         // Legacy 유지
         private Player currentPlayer;
         private Coroutine cooldownRoutine;
         private Transform origin2D;
-        private KillEvent killEvent;
-        private PhotonView pv;
 
         // Tick 캐시
         private float uiTick;
         private float aimTick;
-
+    
         // Outline 관리
-        private PhotonView _outlinedView;
-        private OutlineMarker _outlinedMarker;
+        private PhotonView outlinedView;
+        private OutlineMarker outlinedMarker;
+        
 
         #region Init / Enable / Disable
         public void InitAbility()
         {
-            pv = GetComponent<PhotonView>();
-            killEvent = GetComponent<KillEvent>() ?? gameObject.AddComponent<KillEvent>();
-
             if (killButton)
             {
                 killButton.onClick.RemoveAllListeners();
                 killButton.onClick.AddListener(OnKillButtonPressed);
+            }
+
+            Button button = colorPickKillButton.GetColorPickKillButton();
+
+            if (button)
+            {
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(OnColorPickKillButtonPressed);
             }
 
             if (cooldownText) cooldownText.text = "";
@@ -63,6 +66,7 @@ namespace ColorPicker.InGame
             InitAbility();
             gameObject.SetActive(true);
             if (killButton) killButton.gameObject.SetActive(true);
+            if (colorPickKillButton) colorPickKillButton.gameObject.SetActive(true);
         }
 
         public void DisableAbility()
@@ -72,45 +76,45 @@ namespace ColorPicker.InGame
                 killButton.onClick.RemoveListener(OnKillButtonPressed);
                 killButton.gameObject.SetActive(false);
             }
+
+            Button button = colorPickKillButton.GetColorPickKillButton();
+
+            if (button)
+            {
+                button.onClick.RemoveAllListeners();
+            }
+
+            if (colorPickKillButton) colorPickKillButton.gameObject.SetActive(false);
+
             ClearOutline();
+            
             gameObject.SetActive(false);
         }
+        
         #endregion
-
-        private void OnEnable()
-        {
-            if (killEvent) killEvent.OnKill += KillEvent_OnKill;
-        }
-
-        private void OnDisable()
-        {
-            if (killEvent) killEvent.OnKill -= KillEvent_OnKill;
-        }
-
-        private void KillEvent_OnKill(KillEvent sender, KillEventArgs args)
-        {
-            int targetViewID = args?.targetViewID ?? ResolveTargetViewID();
-            if (targetViewID < 0) return;
-
-            AbilityManager.Instance.TryRequestKill(targetViewID, pv.ViewID);
-        }
 
         private void Update()
         {
-
-            // UI 주기 갱신 (1초)
+            // UI 주기 갱신 (0.1초)
             uiTick += Time.unscaledDeltaTime;
-            if (uiTick >= 1f)
+            if (uiTick >= 0.1f)
             {
-                uiTick -= 1f;
+                uiTick = 0f;
                 UpdateButtonInteractable();
+            }
+
+            if (cooldownRoutine != null)
+            {
+                if (outlinedView) ClearOutline();
+
+                return;
             }
 
             // 타깃 갱신 (0.1초)
             aimTick += Time.unscaledDeltaTime;
             if (aimTick >= 0.1f)
             {
-                aimTick -= 0.1f;
+                aimTick = 0f;
                 TryAcquireTarget();
             }
         }
@@ -120,7 +124,7 @@ namespace ColorPicker.InGame
             origin2D ??= PlayerManager.Instance.GetMyPlayer()?.transform;
             if (!origin2D) return;
 
-            int hitCount = Physics2D.OverlapCircleNonAlloc(origin2D.position, aimRadius, _buf, aimMask2D);
+            int hitCount = Physics2D.OverlapCircleNonAlloc(origin2D.position, killRadius, _buf, aimMask2D);
 
             PhotonView nearest = null;
             float bestSqr = float.MaxValue;
@@ -141,7 +145,7 @@ namespace ColorPicker.InGame
                 }
             }
 
-            if (nearest && nearest != _outlinedView)
+            if (nearest && nearest != outlinedView)
             {
                 ClearOutline();
                 ApplyOutline(nearest);
@@ -155,16 +159,16 @@ namespace ColorPicker.InGame
         private void ApplyOutline(PhotonView view)
         {
             if (!outlineMaterial || !view) return;
-            _outlinedView = view;
-            _outlinedMarker = OutlineMarker.GetOrAdd(view.gameObject);
-            _outlinedMarker?.Apply(outlineMaterial);
+            outlinedView = view;
+            outlinedMarker = OutlineMarker.GetOrAdd(view.gameObject);
+            outlinedMarker?.Apply(outlineMaterial);
         }
 
         private void ClearOutline()
         {
-            _outlinedMarker?.Clear();
-            _outlinedMarker = null;
-            _outlinedView = null;
+            outlinedMarker?.Clear();
+            outlinedMarker = null;
+            outlinedView = null;
         }
 
         public void StartCooldownUI(float duration)
@@ -172,6 +176,8 @@ namespace ColorPicker.InGame
             // 기존 코루틴이 돌고 있다면 정지
             if (cooldownRoutine != null)
                 StopCoroutine(cooldownRoutine);
+
+            colorPickKillButton.CoolInitialize();
 
             float endTime = Time.time + duration;
             cooldownRoutine = StartCoroutine(UpdateCooldownUICoroutine(endTime));
@@ -181,6 +187,15 @@ namespace ColorPicker.InGame
         {
             if (!cooldownText) return;
             cooldownText.text = remain > 0f ? Mathf.CeilToInt(remain).ToString() : "";
+
+            if (remain > 0f)
+            {
+                colorPickKillButton.UpdateCooldownUI(remain);
+            }
+            else
+            {
+                colorPickKillButton.CoolInitialize();
+            }
         }
 
         private IEnumerator UpdateCooldownUICoroutine(float endTime)
@@ -191,13 +206,14 @@ namespace ColorPicker.InGame
                 if (remain <= 0f)
                 {
                     UpdateCooldownUI(0f);
+                    colorPickKillButton.CoolInitialize();
                     cooldownRoutine = null;
                     yield break;
                 }
 
                 UpdateCooldownUI(remain);
 
-                // 1초 단위로만 갱신하고 싶으면
+                // 1초 단위로만 갱신
                 yield return new WaitForSeconds(1f);
             }
         }
@@ -205,7 +221,11 @@ namespace ColorPicker.InGame
         private void UpdateButtonInteractable()
         {
             if (!killButton) return;
-            killButton.interactable = CanUseAbility();
+
+            bool canUsed = CanUseAbility();
+
+            killButton.interactable = canUsed;
+
         }
 
         private bool CanUseAbility()
@@ -221,68 +241,27 @@ namespace ColorPicker.InGame
             if (targetViewID < 0) return;
 
             int myViewID = PlayerManager.Instance.GetMyPlayer().photonView.ViewID;
+            AbilityManager.Instance.TryRequestKill(targetViewID, myViewID, killRadius);
+        }
 
-            AbilityManager.Instance.TryRequestKill(targetViewID, myViewID);
+        private void OnColorPickKillButtonPressed()
+        {
+            TryRequestColorPick();
+        }
+
+        private void TryRequestColorPick()
+        {
+            AbilityManager.Instance.TryRequestColorPick();
         }
 
         private int ResolveTargetViewID()
         {
-            if (_outlinedView && _outlinedView.ViewID > 0)
-                return _outlinedView.ViewID;
+            if (outlinedView && outlinedView.ViewID > 0)
+                return outlinedView.ViewID;
 
             return -1;
         }
 
         public Player GetCurrentPlayer() => currentPlayer;
-
-        #region  ColorPicker
-
-        private void TryRequestColorPick()
-        {
-            PlayerCardUI playerCard = UIManager.Instance.GetPlayerCard();
-
-            if (!playerCard)
-            {
-                Debug.Log("Not found PlayerCard Data");
-                return;
-            }
-
-            int targetActorNum = playerCard.GetActorNum();
-            int deductionColor = playerCard.GetColor();
-
-            photonView.RPC(nameof(RPC_TryRequestColorPick), RpcTarget.MasterClient, targetActorNum, deductionColor);
-        }
-
-        [PunRPC]
-        private void RPC_TryRequestColorPick(int targetActorNum, int deductionColor, PhotonMessageInfo info)
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(targetActorNum, out var data))
-            {
-                Debug.Log($"not found {targetActorNum} data");
-                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, -1, 0f);
-            }
-
-            if (data.identityColorId == deductionColor)
-            {
-                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, 1, 0f);
-            }
-            else
-            {
-                photonView.RPC(nameof(RPC_ClientOnColorPickResult), info.Sender, 0, Settings.defaultCooldown);   
-            }
-        }
-
-        [PunRPC]
-        private void RPC_ClientOnColorPickResult(int resultCode, float cooldown)
-        {
-            //result code : error = -1 / fail = 0 / success = 1
-            StartCooldownUI(cooldown);
-
-            
-        }   
-
-        #endregion
     }
 }

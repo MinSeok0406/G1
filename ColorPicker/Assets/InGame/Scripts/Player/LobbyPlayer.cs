@@ -10,12 +10,6 @@ namespace ColorPicker.InGame
         [HideInInspector] public Animator animator;
         [HideInInspector] public SpriteRenderer spriteRenderer;
         [HideInInspector] public PlayerControl playerControl;
-        [HideInInspector] public PlayerDataChangedEvent playerDataChangedEvent;
-
-        #region about player class
-        private CitizenAbility citizenAbility;
-        private MafiaAbility mafiaAbility;
-        #endregion 
 
         private void Awake()
         {
@@ -24,17 +18,6 @@ namespace ColorPicker.InGame
             movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerControl = GetComponent<PlayerControl>();
-            playerDataChangedEvent = GetComponent<PlayerDataChangedEvent>();
-
-            citizenAbility = GetComponentInChildren<CitizenAbility>();
-            mafiaAbility = GetComponentInChildren<MafiaAbility>();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape)) {
-                Debug.Log(PlayerManager.Instance.GetMyLobbyPlayer().transform.position);
-            }
         }
 
         private void OnEnable()
@@ -53,13 +36,12 @@ namespace ColorPicker.InGame
 
         public void OnOwnershipTransfered(PhotonView targetView, Photon.Realtime.Player previousOwner)
         {
-            if(targetView != photonView) return;
-
-            bool isRealOwner = photonView.OwnerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
-
-            if (!isRealOwner) return;
+            if (targetView != photonView) return;
+            if (!photonView.IsMine) return;
 
             if (PhotonNetwork.IsMasterClient) return;
+
+            Debug.Log("A");
 
             InitializedPlayer();
         }
@@ -78,6 +60,7 @@ namespace ColorPicker.InGame
             }
 
             cameraObj.transform.SetParent(transform, false);
+            cameraObj.transform.localPosition = new Vector3(0, 0, -10);
 
             PlayerManager.Instance.SetMyLobbyPlayer(this);
         }

@@ -22,13 +22,7 @@ namespace ColorPicker.InGame
         [HideInInspector] public Animator animator;
         [HideInInspector] public SpriteRenderer spriteRenderer;
         [HideInInspector] public PlayerControl playerControl;
-        [HideInInspector] public PlayerDataChangedEvent playerDataChangedEvent;
         [HideInInspector] public DeathEvent deathEvent;
-
-        #region about player class
-        private CitizenAbility citizenAbility;
-        private MafiaAbility mafiaAbility;
-        #endregion 
 
         [HideInInspector] public int ownerActNum = 0;
 
@@ -41,11 +35,7 @@ namespace ColorPicker.InGame
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerControl = GetComponent<PlayerControl>();
-            playerDataChangedEvent = GetComponent<PlayerDataChangedEvent>();
             deathEvent = GetComponent<DeathEvent>();
-
-            citizenAbility = GetComponentInChildren<CitizenAbility>();
-            mafiaAbility = GetComponentInChildren<MafiaAbility>();
 
             DontDestroyOnLoad(gameObject);
         }
