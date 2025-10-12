@@ -64,34 +64,34 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Volume\VolumeAsset.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Attributes\InplaceFieldAttribute.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Camera\CameraMixerBehaviour.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Utils\Utils.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Camera\CameraTrack.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Volume\VolumeTrack.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Utils\AssemblyInfo.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Camera\NoiseAsset.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Utils\Optional.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenBehaviour.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Time\TimeBehaviour.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenTrack.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Camera\MoveAsset.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Time\TimeAsset.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Attributes\LayerAttribute.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Camera\CameraBehaviour.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\ScreenFx.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\ScreenFxPool.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenAsset.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenMixer.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Utils\ScreenOverlay.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Utils\DirectorState.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Time\TimeTrack.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Camera\NoiseBehaviour.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Runtime\Timeline\Volume\VolumeBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Utils\Utils.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Time\TimeTrack.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenTrack.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Volume\VolumeAsset.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenAsset.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Camera\NoiseBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\ScreenFxPool.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Camera\CameraTrack.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Camera\MoveAsset.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\ScreenFx.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Attributes\LayerAttribute.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Volume\VolumeBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Utils\AssemblyInfo.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Camera\CameraMixerBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Camera\NoiseAsset.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Utils\DirectorState.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Screen\ScreenMixer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Utils\ScreenOverlay.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Time\TimeAsset.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Utils\Optional.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Time\TimeBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Camera\CameraBehaviour.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Timeline\Volume\VolumeTrack.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\Attributes\InplaceFieldAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\VolFx\ScreenFx\Runtime\ScreenFx.Runtime.asmdef" />
+    <None Include="Assets\AssetPack\VolFx\ScreenFx\Runtime\ScreenFx.Runtime.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

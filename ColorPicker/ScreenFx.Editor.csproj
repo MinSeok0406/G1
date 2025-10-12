@@ -64,14 +64,14 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\VolFx\ScreenFx\Editor\LayerDrawer.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Editor\OptionalDrawer.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Editor\InplaceFieldDrawer.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Editor\ScreenBehaviourDrawer.cs" />
-    <Compile Include="Assets\VolFx\ScreenFx\Editor\VolumeAssetEditor.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\VolumeAssetEditor.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\ScreenBehaviourDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\InplaceFieldDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\LayerDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\ScreenFx\Editor\OptionalDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\VolFx\ScreenFx\Editor\ScreenFx.Editor.asmdef" />
+    <None Include="Assets\AssetPack\VolFx\ScreenFx\Editor\ScreenFx.Editor.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

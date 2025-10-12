@@ -64,13 +64,13 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\VolFx\Tools\Editor\CurveRangePropertyDrawer.cs" />
-    <Compile Include="Assets\VolFx\Tools\Editor\SoCollectionDrawer.cs" />
-    <Compile Include="Assets\VolFx\Tools\Editor\OptionalDrawer.cs" />
-    <Compile Include="Assets\VolFx\Tools\Editor\UtilsEditor.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\OptionalDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\UtilsEditor.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\SoCollectionDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\Tools\Editor\CurveRangePropertyDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\VolFx\Tools\Editor\Tools.Editor.asmdef" />
+    <None Include="Assets\AssetPack\VolFx\Tools\Editor\Tools.Editor.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

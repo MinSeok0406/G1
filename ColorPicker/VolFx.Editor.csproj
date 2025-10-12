@@ -64,22 +64,22 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.57f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\VolFx\VolFx\Editor\UtilsEditor.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\SoCollectionDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\CurveValueDraver.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\CurveRangePropertyDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\OutputOptionsDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\Installer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\LayerDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\GradientDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\SourceOptionsDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\RangeFloatDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\InplaceFieldDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\OptionalDrawer.cs" />
-    <Compile Include="Assets\VolFx\VolFx\Editor\AnimationCurveRangeDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\CurveRangePropertyDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\CurveValueDraver.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\SoCollectionDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\Installer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\OutputOptionsDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\LayerDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\SourceOptionsDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\UtilsEditor.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\AnimationCurveRangeDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\InplaceFieldDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\RangeFloatDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\OptionalDrawer.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Editor\GradientDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\VolFx\VolFx\Editor\VolFx.Editor.asmdef" />
+    <None Include="Assets\AssetPack\VolFx\VolFx\Editor\VolFx.Editor.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

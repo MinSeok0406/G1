@@ -33,7 +33,7 @@ namespace ColorPicker.Chat
             public void BroadcastToAll(ChatMessage msg, bool isGhost)
             {
                 _self.photonView.RPC(nameof(_self.C_ReceiveMessage),
-                    RpcTarget.AllViaServer, msg.Seq, msg.PlayerId, msg.Text, msg.ServerTimestamp, isGhost);
+                RpcTarget.AllViaServer, msg.Seq, msg.PlayerId, msg.Text, msg.ServerTimestamp, isGhost);
             }
 
             public void BroadcastToGhostOnly(ChatMessage msg)
