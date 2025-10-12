@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using ColorPicker.InGame;
+
 using Photon.Pun;
 using UnityEngine;
 
-namespace ColorPicker.inGame
+namespace ColorPicker.InGame
 {
     public class ColorObjectManager : SingletonNetworkBehaviour<ColorObjectManager>
     {

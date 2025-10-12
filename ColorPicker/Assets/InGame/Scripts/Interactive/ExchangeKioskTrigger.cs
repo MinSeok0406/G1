@@ -4,117 +4,63 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class ExchangeKioskTrigger : MonoBehaviourPun, IInteractive
+    public class ExchangeKioskTrigger : InteractiveTriggerBase
     {
-        [SerializeField] private Material outlineMaterial;
-        [SerializeField] private Vector3 offset;
-        private OutlineMarker outlineMarker;
-        
-        private void Awake()
+        protected override bool CanInteract()
         {
-            outlineMarker = GetComponentInChildren<OutlineMarker>();
+            // 향후 비활성화 상태/쿨다운 등 조건 가능
+            return true;
         }
 
-        public Vector3 GetPosition() => transform.position;
-
-        public void OnInteract()
+        protected override void HandleInteractLocal()
         {
+            // 클라 -> 호스트 요청
             photonView.RPC(nameof(RPC_RequestExchange), RpcTarget.MasterClient);
         }
 
         [PunRPC]
-        public void RPC_RequestExchange(PhotonMessageInfo info)
+        private void RPC_RequestExchange(PhotonMessageInfo info)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
             int actorId = info.Sender.ActorNumber;
 
-            if (!GameDataManager.Instance.TryGetInGameDataByActorId(actorId, out var playerData) || playerData == null)
+            if (!GameDataManager.Instance.TryGetInGameDataByActorId(actorId, out var pdata) || pdata == null)
             {
-                Debug.LogWarning($"[ExchangeKioskTrigger] Player not found for Actor {actorId}");
+                // 입력 검증 실패: 호출자에게만 실패 피드백
                 photonView.RPC(nameof(RPC_ReceiveExchangeResult), info.Sender, false, -1, -1);
                 return;
             }
 
             var rules = GameDataManager.Instance.GetGameRules();
-            int cost = rules.paintCost;
+            int cost = Mathf.Max(0, rules.paintCost);
 
-            if (playerData.coinCount >= cost)
+            if (pdata.coinCount >= cost)
             {
-                playerData.coinCount -= cost;
-                playerData.paintCount++;
+                pdata.coinCount -= cost;
+                pdata.paintCount = Mathf.Clamp(pdata.paintCount + 1, 0, 999999);
 
-                photonView.RPC(nameof(RPC_ReceiveExchangeResult), info.Sender, true, playerData.coinCount, playerData.paintCount);
+                // 성공 정보 회신(호출자 개인 피드백)
+                photonView.RPC(nameof(RPC_ReceiveExchangeResult), info.Sender, true, pdata.coinCount, pdata.paintCount);
             }
             else
             {
-                photonView.RPC(nameof(RPC_ReceiveExchangeResult), info.Sender, false, playerData.coinCount, playerData.paintCount);
+                photonView.RPC(nameof(RPC_ReceiveExchangeResult), info.Sender, false, pdata.coinCount, pdata.paintCount);
             }
         }
 
         [PunRPC]
-        public void RPC_ReceiveExchangeResult(bool success, int coinCount, int paintCount)
+        private void RPC_ReceiveExchangeResult(bool success, int coinCount, int paintCount)
         {
+            if (UIManager.Instance == null) return;
+
+            if (coinCount >= 0) UIManager.Instance.UpdateCoinInfo(coinCount);
+            if (paintCount >= 0) UIManager.Instance.UpdatePaintInfo(paintCount);
+
             if (success)
-            {
-                UIManager.Instance.UpdateCoinInfo(coinCount);
-                UIManager.Instance.UpdatePaintInfo(paintCount);
-                UIManager.Instance.ShowToast("교환 완료!", transform.position + offset);
-            }
+                UIManager.Instance.ShowToast("교환 완료!", transform.position + toastOffset);
             else
-            {
-                if (coinCount >= 0 && paintCount >= 0)
-                {
-                    UIManager.Instance.UpdateCoinInfo(coinCount);
-                    UIManager.Instance.UpdatePaintInfo(paintCount);
-                    UIManager.Instance.ShowToast("코인이 부족합니다.", transform.position + offset);
-                }
-                else
-                {
-                    UIManager.Instance.ShowToast("교환 처리 실패", transform.position + offset);
-                }
-            }
-        }
-
-        public void ToggleHighlight(bool active)
-        {
-            if (outlineMarker == null) return;
-
-            if (active)
-            {
-                if (outlineMaterial != null)
-                    outlineMarker.Apply(outlineMaterial);
-            }
-            else
-            {
-                outlineMarker.Clear();
-            }
-        }
-
-         private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (!other.CompareTag("Player")) return;
-
-            var playerControl = other.GetComponent<PlayerControl>();
-            if (playerControl == null) return;
-
-            if (!playerControl.photonView.IsMine) return;
-
-            playerControl.InteractionDetector.AddInteractable(this);
-            ToggleHighlight(true);
-        }
-
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag("Player")) return;
-
-            var playerControl = other.GetComponent<PlayerControl>();
-            if (playerControl == null) return;
-
-            if (!playerControl.photonView.IsMine) return;
-
-            playerControl.InteractionDetector.RemoveInteractable(this);
-            ToggleHighlight(false);
+                UIManager.Instance.ShowToast(coinCount >= 0 ? "코인이 부족합니다." : "교환 처리 실패", transform.position + toastOffset);
         }
     }
 }

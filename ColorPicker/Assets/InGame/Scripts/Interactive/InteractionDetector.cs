@@ -1,60 +1,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.Events; // 로컬 판정용
+using UnityEngine.Events;
 
 namespace ColorPicker.InGame
 {
+    [DefaultExecutionOrder(0)]
     public class InteractionDetector : MonoBehaviour
     {
-        private readonly List<IInteractive> nearby = new();
-        private PlayerControl player;
+        private readonly List<IInteractive> _nearby = new();
+        private PlayerControl _player;
 
-        private IInteractive currentClosest;
-        private UnityAction cachedClickAction; // GC 줄이기용 고정 콜백
+        private IInteractive _current;              // 현재 타겟
+        private UnityAction _cachedClickAction;     // 버튼 콜백 캐시
 
         private void Awake()
         {
-            // 자식에 붙어있을 수 있으므로 부모에서 찾는다
-            player = GetComponentInParent<PlayerControl>();
-            if (!player)
+            _player = GetComponentInParent<PlayerControl>();
+            if (!_player)
             {
-                Debug.LogError("[InteractionDetector] PlayerControl not found in parents.");
+                Debug.LogError("[InteractionDetector] PlayerControl not found.", this);
                 enabled = false;
                 return;
             }
-
-            // 클릭 콜백 고정(리스너 중복 방지)
-            cachedClickAction = OnInteractionClicked;
+            _cachedClickAction = OnInteractionClicked; // GC 절감
         }
 
         private void OnEnable()
         {
-            // 내 소유 플레이어만 UI/탐지 동작
-            if (!player.photonView || !player.photonView.IsMine)
+            if (_player?.photonView == null || !_player.photonView.IsMine)
             {
-                enabled = false;
+                enabled = false; // 로컬 소유 아닐 때는 완전 비활성
                 return;
             }
         }
 
         private void OnDisable()
         {
-            // 비활성화 때 UI 정리
+            // 하이라이트/버튼 정리
+            SetHighlighted(_current, false);
+            _current = null;
+            if (_player != null) _player.CurrentInteractive = null;
+
             if (UIManager.Instance != null)
                 UIManager.Instance.ShowInteractionButton(false);
 
-            currentClosest = null;
-            if (player != null) player.CurrentInteractive = null;
-            nearby.Clear();
+            _nearby.Clear();
         }
 
         public void AddInteractable(IInteractive target)
         {
-            if (target == null) return;
-            if (!nearby.Contains(target))
-                nearby.Add(target);
-
+            if (!IsValid(target)) return;
+            if (!_nearby.Contains(target)) _nearby.Add(target);
             UpdateClosest();
         }
 
@@ -62,36 +59,32 @@ namespace ColorPicker.InGame
         {
             if (target == null) return;
 
-            if (nearby.Remove(target))
-            {
-                target.ToggleHighlight(false);
-            }
+            if (_nearby.Remove(target))
+                SetHighlighted(target, false);
 
             UpdateClosest();
         }
 
         private void UpdateClosest()
         {
-            // 파괴/널 정리
-            for (int i = nearby.Count - 1; i >= 0; i--)
+            // 1) 정리: 파괴/널 제거
+            for (int i = _nearby.Count - 1; i >= 0; i--)
             {
-                // UnityEngine.Object의 fake null 대비
-                if (nearby[i] == null || (nearby[i] as Object) == null)
-                    nearby.RemoveAt(i);
+                var it = _nearby[i];
+                if (!IsValid(it)) _nearby.RemoveAt(i);
             }
 
-            // 가장 가까운 대상 탐색 (sqrMagnitude로 비용 절약)
+            // 2) 탐색: 가장 가까운 대상
             IInteractive closest = null;
             float minDistSq = float.MaxValue;
             Vector3 selfPos = transform.position;
 
-            for (int i = 0; i < nearby.Count; i++)
+            for (int i = 0; i < _nearby.Count; i++)
             {
-                var obj = nearby[i];
-                if (obj == null || (obj as Object) == null) continue;
+                var obj = _nearby[i];
+                if (!IsValid(obj)) continue;
 
-                Vector3 p = obj.GetPosition();
-                float d2 = (p - selfPos).sqrMagnitude;
+                float d2 = (obj.GetPosition() - selfPos).sqrMagnitude;
                 if (d2 < minDistSq)
                 {
                     minDistSq = d2;
@@ -99,40 +92,78 @@ namespace ColorPicker.InGame
                 }
             }
 
-            // 변경된 경우에만 하이라이트/버튼 갱신
-            if (!ReferenceEquals(currentClosest, closest))
+            // 3) 변경 사항에만 반응
+            if (!ReferenceEquals(_current, closest))
             {
-                currentClosest?.ToggleHighlight(false);
-                closest?.ToggleHighlight(true);
+                SetHighlighted(_current, false);
+                SetHighlighted(closest, true);
 
-                currentClosest = closest;
-                player.CurrentInteractive = closest;
+                _current = closest;
+                if (_player != null) _player.CurrentInteractive = _current;
 
-                if (closest != null)
+                if (_current != null)
                 {
-                    // UIManager.ShowInteractionButton는 내부적으로 리스너를 교체(=중복추가 X)해야 안전
-                    UIManager.Instance.ShowInteractionButton(true, cachedClickAction);
+                    if (UIManager.Instance != null)
+                        UIManager.Instance.ShowInteractionButton(true, _cachedClickAction);
                 }
                 else
                 {
-                    UIManager.Instance.ShowInteractionButton(false);
+                    if (UIManager.Instance != null)
+                        UIManager.Instance.ShowInteractionButton(false);
                 }
             }
         }
 
         private void OnInteractionClicked()
         {
-            // 버튼 콜백: 대상이 여전히 유효한지 재검증
-            if (player == null) return;
+            if (_player == null) { HideButton(); return; }
 
-            var target = player.CurrentInteractive;
-            if (target == null || (target as Object) == null)
-            {
+            var target = _player.CurrentInteractive;
+            if (!IsValid(target)) { HideButton(); return; }
+
+            _player.TryInteract();
+        }
+
+        private static bool IsValid(IInteractive it)
+        {
+            if (it == null) return false;
+            var obj = it as Object;
+            return obj != null; // Unity fake-null 방지
+        }
+
+        private static void HideButton()
+        {
+            if (UIManager.Instance != null)
                 UIManager.Instance.ShowInteractionButton(false);
+        }
+
+        /// <summary>
+        /// 하이라이트 적용: 1) IInteractive.ToggleHighlight 우선 사용
+        ///                2) 없으면 HighlightController를 붙여 사용
+        /// </summary>
+        private static void SetHighlighted(IInteractive target, bool on)
+        {
+            if (!IsValid(target)) return;
+
+            // 1) 인터페이스가 자체 하이라이트를 제공하면 그걸 사용 (기존 호환)
+            try
+            {
+                target.ToggleHighlight(on);
                 return;
             }
+            catch
+            {
+                // ToggleHighlight를 던지거나 미구현인 경우 → 폴백
+            }
 
-            player.TryInteract();
+            // 2) 폴백: HighlightController 자동 부착/사용
+            var obj = target as Object;
+            var go = (obj as Component)?.gameObject ?? (obj as GameObject);
+            if (!go) return;
+
+            var hi = go.GetComponent<HighlightController>();
+            if (!hi) hi = go.AddComponent<HighlightController>();
+            hi.SetHighlighted(on);
         }
     }
 }

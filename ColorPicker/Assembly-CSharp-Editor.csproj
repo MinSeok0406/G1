@@ -138,8 +138,8 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Notification\NotificationUIEditor.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarPatternEditor.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\ProgressBar\ProgressBarBubbleAutoEditor.cs" />
-    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipDetermineEditor.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Editor\Light\LightCollider2DEditor.cs" />
+    <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Tooltip\TooltipDetermineEditor.cs" />
     <Compile Include="Assets\AssetPack\Retro Shaders Pro\Editor\Shaders\RetroLitShaderGUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Editor\Scripts\BlurManagerEditor.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Editor\Toggle\ToggleCheckEditor.cs" />
@@ -1343,9 +1343,9 @@
     <ProjectReference Include="Unity.2D.Psdimporter.Editor.csproj" />
     <ProjectReference Include="Unity.VisualScripting.State.Editor.csproj" />
     <ProjectReference Include="ScreenFx.Editor.csproj" />
+    <ProjectReference Include="ScreenFx.csproj" />
     <ProjectReference Include="Unity.Mathematics.csproj" />
     <ProjectReference Include="Unity.2D.Common.Editor.csproj" />
-    <ProjectReference Include="ScreenFx.csproj" />
     <ProjectReference Include="Unity.Splines.csproj" />
     <ProjectReference Include="Unity.RenderPipelines.Universal.Shaders.csproj" />
     <ProjectReference Include="Unity.TextMeshPro.Editor.csproj" />

@@ -78,8 +78,8 @@
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Dissolve\DissolveVol.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Base\Adjustments\AdjustmentsPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\AssemblyInfo.cs" />
-    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\VolFx.Api.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Sharpen\SharpenPass.cs" />
+    <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\VolFx.Api.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Scanlines\ScanlinesPass.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Utils\CurveParameter.cs" />
     <Compile Include="Assets\AssetPack\VolFx\VolFx\Runtime\Passes\Add\Invert\InvertPass.cs" />

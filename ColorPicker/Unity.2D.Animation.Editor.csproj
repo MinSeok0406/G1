@@ -130,10 +130,10 @@
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\Selectors\RectVertexSelector.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SpriteSkin\BoneGizmoToggle.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\Triangulation\ITriangulator.cs" />
+    <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\MeshPreviewTool\IMeshPreviewBehaviour.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\Analytics.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\Undo\UndoScope.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\VisibilityTool\MeshVisibilityTool.cs" />
-    <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\MeshPreviewTool\IMeshPreviewBehaviour.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\Triangulation\TriangulationUtility.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SkinningModule\SkinningCache\SpriteCache.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.animation@9.1.3\Editor\SpriteLib\SpriteLibCombineCache.cs" />
