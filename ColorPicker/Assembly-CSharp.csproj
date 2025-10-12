@@ -82,6 +82,7 @@
     <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocity.cs" />
     <Compile Include="Assets\DongJu\Customizing\ScrollBarFixed.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Window\ModalWindowManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Domain\IAliveQuery.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Misc\LightingPosition.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\BlurManager.cs" />
@@ -94,9 +95,11 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationAlgorithm.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownMultiCheckTransition.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerImage.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\IChatSanitizer.cs" />
     <Compile Include="Assets\InGame\Scripts\Player\PlayerControl\PlayerControl.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2DHelper.cs" />
     <Compile Include="Assets\SuGyun\Scripts\UI\InGame\ColorDeductionSystem.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\ChatConfig.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightTilemap.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Camera\CameraSettings.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Effects\LightFlicker.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Gradient\GradientText.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Others\ExitToSystem.cs" />
     <Compile Include="Assets\SuGyun\Scripts\UI\InGame\LeaveGameModule.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Domain\ChatMessage.cs" />
     <Compile Include="Assets\InGame\Scripts\UI\MeetingProfileUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Slider\SliderRangeTransition.cs" />
     <Compile Include="Assets\DongJu\Random Placement.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerOtherController.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\MeshRendererManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\SwitchManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\SimpleSanitizer.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Objects\Sprite.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Event Handling\LightCollider.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitter.cs" />
@@ -143,6 +148,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Shadow\Shadow.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Components\TilemapCollider2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\LightTile.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\IChatHistory.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapRoom2D\LightingTilemapRoomTransform.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\BlurChecker.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Event Handling\Base.cs" />
@@ -183,11 +189,13 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SkinnedMeshRendererShape.cs" />
     <Compile Include="Assets\SuGyun\Scripts\UI\InGame\GameplaySettingsModule.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Slider\SliderRange.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Infrastructure\TimeProvider.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Button\ButtonMultiTransition.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Effects\LightBlink.cs" />
     <Compile Include="Assets\InGame\Scripts\UI\LoadingScreenUI.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Infrastructure\IChatTransport.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\CacheDataManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Components\TilemapRoom2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Rectangle.cs" />
@@ -200,6 +208,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularRound.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\Camera\CameraTransform.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Mathd.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Infrastructure\PhotonChatTransport.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\SoftDistance.cs" />
     <Compile Include="Assets\Retro Shaders Pro\Scripts\FramerateLimiter.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Pass.cs" />
@@ -219,7 +228,6 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightSprite2D\LightSpriteShape.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Misc\MeshObject.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Chunks\Tilemap\TilemapChunk.cs" />
-    <Compile Include="Assets\InGame\Scripts\Manager\ChatManager.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\UIGradient.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\ButtonManager.cs" />
@@ -238,6 +246,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ResizableWindow\WindowResizeHandle.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\Collider3DShape.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2DList.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Infrastructure\GameDataAliveQuery.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\PopupMenu\PopupMenuLongPress.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarAuto.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Algorithm\LegacyGPU.cs" />
@@ -258,6 +267,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Utility\InputModuleSwitch.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\MissionManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SpriteExtension\PhysicsShape.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Domain\ChatChannel.cs" />
     <Compile Include="Assets\GPGSIds.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Sorted.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2\Polygon2\Polygon2Collider2D.cs" />
@@ -301,6 +311,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowMultiButtonUI.cs" />
     <Compile Include="Assets\InGame\Scripts\Interactive\InteractiveMeeting.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\SoftShadowEngine.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\IChatService.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowRadioButtonUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Buffers\Manager.cs" />
     <Compile Include="Assets\InGame\Scripts\UI\PlayerCardUI.cs" />
@@ -331,6 +342,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowListUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Polygon\Polygon2D.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\TabView\TabViewSimple.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\IRateLimiter.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\MovementByVelocityEvent.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowContentFitterMultiButtonUI.cs" />
     <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\MouseLook.cs" />
@@ -353,6 +365,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\ShadowEngine.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationWrapper.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Selector\Selector.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Presentation\ChatUIController.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Triangulation\Advanced Triangulator\TriangulationSets.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ResizableWindow\WindowDrag.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\MeshRendererShape.cs" />
@@ -410,6 +423,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularRoundAuto.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarSpecialPatternAuto.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\Rendering\BackgroundFilter.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\ChatService.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Elements\SliderManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\Dark - Complete Horror UI\Scripts\UI Manager\UIManagerLogo.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\SkinnedMesh.cs" />
@@ -472,6 +486,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\Sorting\SortDepthList.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Universal\Base.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Depth\Pass.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Presentation\ChatInstaller.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Lightmap\NoSort.cs" />
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\LightCollider\LightTilemapCollider2D.cs" />
@@ -489,6 +504,7 @@
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTag.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowProgressBar.cs" />
     <Compile Include="Assets\Retro Shaders Pro\Demo\Scripts\GooseFlight.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\SimpleRateLimiter.cs" />
     <Compile Include="Assets\InGame\Scripts\Mics\Settings.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListenerCount.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\UJoystick\Content\Script\Internal\bl_JoystickUtils.cs" />
@@ -563,6 +579,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Event Handling\LightEventListener.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarBubbleAuto.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\TilemapEvents.cs" />
+    <Compile Include="Assets\InGame\Scripts\Chat\Application\RingChatHistory.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipInDetermine.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Material\Extended\BumpMask.cs" />
   </ItemGroup>
@@ -582,7 +599,7 @@
     <None Include="Assets\AssetPack\Photon\PhotonUnityNetworking\changelog.txt" />
     <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\RetroLit.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Spine\LitSpine.shader" />
-    <None Include="Assets\Retro Shaders Pro\Shaders\Retro Base\RetroSGFunctions.hlsl" />
+    <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\Retro Base\RetroSGFunctions.hlsl" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\DayDepth\Depth_Pass1.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\Sprites\FogOfWar.shader" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\LightShadow\SoftDefault.shader" />
