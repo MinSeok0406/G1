@@ -183,7 +183,7 @@ namespace ColorPicker.InGame
 
             if (player)
             {
-                player.deathEvent?.CallDeathEvent();
+                player.DeathEvent?.CallDeathEvent();
                 Debug.Log($"[Ability] {player.name} has been killed.");
             }
 

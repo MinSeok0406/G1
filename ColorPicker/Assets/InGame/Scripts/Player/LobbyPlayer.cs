@@ -1,66 +1,39 @@
-﻿using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
+    /// <summary>
+    /// 로비 씬에서 사용되는 플레이어
+    /// 카메라 설정 및 매니저 등록만 처리
+    /// </summary>
+    public sealed class LobbyPlayer : PlayerBase
     {
-        [HideInInspector] public IdleEvent idleEvent;
-        [HideInInspector] public MovementByVelocityEvent movementByVelocityEvent;
-        [HideInInspector] public Animator animator;
-        [HideInInspector] public SpriteRenderer spriteRenderer;
-        [HideInInspector] public PlayerControl playerControl;
+        private PlayerCameraSetup _cameraSetup;
 
-        private void Awake()
+        protected override void Awake()
         {
-            animator = GetComponent<Animator>();
-            idleEvent = GetComponent<IdleEvent>();
-            movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            playerControl = GetComponent<PlayerControl>();
+            base.Awake();
+            _cameraSetup = new PlayerCameraSetup(transform);
         }
 
-        private void OnEnable()
+        protected override void PerformInitialization()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            SetupCamera();
+            RegisterToManager();
         }
 
-        private void OnDisable()
+        private void SetupCamera()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            _cameraSetup?.Setup();
         }
 
-        public void OnOwnershipRequest(PhotonView targetView, Photon.Realtime.Player requestingPlayer) { }
-
-        public void OnOwnershipTransferFailed(PhotonView targetView, Photon.Realtime.Player senderOfFailedRequest) { }
-
-        public void OnOwnershipTransfered(PhotonView targetView, Photon.Realtime.Player previousOwner)
+        private void RegisterToManager()
         {
-            if (targetView != photonView) return;
-            if (!photonView.IsMine) return;
-
-            if (PhotonNetwork.IsMasterClient) return;
-
-            Debug.Log("A");
-
-            InitializedPlayer();
-        }
-
-        public void InitializedPlayer()
-        {
-            GameObject cameraObj;
-
-            if (Camera.main == null)
+            if (PlayerManager.Instance == null)
             {
-                cameraObj = Instantiate(GameResources.Instance.mainCameraPrefab);
+                Debug.LogError("[LobbyPlayer] PlayerManager 인스턴스를 찾을 수 없습니다.", this);
+                return;
             }
-            else
-            {
-                cameraObj = Camera.main.gameObject;
-            }
-
-            cameraObj.transform.SetParent(transform, false);
-            cameraObj.transform.localPosition = new Vector3(0, 0, -10);
 
             PlayerManager.Instance.SetMyLobbyPlayer(this);
         }

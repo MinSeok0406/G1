@@ -40,7 +40,7 @@ namespace ColorPicker.InGame
 
             if (!playerControl.photonView.IsMine) return; // ���� �÷��̾ ó��
 
-            playerControl.interactionDetector.AddInteractable(this);
+            playerControl.InteractionDetector.AddInteractable(this);
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -52,7 +52,7 @@ namespace ColorPicker.InGame
 
             if (!playerControl.photonView.IsMine) return;
 
-            playerControl.interactionDetector.RemoveInteractable(this);
+            playerControl.InteractionDetector.RemoveInteractable(this);
         }
     }
 }

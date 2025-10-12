@@ -1,95 +1,87 @@
 using FunkyCode;
 using Photon.Pun;
-using System;
 using UnityEngine;
 
 namespace ColorPicker.InGame
 {
-    #region RequireComponent
-    [RequireComponent(typeof(Idle))]
-    [RequireComponent(typeof(IdleEvent))]
-    [RequireComponent(typeof(MovementByVelocity))]
-    [RequireComponent(typeof(MovementByVelocityEvent))]
-    [RequireComponent(typeof(SpriteRenderer))]
-    [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(Animator))]
-    #endregion
-    [DisallowMultipleComponent]
-    public class Player : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
+    /// <summary>
+    /// 인게임 씬에서 사용되는 플레이어
+    /// 라이트, 사망 처리 등 게임 로직 포함
+    /// </summary>
+    public sealed class Player : PlayerBase
     {
-        [HideInInspector] public IdleEvent idleEvent;
-        [HideInInspector] public MovementByVelocityEvent movementByVelocityEvent;
-        [HideInInspector] public Animator animator;
-        [HideInInspector] public SpriteRenderer spriteRenderer;
-        [HideInInspector] public PlayerControl playerControl;
-        [HideInInspector] public DeathEvent deathEvent;
-
-        [HideInInspector] public int ownerActNum = 0;
-
         [SerializeField] private Light2D playerLight;
 
-        private void Awake()
-        {
-            idleEvent = GetComponent<IdleEvent>();
-            movementByVelocityEvent = GetComponent<MovementByVelocityEvent>();
-            animator = GetComponent<Animator>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            playerControl = GetComponent<PlayerControl>();
-            deathEvent = GetComponent<DeathEvent>();
+        private DeathEvent _deathEvent;
+        private PlayerCameraSetup _cameraSetup;
+        private PlayerLightController _lightController;
 
+        public DeathEvent DeathEvent => _deathEvent ??= GetComponent<DeathEvent>();
+        public int OwnerActNum { get; private set; }
+
+        protected override void Awake()
+        {
+            base.Awake();
             DontDestroyOnLoad(gameObject);
+
+            _cameraSetup = new PlayerCameraSetup(transform);
+            _lightController = new PlayerLightController(playerLight);
         }
 
-        private void OnEnable()
+        protected override void PerformInitialization()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            SetupCamera();
+            EnableLight();
+            CacheOwnerInfo();
+            RegisterToManager();
         }
 
-        private void OnDisable()
+        private void SetupCamera()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            _cameraSetup?.Setup();
         }
 
-        public void OnOwnershipRequest(PhotonView targetView, Photon.Realtime.Player requestingPlayer)
+        private void EnableLight()
         {
+            _lightController?.Enable();
         }
 
-        public void OnOwnershipTransfered(PhotonView targetView, Photon.Realtime.Player previousOwner)
+        private void CacheOwnerInfo()
         {
-            if (targetView != photonView) return;
-            if (!photonView.IsMine) return;
-
-            if (PhotonNetwork.IsMasterClient) return;
-            
-            InitializedPlayer();
+            OwnerActNum = PhotonNetwork.LocalPlayer?.ActorNumber ?? -1;
         }
 
-        public void OnOwnershipTransferFailed(PhotonView targetView, Photon.Realtime.Player senderOfFailedRequest)
+        private void RegisterToManager()
         {
-        }
-
-        public void InitializedPlayer()
-        {
-            GameObject cameraObj;
-
-            if (Camera.main == null)
+            if (PlayerManager.Instance == null)
             {
-                cameraObj = Instantiate(GameResources.Instance.mainCameraPrefab);
+                Debug.LogError("[Player] PlayerManager 인스턴스를 찾을 수 없습니다.", this);
+                return;
             }
-            else
-            {
-                cameraObj = Camera.main.gameObject;
-            }
-
-            cameraObj.transform.SetParent(transform, false);
-            cameraObj.transform.localPosition = new Vector3(0, 0, -10);
-
-            playerLight.gameObject.SetActive(true);
-
-            ownerActNum = PhotonNetwork.LocalPlayer.ActorNumber;
 
             PlayerManager.Instance.SetMyPlayer(this);
-            
+        }
+
+        /// <summary>
+        /// 플레이어 사망 처리
+        /// </summary>
+        public void Die()
+        {
+            DeathEvent?.CallDeathEvent();
+            _lightController?.Disable();
+        }
+
+        /// <summary>
+        /// 생존 여부 확인
+        /// </summary>
+        public bool IsAlive()
+        {
+            if (!GameDataManager.Instance.TryGetInGameDataByActorId(OwnerActNum, out var data))
+            {
+                return true;
+            }
+
+            return data.isAlive;
         }
     }
 }

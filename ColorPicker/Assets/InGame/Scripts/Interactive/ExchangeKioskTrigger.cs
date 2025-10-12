@@ -100,7 +100,7 @@ namespace ColorPicker.InGame
 
             if (!playerControl.photonView.IsMine) return;
 
-            playerControl.interactionDetector.AddInteractable(this);
+            playerControl.InteractionDetector.AddInteractable(this);
             ToggleHighlight(true);
         }
 
@@ -113,7 +113,7 @@ namespace ColorPicker.InGame
 
             if (!playerControl.photonView.IsMine) return;
 
-            playerControl.interactionDetector.RemoveInteractable(this);
+            playerControl.InteractionDetector.RemoveInteractable(this);
             ToggleHighlight(false);
         }
     }

@@ -91,7 +91,7 @@ namespace ColorPicker.InGame
             if (!playerControl.photonView.IsMine) return;
 
             localPlayerInRange = playerControl;
-            playerControl.interactionDetector.AddInteractable(this);
+            playerControl.InteractionDetector.AddInteractable(this);
             ToggleHighlight(true);
         }
 
@@ -107,7 +107,7 @@ namespace ColorPicker.InGame
             if (ReferenceEquals(playerControl, localPlayerInRange))
                 localPlayerInRange = null;
 
-            playerControl.interactionDetector.RemoveInteractable(this);
+            playerControl.InteractionDetector.RemoveInteractable(this);
             ToggleHighlight(false);
         }
 
@@ -118,7 +118,7 @@ namespace ColorPicker.InGame
         {
             if (localPlayerInRange != null)
             {
-                localPlayerInRange.interactionDetector.RemoveInteractable(this);
+                localPlayerInRange.InteractionDetector.RemoveInteractable(this);
                 ToggleHighlight(false);
                 localPlayerInRange = null;
             }

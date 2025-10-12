@@ -45,7 +45,7 @@ namespace ColorPicker.InGame
                 UIManager.Instance.ShowInteractionButton(false);
 
             currentClosest = null;
-            if (player != null) player.currentInteractive = null;
+            if (player != null) player.CurrentInteractive = null;
             nearby.Clear();
         }
 
@@ -106,7 +106,7 @@ namespace ColorPicker.InGame
                 closest?.ToggleHighlight(true);
 
                 currentClosest = closest;
-                player.currentInteractive = closest;
+                player.CurrentInteractive = closest;
 
                 if (closest != null)
                 {
@@ -125,7 +125,7 @@ namespace ColorPicker.InGame
             // 버튼 콜백: 대상이 여전히 유효한지 재검증
             if (player == null) return;
 
-            var target = player.currentInteractive;
+            var target = player.CurrentInteractive;
             if (target == null || (target as Object) == null)
             {
                 UIManager.Instance.ShowInteractionButton(false);

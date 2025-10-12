@@ -179,7 +179,7 @@ namespace ColorPicker.InGame
 
             if (player.photonView.OwnerActorNr == newActorId && PhotonNetwork.IsMasterClient)
             {
-                player.InitializedPlayer();
+                player.InitializePlayer();
             }
         }
 

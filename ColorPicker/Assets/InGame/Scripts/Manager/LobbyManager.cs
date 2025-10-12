@@ -227,7 +227,7 @@ namespace ColorPicker.InGame
             // 소유자 확정 후 초기화 호출(호스트에서만)
             if (view.TryGetComponent(out LobbyPlayer player) && PhotonNetwork.IsMasterClient && !isHostInitialized)
             {
-                player.InitializedPlayer();
+                player.InitializePlayer();
                 isHostInitialized = true;
             }
         }

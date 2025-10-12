@@ -105,7 +105,7 @@ namespace ColorPicker.InGame
                 {
                     UIManager.Instance.BroadcastUpdateColorIcon();
                     AbilityManager.Instance.abilityBinder.BroadCastApplyLocalAbilities();
-                    UIManager.Instance.BoradcastInitializeAssignSceneUI();
+                    UIManager.Instance.BroadcastInitializeAssignSceneUI();
                 });
             }
         }

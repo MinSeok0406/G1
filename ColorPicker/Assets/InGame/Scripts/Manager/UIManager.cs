@@ -1,304 +1,395 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Photon.Pun;
-using System.Collections;
-using ColorPicker.inGame;
-using Unity.VisualScripting;
-using System.Collections.Generic;
 
 namespace ColorPicker.InGame
 {
     public class UIManager : SingletonNetworkBehaviour<UIManager>
     {
+        #region Serialized Fields
+        [Header("Interaction")]
         [SerializeField] private Button interactButton;
 
         [Header("Info UI")]
         [SerializeField] private TMP_Text coinInfoText;
-        [SerializeField] private TMP_Text PaintInfoText;
+        [SerializeField] private TMP_Text paintInfoText;
         [SerializeField] private Image colorIcon;
         [SerializeField] private Slider missionStatusBar;
 
-        [Header("UI References")]
+        [Header("Toast Messages")]
         [SerializeField] private TMP_Text messageText;
         [SerializeField] private TMP_Text screenMessageText;
-        [SerializeField] private Image screenMessagePenel;
+        [SerializeField] private Image screenMessagePanel;
+
+        [Header("Vote UI")]
         [SerializeField] private GameObject votePopup;
         [SerializeField] private TMP_Text voteMessage;
+
+        [Header("Time Control UI")]
+        [SerializeField] private GameObject timeControlPopup;
+        [SerializeField] private Button addTimeButton;
+        [SerializeField] private Button reduceTimeButton;
+        [SerializeField] private TMP_Text timeControlMessage;
+
+        [Header("Meeting UI")]
+        [SerializeField] private GameObject meetingOBJ;
+        [SerializeField] private TMP_Text meetingTimerText;
         [SerializeField] private GameObject pickerUI;
         [SerializeField] private List<ColorPickButton> colorPickButtons;
-        [SerializeField] private TMP_Text meetingTimerText;
 
-        [SerializeField] private GameObject meetingOBJ;
-
-        [Header("Animation Settings")]
-        [SerializeField] private float fadeDuration = 0.5f;
-        [SerializeField] private float showDuration = 2.0f;
-
-        [Header("UI Script")]
+        [Header("UI Scripts")]
         [SerializeField] private MeetingUI meetingUI;
         [SerializeField] private DeductionUI deductionUI;
         [SerializeField] private LoadingScreenUI loadingScreenUI;
 
-        private UnityAction defaultClick; // 기본 콜백 캐싱
-        private Coroutine currentToastRoutine;
-        private Coroutine currentScreenToastRoutine;
-        private Coroutine meetingTimerCo;
+        [Header("Animation Settings")]
+        [SerializeField] private float fadeDuration = 0.5f;
+        [SerializeField] private float showDuration = 2.0f;
+        #endregion
 
-        private MafiaAbility mafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
-        private int currentVoteActorNum = -1;
-        private PlayerCardUI currentPlayerCard;
+        #region Constants
+        private const string MSG_ALREADY_VOTED = "이미 투표를 완료했습니다.";
+        private const string MSG_TIME_ALREADY_MODIFIED = "시간 조정은 한 번만 가능합니다.";
+        private const string MSG_CANNOT_REDUCE_TIME = "남은 시간이 10초 이하일 때는 시간을 줄일 수 없습니다.";
+        private const string MSG_VOTE_AFTER_TIME_CONTROL = "시간 조정 후에는 투표할 수 없습니다.";
+        #endregion
 
+        #region Private Fields
+        private UnityAction _defaultInteractionClick;
+        private Coroutine _currentToastRoutine;
+        private Coroutine _currentScreenToastRoutine;
+        private Coroutine _meetingTimerCoroutine;
+
+        private int _currentVoteActorNum = -1;
+        private PlayerCardUI _currentPlayerCard;
+        private bool _hasVoted = false;
+
+        private MafiaAbility MafiaAbility => AbilityManager.Instance?.GetComponentInChildren<MafiaAbility>();
+        #endregion
+
+        #region Unity Lifecycle
         protected override void Awake()
         {
             base.Awake();
 
-            if (!interactButton)
+            ValidateReferences();
+            InitializeComponents();
+        }
+        #endregion
+
+        #region Initialization
+        private void ValidateReferences()
+        {
+            if (interactButton == null)
             {
-                Debug.LogError("[UIManager] interactButton is not assigned.");
-                return;
+                Debug.LogError("[UIManager] interactButton이 할당되지 않았습니다.");
             }
 
+            if (meetingTimerText == null)
+            {
+                Debug.LogWarning("[UIManager] meetingTimerText가 할당되지 않았습니다.");
+            }
+        }
 
-            defaultClick = OnClick_Interaction;
-            WireDefaultClick();
+        private void InitializeComponents()
+        {
+            // 상호작용 버튼 초기화
+            if (interactButton != null)
+            {
+                _defaultInteractionClick = OnClick_Interaction;
+                WireDefaultClick();
+                interactButton.interactable = false;
+            }
 
-            // 기본은 숨김 & 비활성
-            interactButton.interactable = false;
-
+            // UI 초기화
             UpdateMissionStatusBarUI(0f);
             UpdateCoinInfo(0);
             UpdatePaintInfo(0);
 
-            messageText.alpha = 0f;
+            if (messageText != null)
+            {
+                messageText.alpha = 0f;
+            }
+
+            // 투표 상태 초기화
+            ResetVoteState();
         }
 
         /// <summary>
-        /// show=true면 onClick이 있으면 그걸로, 없으면 기본콜백으로 연결.
-        /// show=false면 버튼을 숨기고 기본콜백으로 되돌림(오래된 클로저 방지).
+        /// 투표 상태 초기화
+        /// </summary>
+        public void ResetVoteState()
+        {
+            _hasVoted = false;
+            _currentVoteActorNum = -1;
+            CloseVotePopup();
+            CloseTimeControlPopup();
+        }
+        #endregion
+
+        #region Interaction Button
+        /// <summary>
+        /// 상호작용 버튼 표시/숨김
         /// </summary>
         public void ShowInteractionButton(bool show, UnityAction onClick = null)
         {
-            if (!interactButton) return;
+            if (interactButton == null) return;
 
             if (show)
             {
-                // 리스너 교체(중복 방지)
                 interactButton.onClick.RemoveAllListeners();
-                interactButton.onClick.AddListener(onClick ?? defaultClick);
-
+                interactButton.onClick.AddListener(onClick ?? _defaultInteractionClick);
                 interactButton.interactable = true;
             }
             else
             {
                 interactButton.interactable = false;
-
                 WireDefaultClick();
             }
         }
 
         private void WireDefaultClick()
         {
-            if (!interactButton) return;
+            if (interactButton == null) return;
+
             interactButton.onClick.RemoveAllListeners();
-            interactButton.onClick.AddListener(defaultClick);
+            interactButton.onClick.AddListener(_defaultInteractionClick);
         }
 
         private void OnClick_Interaction()
         {
             var myPlayer = PlayerManager.Instance?.GetMyPlayer();
-            if (!myPlayer)
+            if (myPlayer == null)
             {
-                Debug.LogWarning("[UIManager] Local player not found.");
+                Debug.LogWarning("[UIManager] 로컬 플레이어를 찾을 수 없습니다.");
                 return;
             }
 
             var pc = myPlayer.GetComponent<PlayerControl>();
-            if (!pc)
+            if (pc == null)
             {
-                Debug.LogWarning("[UIManager] PlayerControl missing on local player.");
+                Debug.LogWarning("[UIManager] PlayerControl 컴포넌트가 없습니다.");
                 return;
             }
 
             pc.TryInteract();
         }
+        #endregion
 
-
+        #region Info UI Updates
         public void UpdateMissionStatusBarUI(float percent)
         {
-            missionStatusBar.value = percent;
+            if (missionStatusBar != null)
+            {
+                missionStatusBar.value = Mathf.Clamp01(percent);
+            }
         }
 
         public void UpdateCoinInfo(int coin)
         {
-            if (coinInfoText)
+            if (coinInfoText != null)
+            {
                 coinInfoText.text = $"x {coin}";
+            }
         }
 
         public void UpdatePaintInfo(int paint)
         {
-            if (PaintInfoText)
-                PaintInfoText.text = $"x {paint}";
+            if (paintInfoText != null)
+            {
+                paintInfoText.text = $"x {paint}";
+            }
         }
-
 
         public void BroadcastUpdateColorIcon()
         {
-            photonView.RPC(nameof(UpdateColorIcon), RpcTarget.All);
+            photonView.RPC(nameof(RPC_UpdateColorIcon), RpcTarget.All);
         }
 
         [PunRPC]
-        public void UpdateColorIcon()
+        private void RPC_UpdateColorIcon()
         {
-            GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(PhotonNetwork.LocalPlayer.ActorNumber, out var data);
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(
+                PhotonNetwork.LocalPlayer.ActorNumber, out var data))
+            {
+                return;
+            }
 
-            if (colorIcon)
+            if (colorIcon != null)
+            {
                 colorIcon.color = HelperUtilities.ToUnityColor((ColorType)data.identityColorId);
+            }
         }
+        #endregion
 
+        #region Ability UI
         public void UpdateAbilityCooldownUI(int viewID, float remain)
         {
             PhotonView targetView = PhotonView.Find(viewID);
             if (targetView == null || targetView.Owner == null)
             {
-                Debug.LogWarning($"[Ability] PhotonView {viewID} not found or has no owner.");
+                Debug.LogWarning($"[Ability] PhotonView {viewID}를 찾을 수 없거나 소유자가 없습니다.");
                 return;
             }
 
-            int actorNum = targetView.OwnerActorNr;
-            var targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(actorNum);
-
+            var targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(targetView.OwnerActorNr);
             photonView.RPC(nameof(RPC_UpdateAbilityCooldownUI), targetPlayer, remain);
         }
 
         [PunRPC]
-        public void RPC_UpdateAbilityCooldownUI(float remain)
+        private void RPC_UpdateAbilityCooldownUI(float remain)
         {
-            if (mafiaAbility)
-                mafiaAbility.StartCooldownUI(remain);
+            MafiaAbility?.StartCooldownUI(remain);
         }
+        #endregion
 
+        #region Toast Messages
         /// <summary>
-        /// 토스트 메시지 표시 (텍스트 알파로 페이드)
+        /// 월드 좌표에 토스트 메시지 표시
         /// </summary>
         public void ShowToast(string msg, Vector3 targetPos)
         {
-            if (currentToastRoutine != null)
-                StopCoroutine(currentToastRoutine);
+            if (string.IsNullOrEmpty(msg)) return;
 
-            currentToastRoutine = StartCoroutine(Co_ShowToast(msg, targetPos));
+            if (_currentToastRoutine != null)
+            {
+                StopCoroutine(_currentToastRoutine);
+            }
+
+            _currentToastRoutine = StartCoroutine(Co_ShowToast(msg, targetPos));
         }
 
+        /// <summary>
+        /// 화면 중앙에 토스트 메시지 표시
+        /// </summary>
         public void ShowToastToScreen(string msg)
         {
-            if (currentScreenToastRoutine != null)
-                StopCoroutine(currentScreenToastRoutine);
+            if (string.IsNullOrEmpty(msg)) return;
 
-            currentScreenToastRoutine = StartCoroutine(Co_ScreenShowToast(msg));
+            if (_currentScreenToastRoutine != null)
+            {
+                StopCoroutine(_currentScreenToastRoutine);
+            }
+
+            _currentScreenToastRoutine = StartCoroutine(Co_ScreenShowToast(msg));
         }
 
         private IEnumerator Co_ShowToast(string msg, Vector3 targetPos)
         {
+            if (messageText == null) yield break;
+
             messageText.text = msg;
             messageText.transform.position = targetPos;
 
-            yield return Fade(0f, 1f, fadeDuration);
-
+            yield return FadeText(messageText, 0f, 1f, fadeDuration);
             yield return new WaitForSeconds(showDuration);
+            yield return FadeText(messageText, 1f, 0f, fadeDuration);
 
-            yield return Fade(1f, 0f, fadeDuration);
-
-            currentToastRoutine = null;
+            _currentToastRoutine = null;
         }
 
         private IEnumerator Co_ScreenShowToast(string msg)
         {
+            if (screenMessageText == null) yield break;
+
             screenMessageText.text = msg;
 
-            yield return FadeScreenText(0f, 1f, fadeDuration);
-
+            yield return FadeScreenMessage(0f, 1f, fadeDuration);
             yield return new WaitForSeconds(showDuration);
+            yield return FadeScreenMessage(1f, 0f, fadeDuration);
 
-            yield return FadeScreenText(1f, 0f, fadeDuration);
-
-            currentScreenToastRoutine = null;
+            _currentScreenToastRoutine = null;
         }
 
-        private IEnumerator Fade(float from, float to, float duration)
+        private IEnumerator FadeText(TMP_Text text, float from, float to, float duration)
         {
-            float t = 0f;
-            while (t < duration)
+            float elapsed = 0f;
+            while (elapsed < duration)
             {
-                t += Time.deltaTime;
-                float alpha = Mathf.Lerp(from, to, t / duration);
-                SetAlpha(alpha);
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(from, to, elapsed / duration);
+                
+                Color c = text.color;
+                c.a = alpha;
+                text.color = c;
+
                 yield return null;
             }
-            SetAlpha(to);
+
+            Color finalColor = text.color;
+            finalColor.a = to;
+            text.color = finalColor;
         }
 
-        private IEnumerator FadeScreenText(float from, float to, float duration)
+        private IEnumerator FadeScreenMessage(float from, float to, float duration)
         {
-            float t = 0f;
-            while (t < duration)
+            float elapsed = 0f;
+            while (elapsed < duration)
             {
-                t += Time.deltaTime;
-                float alpha = Mathf.Lerp(from, to, t / duration);
-                SetAlphaForScreen(alpha);
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(from, to, elapsed / duration);
+                SetScreenMessageAlpha(alpha);
                 yield return null;
             }
-            SetAlphaForScreen(to);
+            SetScreenMessageAlpha(to);
         }
 
-        private void SetAlphaForScreen(float a)
+        private void SetScreenMessageAlpha(float alpha)
         {
-            Color c = screenMessageText.color;
-            Color PenelColor = screenMessagePenel.color;
+            if (screenMessageText != null)
+            {
+                Color textColor = screenMessageText.color;
+                textColor.a = alpha;
+                screenMessageText.color = textColor;
+            }
 
-            PenelColor.a = a;
-            c.a = a;
-
-            screenMessagePenel.color = PenelColor;
-            screenMessageText.color = c;
+            if (screenMessagePanel != null)
+            {
+                Color panelColor = screenMessagePanel.color;
+                panelColor.a = alpha;
+                screenMessagePanel.color = panelColor;
+            }
         }
+        #endregion
 
-        private void SetAlpha(float a)
+        #region Player Profile
+        /// <summary>
+        /// [마스터 전용] 플레이어 프로필 초기화
+        /// </summary>
+        public void InitializePlayerProfile()
         {
-            Color c = messageText.color;
-            c.a = a;
-            messageText.color = c;
-        }
-
-        public void InitializedPlayerProfile()
-        {
-            // 1) 호스트 권한 보강
             if (!PhotonNetwork.IsMasterClient)
             {
-                Debug.LogWarning("[Meeting] Only MasterClient can initialize profiles.");
+                Debug.LogWarning("[UIManager] 플레이어 프로필 초기화는 마스터 클라이언트만 가능합니다.");
                 return;
             }
 
-            // 2) 초기화 전에 UI 컨테이너 비우기 (중복 생성 방지)
+            // 기존 프로필 제거
             meetingUI?.ClearAllProfilesSafe();
-            deductionUI.ClearAllProfilesSafe();
+            deductionUI?.ClearAllProfilesSafe();
 
-            // 3) 기존 흐름 유지: 플레이어 리스트 루프 → 항목별 RPC
-            var list = GameDataManager.Instance.GetAllPublicPlayerData();
-            foreach (var data in list)
+            // 모든 플레이어 데이터 가져오기
+            var playerDataList = GameDataManager.Instance.GetAllPublicPlayerData();
+            
+            foreach (var data in playerDataList)
             {
                 if (data == null) continue;
 
-                // InGameData 조회 실패/지연 시 방어
-                if (!GameDataManager.Instance.TryGetInGameDataByActorId(data.currentActorId, out var inGameData) || inGameData == null)
+                if (!GameDataManager.Instance.TryGetInGameDataByActorId(data.currentActorId, out var inGameData))
+                {
+                    Debug.LogWarning($"[UIManager] Actor {data.currentActorId}의 InGameData를 찾을 수 없습니다.");
                     continue;
+                }
 
-                // 닉네임 널/공백 방어
-                var nickname = string.IsNullOrWhiteSpace(data.nickname) ? "Player" : data.nickname.Trim();
+                string nickname = string.IsNullOrWhiteSpace(data.nickname) ? "Player" : data.nickname.Trim();
 
-                // 항목별 RPC(원래 구조 유지)
-                photonView.RPC(nameof(RPC_CreatePlayerCard), RpcTarget.All, data.currentActorId, nickname, inGameData.isAlive);
+                photonView.RPC(nameof(RPC_CreatePlayerCard), RpcTarget.All, 
+                    data.currentActorId, nickname, inGameData.isAlive);
             }
         }
 
@@ -307,83 +398,288 @@ namespace ColorPicker.InGame
         {
             meetingUI?.CreatePlayerCard(actorNum, nickname, isAlive);
             deductionUI?.CreatePlayerCard(actorNum, nickname, isAlive);
-
         }
+        #endregion
 
+        #region Deduction UI
         public PlayerCardUI GetPlayerCard()
         {
-            return currentPlayerCard;
+            return _currentPlayerCard;
         }
 
         public void ShowDeductionPickerUI(PlayerCardUI playerCard)
         {
-            currentPlayerCard = playerCard;
-            pickerUI.SetActive(true);
+            _currentPlayerCard = playerCard;
+            
+            if (pickerUI != null)
+            {
+                pickerUI.SetActive(true);
+            }
         }
 
         public void InitializeButtonIcon()
         {
-            for (int i = 0; i < colorPickButtons.Count; i++)
+            foreach (var button in colorPickButtons)
             {
-                colorPickButtons[i].DisableIcon();
+                button?.DisableIcon();
             }
         }
 
         public void SetDeductionColor(ColorType color)
         {
-            currentPlayerCard.SetDeductionColor(color);
+            _currentPlayerCard?.SetDeductionColor(color);
         }
 
         public void DisableDeductionPickerUI()
         {
-            currentPlayerCard = null;
-            pickerUI.SetActive(false);
+            _currentPlayerCard = null;
+            
+            if (pickerUI != null)
+            {
+                pickerUI.SetActive(false);
+            }
         }
-
-
-        #region vote
-        public void ShowVotePopup(int actorNum, string nickname)
-        {
-            if (votePopup) votePopup.SetActive(true);
-            voteMessage.text = $"{nickname}님을 투표하시겠습니까 ?";
-            currentVoteActorNum = actorNum;
-        }
-
-        public void CloseVotePopup()
-        {
-            if (votePopup) votePopup.SetActive(false);
-            currentVoteActorNum = -1;
-        }
-
-        public void VotePlayer()
-        {
-            // TODO : vote player
-            Debug.Log($"{currentVoteActorNum}");
-            CloseVotePopup();
-        }
-
         #endregion
 
-        #region meeting
-        public void BoradcastInitializeAssignSceneUI()
+        #region Vote UI
+        /// <summary>
+        /// 투표 팝업 표시
+        /// </summary>
+        public void ShowVotePopup(int actorNum, string nickname)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            // 이미 투표했는지 확인
+            if (_hasVoted)
+            {
+                ShowToastToScreen(MSG_ALREADY_VOTED);
+                return;
+            }
 
-            photonView.RPC(nameof(InitializeAssignSceneUI), RpcTarget.All);
-        }
+            // 시간 조정을 사용했는지 확인
+            if (GameManager.Instance != null && !GameManager.Instance.CanModifyTime())
+            {
+                ShowToastToScreen("시간 조정 후에는 투표할 수 없습니다.");
+                return;
+            }
 
-        [PunRPC]
-        public void InitializeAssignSceneUI()
-        {
-            int actorId = PhotonNetwork.LocalPlayer?.ActorNumber ?? -1;
-            if (actorId < 0) return;
-            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(actorId, out var pdata)) { return; }
+            if (votePopup != null)
+            {
+                votePopup.SetActive(true);
+            }
 
-            loadingScreenUI.ShowAssignScene(pdata.classType);
+            if (voteMessage != null)
+            {
+                voteMessage.text = $"{nickname}님을 투표하시겠습니까?";
+            }
+
+            _currentVoteActorNum = actorNum;
         }
 
         /// <summary>
-        /// 각 클라 로컬에서만 UI 카운트다운(표시용) 시작
+        /// 투표 팝업 닫기
+        /// </summary>
+        public void CloseVotePopup()
+        {
+            if (votePopup != null)
+            {
+                votePopup.SetActive(false);
+            }
+
+            _currentVoteActorNum = -1;
+        }
+
+        /// <summary>
+        /// 투표 실행 (버튼 클릭)
+        /// </summary>
+        public void OnClick_Vote()
+        {
+            if (_currentVoteActorNum == -1)
+            {
+                Debug.LogWarning("[UIManager] 투표 대상이 선택되지 않았습니다.");
+                return;
+            }
+
+            if (_hasVoted)
+            {
+                ShowToastToScreen(MSG_ALREADY_VOTED);
+                CloseVotePopup();
+                return;
+            }
+
+            // 투표 요청
+            GameManager.Instance?.RequestVote(_currentVoteActorNum);
+            
+            // 투표 완료 상태로 변경
+            _hasVoted = true;
+            
+            CloseVotePopup();
+            ShowToastToScreen("투표가 완료되었습니다.");
+        }
+
+        /// <summary>
+        /// 투표 여부 확인
+        /// </summary>
+        public bool HasVoted()
+        {
+            return _hasVoted;
+        }
+        #endregion
+
+        #region Time Control UI
+        /// <summary>
+        /// 시간 조정 팝업 표시
+        /// </summary>
+        public void ShowTimeControlPopup()
+        {
+            if (GameManager.Instance == null) return;
+
+            // 이미 투표했다면 시간 조정 불가
+            if (_hasVoted)
+            {
+                ShowToastToScreen(MSG_VOTE_AFTER_TIME_CONTROL);
+                return;
+            }
+
+            // 이미 시간 조정을 사용했다면 불가
+            if (!GameManager.Instance.CanModifyTime())
+            {
+                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
+                return;
+            }
+
+            if (timeControlPopup != null)
+            {
+                timeControlPopup.SetActive(true);
+            }
+
+            UpdateTimeControlButtons();
+        }
+
+        /// <summary>
+        /// 시간 조정 팝업 닫기
+        /// </summary>
+        public void CloseTimeControlPopup()
+        {
+            if (timeControlPopup != null)
+            {
+                timeControlPopup.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 시간 조정 버튼 상태 업데이트
+        /// </summary>
+        private void UpdateTimeControlButtons()
+        {
+            if (GameManager.Instance == null) return;
+
+            // 시간 추가 버튼 (항상 가능)
+            if (addTimeButton != null)
+            {
+                addTimeButton.interactable = GameManager.Instance.CanModifyTime();
+            }
+
+            // 시간 감소 버튼 (10초 초과일 때만 가능)
+            if (reduceTimeButton != null)
+            {
+                reduceTimeButton.interactable = GameManager.Instance.CanReduceTime();
+            }
+
+            // 안내 메시지
+            if (timeControlMessage != null)
+            {
+                if (!GameManager.Instance.CanModifyTime())
+                {
+                    timeControlMessage.text = MSG_TIME_ALREADY_MODIFIED;
+                }
+                else if (!GameManager.Instance.CanReduceTime())
+                {
+                    timeControlMessage.text = "시간 증가만 가능합니다.\n(감소는 10초 초과 시 가능)";
+                }
+                else
+                {
+                    timeControlMessage.text = "시간을 증가 또는 감소하시겠습니까?";
+                }
+            }
+        }
+
+        /// <summary>
+        /// 시간 추가 버튼 클릭
+        /// </summary>
+        public void OnClick_AddTime()
+        {
+            if (GameManager.Instance == null) return;
+
+            if (!GameManager.Instance.CanModifyTime())
+            {
+                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
+                CloseTimeControlPopup();
+                return;
+            }
+
+            GameManager.Instance.RequestAddMeetingTime();
+            CloseTimeControlPopup();
+            ShowToastToScreen("시간이 추가되었습니다.");
+        }
+
+        /// <summary>
+        /// 시간 감소 버튼 클릭
+        /// </summary>
+        public void OnClick_ReduceTime()
+        {
+            if (GameManager.Instance == null) return;
+
+            if (!GameManager.Instance.CanModifyTime())
+            {
+                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
+                CloseTimeControlPopup();
+                return;
+            }
+
+            if (!GameManager.Instance.CanReduceTime())
+            {
+                ShowToastToScreen(MSG_CANNOT_REDUCE_TIME);
+                CloseTimeControlPopup();
+                return;
+            }
+
+            GameManager.Instance.RequestReduceMeetingTime();
+            CloseTimeControlPopup();
+            ShowToastToScreen("시간이 감소되었습니다.");
+        }
+        #endregion
+
+        #region Meeting UI
+        /// <summary>
+        /// [마스터 전용] 역할 배정 화면 표시
+        /// </summary>
+        public void BroadcastInitializeAssignSceneUI()
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogWarning("[UIManager] 역할 배정은 마스터 클라이언트만 가능합니다.");
+                return;
+            }
+
+            photonView.RPC(nameof(RPC_InitializeAssignSceneUI), RpcTarget.All);
+        }
+
+        [PunRPC]
+        private void RPC_InitializeAssignSceneUI()
+        {
+            int actorId = PhotonNetwork.LocalPlayer?.ActorNumber ?? -1;
+            if (actorId < 0) return;
+
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(actorId, out var pdata))
+            {
+                Debug.LogWarning($"[UIManager] Actor {actorId}의 PrivateData를 찾을 수 없습니다.");
+                return;
+            }
+
+            loadingScreenUI?.ShowAssignScene(pdata.classType);
+        }
+
+        /// <summary>
+        /// 미팅 타이머 UI 시작
         /// </summary>
         public void StartMeetingTimerUI(float duration)
         {
@@ -393,70 +689,83 @@ namespace ColorPicker.InGame
                 return;
             }
 
-            if (meetingTimerCo != null) StopCoroutine(meetingTimerCo);
-            meetingTimerCo = StartCoroutine(Co_MeetingTimer(duration));
+            if (_meetingTimerCoroutine != null)
+            {
+                StopCoroutine(_meetingTimerCoroutine);
+            }
+
+            _meetingTimerCoroutine = StartCoroutine(Co_MeetingTimer(duration));
         }
 
+        /// <summary>
+        /// 미팅 타이머 UI 정지
+        /// </summary>
         public void StopMeetingTimerUI()
         {
-            if (meetingTimerCo != null)
+            if (_meetingTimerCoroutine != null)
             {
-                StopCoroutine(meetingTimerCo);
-                meetingTimerCo = null;
+                StopCoroutine(_meetingTimerCoroutine);
+                _meetingTimerCoroutine = null;
             }
+
+            SetMeetingTimerText(0f);
         }
 
         private IEnumerator Co_MeetingTimer(float duration)
         {
-            float t = duration;
-            while (t > 0f)
+            float remaining = duration;
+
+            while (remaining > 0f)
             {
-                t -= Time.deltaTime;
-                SetMeetingTimerText(t);
+                remaining -= Time.deltaTime;
+                SetMeetingTimerText(remaining);
                 yield return null;
             }
+
             SetMeetingTimerText(0f);
-            meetingTimerCo = null;
+            _meetingTimerCoroutine = null;
         }
 
-        private void SetMeetingTimerText(float t)
+        private void SetMeetingTimerText(float time)
         {
-            if (!meetingTimerText) return;
-            t = Mathf.Max(0f, t);
-            int m = (int)(t / 60f);
-            int s = (int)(t % 60f);
-            meetingTimerText.text = $"{m:00}:{s:00}";
+            if (meetingTimerText == null) return;
 
-            meetingTimerText.color = (m == 0 && s <= 10) ? Color.red : Color.white;
+            time = Mathf.Max(0f, time);
+            int minutes = (int)(time / 60f);
+            int seconds = (int)(time % 60f);
+
+            meetingTimerText.text = $"{minutes:00}:{seconds:00}";
+
+            // 10초 이하일 때 빨간색으로 표시
+            meetingTimerText.color = (minutes == 0 && seconds <= 10) ? Color.red : Color.white;
         }
 
-
+        /// <summary>
+        /// 미팅 UI 표시/숨김
+        /// </summary>
         public void ShowMeetingUI(bool isActive)
         {
-            meetingOBJ.SetActive(isActive);
-        }
-
-        #endregion
-
-        public void OnClick_Vote()
-        {
-            if (currentVoteActorNum == -1)
+            if (meetingOBJ != null)
             {
-                Debug.Log("NullActorNum");
-                return;
+                meetingOBJ.SetActive(isActive);
             }
 
-            GameManager.Instance.RequestVote(currentVoteActorNum);
+            // 미팅 시작 시 투표 상태 초기화
+            if (isActive)
+            {
+                ResetVoteState();
+            }
         }
+        #endregion
 
-        public void ApplyVoteState()
+        #region Public Utility
+        /// <summary>
+        /// 일반 메시지 표시 (외부에서 호출 가능)
+        /// </summary>
+        public void ShowMessage(string message)
         {
-
+            ShowToastToScreen(message);
         }
-
-        public void InitializedVoteState()
-        {
-            
-        }
-    }    
+        #endregion
+    }
 }

@@ -38,7 +38,7 @@ namespace ColorPicker.InGame
 
             GameDataManager.Instance.InitializedPlayerInGameData();
 
-            UIManager.Instance.InitializedPlayerProfile();
+            UIManager.Instance.InitializePlayerProfile();
 
             GameManager.Instance.RequestPhaseChange(GameStateType.Playing);
         }

@@ -92,7 +92,7 @@ namespace ColorPicker.InGame
             var me = PlayerManager.Instance?.GetMyPlayer();
             if (!me) return;
             var pc = me.GetComponent<PlayerControl>();
-            if (pc) pc.DisablePlayerControl(disableControl);
+            //if (pc) pc.DisablePlayerControl(disableControl);
         }
 
         #endregion
@@ -356,10 +356,10 @@ namespace ColorPicker.InGame
         public void OnClick_DisableControl(bool isActive)
         {
             if (PlayerManager.Instance.GetMyPlayer()) {
-                PlayerManager.Instance.GetMyPlayer()?.playerControl?.DisablePlayerControl(isActive);
+                //PlayerManager.Instance.GetMyPlayer()?.playerControl?.DisablePlayerControl(isActive);
             }
             else {
-                PlayerManager.Instance.GetMyLobbyPlayer()?.playerControl.DisablePlayerControl(isActive);
+                //PlayerManager.Instance.GetMyLobbyPlayer()?.playerControl.DisablePlayerControl(isActive);
             }
         }
     }
