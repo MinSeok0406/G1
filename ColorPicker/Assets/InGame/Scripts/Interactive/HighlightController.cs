@@ -49,8 +49,8 @@ namespace ColorPicker.InGame
             if (!_collected) AutoCollect();
             CacheOriginals();
 
-            // 초기 상태 적용
-            SetHighlightState(initialState, /*force*/ true);
+            if(!GetComponent<PlayerBase>())
+            SetHighlightState(initialState,true);
         }
 
         private void AutoCollect()

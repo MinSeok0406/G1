@@ -407,6 +407,6 @@ MonoBehaviour:
   - {fileID: 3213321580896035685}
   - {fileID: 2653751236390523098}
   includeInactiveChildren: 1
-  outlineMaterial: {fileID: 2100000, guid: c1d30f7c8a67a784599d244f28ad911d, type: 2}
-  defaultSpriteMaterial: {fileID: 2100000, guid: 8c1d009f0c3bb8a43a98f32266329424, type: 2}
+  outlineMaterial: {fileID: 2100000, guid: afa366f7a142c9146b4c81c29d26bbba, type: 2}
+  defaultSpriteMaterial: {fileID: 0}
   initialState: 1

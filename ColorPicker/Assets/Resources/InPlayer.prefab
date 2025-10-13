@@ -261,7 +261,6 @@ GameObject:
   - component: {fileID: 2548516420588631662}
   - component: {fileID: 1889216790473217578}
   - component: {fileID: 6285227664025444378}
-  - component: {fileID: 1013436396440344829}
   - component: {fileID: 4842551916898225374}
   - component: {fileID: 3258803185421604004}
   m_Layer: 3
@@ -629,19 +628,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.53, y: 0.5}
   m_EdgeRadius: 0
---- !u!114 &1013436396440344829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6269680581958123269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcc7f8d11a018dc439c18e01342ab3ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderers: []
 --- !u!58 &4842551916898225374
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -689,8 +675,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7493b50dcd3e46842bf8e0486854ac60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 0}
+  renderers: []
+  includeInactiveChildren: 0
+  outlineMaterial: {fileID: 2100000, guid: afa366f7a142c9146b4c81c29d26bbba, type: 2}
   defaultSpriteMaterial: {fileID: 0}
+  initialState: 1
 --- !u!1001 &3055283800090541737
 PrefabInstance:
   m_ObjectHideFlags: 0

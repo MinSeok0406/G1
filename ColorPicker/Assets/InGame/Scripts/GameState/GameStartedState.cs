@@ -34,7 +34,7 @@ namespace ColorPicker.InGame
 
         private void Initialized()
         {
-            GameManager.Instance.playerClassAssigner.AssignRoles();
+            GameManager.Instance.PlayerClassAssigner.AssignRoles();
 
             GameDataManager.Instance.InitializedPlayerInGameData();
 

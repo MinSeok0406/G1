@@ -4,20 +4,19 @@ using UnityEngine;
 namespace ColorPicker.InGame
 {
     /// <summary>
-    /// 타깃팅/하이라이트/틱을 공통 제공하는 베이스.
-    /// 파생 클래스는 버튼 로직/쿨다운 UI만 구현하면 됨.
+    /// 타깃팅/하이라이트/틱 공통. 파생은 버튼/쿨다운 UI만 구현.
     /// </summary>
     public abstract class TargetingAbilityBase : MonoBehaviourPun
     {
         [Header("Targeting")]
-        [SerializeField] protected Material outlineMaterial;
         [SerializeField, Min(0.1f)] protected float aimRadius = 1f;
-        [SerializeField] protected LayerMask aimMask2D;
+        [SerializeField] protected LayerMask aimMask2D;    // "Player" 레이어만 포함 추천
         [SerializeField, Min(0.05f)] protected float aimTickInterval = 0.1f;
         [SerializeField, Min(0.05f)] protected float uiTickInterval = 0.1f;
 
-        protected ITargetingStrategy targeting;
-        protected IHighlighter highlighter;
+        [Header("Highlight Materials (optional)")]
+        [SerializeField] private Material outlineMaterialOverride;   // 비우면 GameResources 사용
+        [SerializeField] private Material defaultSpriteMaterialOverride;
 
         protected PhotonView currentTarget;
         protected Transform origin;
@@ -25,11 +24,10 @@ namespace ColorPicker.InGame
         private float _aimTick;
         private float _uiTick;
 
-        protected virtual void Awake()
-        {
-            highlighter = new OutlineHighlighter(outlineMaterial);
-            targeting = new CircleNearestTargeting2D(aimRadius, aimMask2D);
-        }
+        // 캐시: 현재 타깃의 HighlightController
+        private HighlightController _currentHL;
+
+        protected virtual void Awake() { }
 
         protected virtual void OnEnable()
         {
@@ -37,14 +35,10 @@ namespace ColorPicker.InGame
             ClearHighlight();
         }
 
-        protected virtual void OnDisable()
-        {
-            ClearHighlight();
-        }
+        protected virtual void OnDisable() => ClearHighlight();
 
         protected virtual void Update()
         {
-            // UI 틱
             _uiTick += Time.unscaledDeltaTime;
             if (_uiTick >= uiTickInterval)
             {
@@ -52,7 +46,6 @@ namespace ColorPicker.InGame
                 OnUiTick();
             }
 
-            // 타깃 틱
             _aimTick += Time.unscaledDeltaTime;
             if (_aimTick >= aimTickInterval)
             {
@@ -76,7 +69,30 @@ namespace ColorPicker.InGame
                 return;
             }
 
-            var nearest = targeting.AcquireNearest(origin);
+            // === 플레이어만 타겟: Player 레이어만 포함된 aimMask2D 사용 권장
+            var cols = Physics2D.OverlapCircleAll(origin.position, aimRadius, aimMask2D);
+
+            PhotonView nearest = null;
+            float bestSqr = float.MaxValue;
+
+            for (int i = 0; i < cols.Length; i++)
+            {
+                var c = cols[i];
+                if (!c) continue;
+
+                var view = c.GetComponentInParent<PhotonView>();
+                if (!view || view.IsMine || view.ViewID <= 0) continue;
+
+                if (!view.CompareTag("Player")) continue;
+
+                float d2 = (view.transform.position - origin.position).sqrMagnitude;
+                if (d2 < bestSqr)
+                {
+                    bestSqr = d2;
+                    nearest = view;
+                }
+            }
+
             SetTarget(nearest);
         }
 
@@ -84,20 +100,36 @@ namespace ColorPicker.InGame
         {
             if (newTarget == currentTarget) return;
 
-            // 하이라이트 교체
-            if (newTarget)
-                highlighter.Apply(newTarget);
-            else
-                highlighter.Clear();
+            // 이전 타깃 하이라이트 원복
+            if (_currentHL != null)
+                _currentHL.SetHighlightState(HighlightState.OriginalLocked);
 
             currentTarget = newTarget;
+
+            // 새 타깃 하이라이트 적용
+            if (currentTarget)
+            {
+                _currentHL = currentTarget.GetComponent<HighlightController>()?? HighlightController.GetOrAdd(currentTarget.gameObject);
+                if (_currentHL != null)
+                {
+                    _currentHL.SetInteractable(true);
+                    _currentHL.SetHighlightState(HighlightState.ActiveOutline);
+                }
+            }
+            else
+            {
+                _currentHL = null;
+            }
+
             OnTargetChanged(newTarget);
         }
 
         protected void ClearHighlight()
         {
+            if (_currentHL != null)
+                _currentHL.SetHighlightState(HighlightState.OriginalLocked);
+            _currentHL = null;
             currentTarget = null;
-            highlighter?.Clear();
         }
 
         /// <summary>쿨다운 등으로 에임 일시 중지할지</summary>

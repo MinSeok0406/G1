@@ -40,7 +40,6 @@ namespace ColorPicker.InGame
         [PunRPC]
         private void RPC_SyncCooldown(int viewID, double endTime)
         {
-            // ★ 클라 로컬 캐시 먼저
             cooldowns.SetEndTimeFromServer(viewID, endTime);
             UIManager.Instance?.UpdateAbilityCooldownUI(viewID, cooldowns.GetRemaining(viewID));
         }
@@ -171,8 +170,8 @@ namespace ColorPicker.InGame
         {
             var result = (ColorPickResult)resultCode;
             if (result == ColorPickResult.Error) { UIManager.Instance?.ShowToastToScreen(AbilityMessages.ColorPickError); return; }
-            if (result == ColorPickResult.Fail)  { UIManager.Instance?.ShowToastToScreen(AbilityMessages.ColorPickFail);  return; }
-            if (result == ColorPickResult.Success){ UIManager.Instance?.ShowToastToScreen(AbilityMessages.ColorPickOk);    return; }
+            if (result == ColorPickResult.Fail) { UIManager.Instance?.ShowToastToScreen(AbilityMessages.ColorPickFail); return; }
+            if (result == ColorPickResult.Success) { UIManager.Instance?.ShowToastToScreen(AbilityMessages.ColorPickOk); return; }
         }
 
         // ===== 재접속/정리 =====

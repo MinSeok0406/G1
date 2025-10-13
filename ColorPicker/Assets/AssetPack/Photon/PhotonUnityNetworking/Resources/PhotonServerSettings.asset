@@ -137,6 +137,9 @@ MonoBehaviour:
   - RPC_SyncTimeModificationState
   - RPC_UpdateColorIcon
   - RPC_ClientToast
+  - RPC_CompleteMission
+  - RPC_ReceiveReward
+  - RPC_UpdateMissionProgress
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -211,7 +211,7 @@ namespace ColorPicker.InGame
             mingameFrame.SetActive(false);
             crtCamera.gameObject.SetActive(false);
 
-            MissionManager.Instance.RequestMissionComplete(PhotonNetwork.LocalPlayer.ActorNumber, (int)report.miniGameType);
+            MissionManager.Instance.RequestMissionComplete(PhotonNetwork.LocalPlayer.ActorNumber, report.miniGameType);
         }
 
         /// <summary>
