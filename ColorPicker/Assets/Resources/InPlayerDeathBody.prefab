@@ -183,8 +183,8 @@ GameObject:
   - component: {fileID: 2014741898173516139}
   - component: {fileID: 5702664630970139590}
   - component: {fileID: 6157122294637098065}
-  - component: {fileID: 127256531769319670}
   - component: {fileID: 227415030119045852}
+  - component: {fileID: 5213443861190445098}
   m_Layer: 0
   m_Name: InPlayerDeathBody
   m_TagString: Untagged
@@ -352,20 +352,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b579452860860964890cd43cf455729b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMaterial: {fileID: 0}
+  toastOffset: {x: 0, y: 0, z: 0}
   bodyRenderer: {fileID: 5702664630970139590}
-  outlineMaterial: {fileID: 2100000, guid: afa366f7a142c9146b4c81c29d26bbba, type: 2}
---- !u!114 &127256531769319670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4839968478936894869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcc7f8d11a018dc439c18e01342ab3ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &227415030119045852
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -401,3 +390,23 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 10
+--- !u!114 &5213443861190445098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839968478936894869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7493b50dcd3e46842bf8e0486854ac60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 5702664630970139590}
+  - {fileID: 3213321580896035685}
+  - {fileID: 2653751236390523098}
+  includeInactiveChildren: 1
+  outlineMaterial: {fileID: 2100000, guid: c1d30f7c8a67a784599d244f28ad911d, type: 2}
+  defaultSpriteMaterial: {fileID: 2100000, guid: 8c1d009f0c3bb8a43a98f32266329424, type: 2}
+  initialState: 1

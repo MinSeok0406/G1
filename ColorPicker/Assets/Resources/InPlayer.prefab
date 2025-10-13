@@ -257,13 +257,13 @@ GameObject:
   - component: {fileID: 3060113755145757450}
   - component: {fileID: 9212520379270569105}
   - component: {fileID: 266166941241743779}
-  - component: {fileID: 3844880815774564675}
   - component: {fileID: 7276445457568127018}
   - component: {fileID: 2548516420588631662}
-  - component: {fileID: 6749207962823535556}
   - component: {fileID: 1889216790473217578}
   - component: {fileID: 6285227664025444378}
   - component: {fileID: 1013436396440344829}
+  - component: {fileID: 4842551916898225374}
+  - component: {fileID: 3258803185421604004}
   m_Layer: 3
   m_Name: InPlayer
   m_TagString: Player
@@ -302,13 +302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b3aa3eba773d340b6c3b33b6486c73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  idleEvent: {fileID: 0}
-  movementByVelocityEvent: {fileID: 0}
-  animator: {fileID: 0}
-  spriteRenderer: {fileID: 0}
-  playerControl: {fileID: 0}
-  deathEvent: {fileID: 0}
-  ownerActNum: 0
   playerLight: {fileID: 4015571168934196164}
 --- !u!114 &1876417230162109710
 MonoBehaviour:
@@ -322,8 +315,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f87765140189804d873dd31423e1c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionDetector: {fileID: 0}
-  circleCollider2D: {fileID: 0}
 --- !u!212 &1985157658540354073
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -557,18 +548,6 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 2
     LayerIndex: 0
---- !u!114 &3844880815774564675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6269680581958123269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06297f94116bbf1458e5c8f08a4d22e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7276445457568127018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,19 +572,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7efb72832490cf43b30d6943ae487ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6749207962823535556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6269680581958123269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4da1661763d1764abbaafbf69258e55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hats: []
 --- !u!114 &1889216790473217578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -675,6 +641,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc7f8d11a018dc439c18e01342ab3ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  renderers: []
+--- !u!58 &4842551916898225374
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6269680581958123269}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
+--- !u!114 &3258803185421604004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6269680581958123269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7493b50dcd3e46842bf8e0486854ac60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMaterial: {fileID: 0}
+  defaultSpriteMaterial: {fileID: 0}
 --- !u!1001 &3055283800090541737
 PrefabInstance:
   m_ObjectHideFlags: 0

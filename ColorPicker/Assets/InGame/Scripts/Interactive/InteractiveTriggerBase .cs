@@ -92,6 +92,7 @@ namespace ColorPicker.InGame
                 localPlayer = null;
             }
             SetHighlight(false);
+            highlight.Clear();
             HideButton();
         }
 

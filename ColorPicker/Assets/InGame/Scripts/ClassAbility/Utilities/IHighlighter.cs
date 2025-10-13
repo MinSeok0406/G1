@@ -13,7 +13,6 @@ namespace ColorPicker.InGame
     {
         private readonly Material _outlineMat;
         private PhotonView _currentView;
-        private OutlineMarker _currentMarker;
 
         public OutlineHighlighter(Material outlineMat)
         {
@@ -27,14 +26,10 @@ namespace ColorPicker.InGame
             Clear();
 
             _currentView = view;
-            _currentMarker = OutlineMarker.GetOrAdd(view.gameObject);
-            _currentMarker?.Apply(_outlineMat);
         }
 
         public void Clear()
         {
-            _currentMarker?.Clear();
-            _currentMarker = null;
             _currentView = null;
         }
     }

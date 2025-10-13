@@ -136,6 +136,7 @@ MonoBehaviour:
   - RPC_ReduceMeetingTime
   - RPC_SyncTimeModificationState
   - RPC_UpdateColorIcon
+  - RPC_ClientToast
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
