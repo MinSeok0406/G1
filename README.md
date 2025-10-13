@@ -1,210 +1,138 @@
-# In-Game Interaction & Ability System (Unity 2022.3.62 LTS, PUN2)
+# **Chat System Module Documentation**
 
-# 1) 목표
+## **1. 개요**
 
-- **SOLID** 원칙에 따라 책임을 분리하고 테스트 용이성/유지보수성을 강화
-- **보안성 강화**: RPC 발신자/소유권 검증, 서버 권한 판정 일원화
-- **성능 최적화**: NonAlloc 탐색, delegate 캐시, 최소 틱 갱신, Outline 공유/복구
-- **가독성/확장성**: 서비스 계층화, 인터페이스 기반 의존성 역전(DIP), 하드코딩 제거
-- **호환성 보장**: 기존 API를 유지하고 브릿지/래퍼 제공
+기존의 단일 `ChatManager` 클래스를 **SOLID 원칙에 기반한 계층형 아키텍처(Domain, Application, Infrastructure, Presentation)로 리팩토링**한 채팅 시스템 모듈입니다.
+
+본 모듈은 기능적 요구사항(글로벌/유령 채널, 히스토리 동기화 등)을 모두 유지하면서, **테스트 용이성, 확장성, 유지보수성 및 성능을 극대화**하는 것을 목표로 합니다.
 
 ---
 
-## 2) 폴더/디렉토리 구조 (추천)
+## **2. 주요 기능**
+
+- **채널 분리**: 생존/사망 상태에 따른 자동 채널 분리 (Global/Ghost)  
+- **스팸 방지**: 클라이언트/서버 이중 Rate Limiting 적용  
+- **히스토리 동기화**: 중도 입장 플레이어를 위한 최근 대화 내용 자동 동기화  
+- **성능 최적화**: `ObjectPool`을 사용한 채팅 버블 UI 재사용으로 GC 최소화  
+- **설정 관리**: `ScriptableObject`를 통한 유연한 채팅 정책 설정  
+
+---
+
+## **3. 아키텍처**
+
+### **3.1. 디렉토리 구조**
 
 ```
-Assets/InGame/
- ├─ Interaction/
- │   ├─ InteractiveTriggerBase.cs
- │   ├─ HighlightController.cs
- │   └─ OutlineMarker.cs
- ├─ Abilities/
- │   ├─ Base/
- │   │   └─ TargetingAbilityBase.cs
- │   ├─ MafiaAbility.cs
- │   ├─ DetectiveAbility.cs
- │   ├─ AbilityManager.cs     // 파사드 + RPC 엔드포인트
- │   └─ Services/
- │       ├─ CooldownService.cs (ICooldownService)
- │       ├─ KillService.cs     (IKillService)
- │       ├─ DetectiveService.cs(IDetectiveService)
- │       └─ ColorPickService.cs(IColorPickService)
- ├─ UI/
- │   └─ (UIManager, PlayerCardUI, ColorPickKillButton ...)
- └─ Common/
-     ├─ GameResources.cs
-     ├─ Settings.cs
-     └─ Enums_Ability.cs      // ColorPickResult, 메시지 상수 등
+Assets/InGame/Chat/
+ ├─ Domain/         // 순수 데이터 모델, 핵심 인터페이스 (엔진/플랫폼 비의존적)
+ ├─ Application/    // 핵심 비즈니스 로직 (채팅 서비스, 필터링, 히스토리 등)
+ ├─ Infrastructure/ // 외부 시스템 연동 (Photon 네트워크, 게임 데이터 등)
+ └─ Presentation/   // UI, 입력 처리, 의존성 조립 (Unity 종속적)
 ```
 
----
+### **3.2. 핵심 클래스**
 
-## 3) 핵심 컴포넌트/서비스
-
-### 3.1 Interaction
-- **InteractiveTriggerBase**
-  - 2D 트리거 진입/이탈 처리, 로컬 플레이어(IsMine) 판정
-  - `InteractionDetector` Add/Remove 연동
-  - UI 버튼 표시/숨김 + 콜백 캐시
-  - 하이라이트 on/off 일원화(`HighlightController` 사용)
-  - 파생 클래스는 `HandleInteractLocal()`/`CanInteract()`만 구현
-
-- **HighlightController**
-  - SpriteRenderer: `sharedMaterial` 스왑
-  - Mesh/SkinnedMesh: `OutlineMarker` 경유(전 슬롯 교체/복구)
-  - 프로젝트 공통 머티리얼(`GameResources.Instance.outlineMaterial`) 폴백
-
-- **OutlineMarker**
-  - 원본 `sharedMaterials` 캐시/복원
-  - 중복 적용/런타임 제거 안전
-  - `GetOrAdd(GameObject)` 제공
-
-### 3.2 Abilities
-- **TargetingAbilityBase**
-  - 타깃팅/하이라이트/틱(에임, UI) 공통 제공
-  - `ITargetingStrategy` + `IHighlighter` 주입
-  - 파생: 버튼 로직/쿨다운 UI만 구현
-
-- **MafiaAbility**
-  - 반경 내 최근접 타깃 자동 선정, 킬 요청, 쿨다운 UI
-
-- **DetectiveAbility**
-  - 최근접 대상 색상 정보 조회(라운드당 1회), UI 결과 표시
-
-### 3.3 Services (SOLID)
-- **ICooldownService / CooldownService**
-  - 서버 쿨다운 관리, **클라 endTime 로컬 캐시**(RPC 수신 시 `SetEndTimeFromServer`)
-  - 플레이어 퇴장 시 연관 뷰 정리
-
-- **IKillService / KillService**
-  - 역할/상태/거리 검증 및 킬 적용(유령 전환, 브로드캐스트, 쿨다운 시작)
-
-- **IDetectiveService / DetectiveService**
-  - 탐문 판정(반경 + 보정치)
-
-- **IColorPickService / ColorPickService**
-  - 컬러 추리 검증 및 판정(성공/실패/에러, 실패 시 쿨다운 부여)
-
-- **AbilityManager (Facade + RPC)**
-  - RPC 엔드포인트 유지, 내부 서비스로 위임
-  - **RPC 보안**: 발신자/소유권 검증(killerViewID ↔ info.Sender)
-  - **현지화/가독성**: 결과코드 enum/메시지 상수화
-  - **설정 외부화**: 탐정 보정치(SerializeField), 쿨다운(설정값)
+| 계층 | 클래스명 | 역할 |
+|------|-----------|------|
+| Application | `ChatService` | 채팅 정책(정화, 쿨다운, 채널 판정, 히스토리 관리)을 총괄하는 핵심 서비스 |
+| Infrastructure | `PhotonChatTransport` | Photon Pun2의 RPC 송수신을 처리하는 네트워크 어댑터 |
+| Presentation | `ChatUIController` | 채팅 UI(버블 생성, 풀링, 스크롤, 입력)를 제어하는 뷰 컨트롤러 |
+| Presentation | `ChatInstaller` | 각 계층의 의존성을 조립하고 주입하는 Composition Root |
 
 ---
 
-## 4) 적용/설치 가이드
+## **4. 설치 및 설정 가이드**
 
-### 4.1 의존성
-- Unity **2022.3.62 LTS**
-- Photon **PUN2.x**
-- TextMeshPro
-- `UnityEngine.Pool`(2021+)
+> **사전 조건**  
+> 프로젝트에 Photon PUN2가 임포트되어 있으며, 룸 입/퇴장 로직이 구현된 상태여야 합니다.
 
-### 4.2 씬 배치
-- **Player**(로컬): `PlayerControl` + `InteractionDetector`
-- **UI**: `UIManager`, `ColorPickKillButton`, `PlayerCardUI`
-- **AbilityManager**: 싱글톤 오브젝트에 부착(동일 씬 상주 권장)
+### **Step 1: 설정 에셋 생성**
 
-### 4.3 인스펙터 설정
-- `HighlightController`: outlineMaterial 비우면 `GameResources` 폴백
-- `MafiaAbility`/`DetectiveAbility`:
-  - `outlineMaterial`, `aimMask2D`, `aimRadius`, `aimTickInterval`, `uiTickInterval`
-- `AbilityManager`:
-  - `killCooldownSeconds`
-  - `colorPickWrongCooldownSeconds`
-  - `detectiveInspectTolerance` (기본 1.2)
+1. Unity Project 창에서  
+   `마우스 우클릭 > Create > Game > Chat > Config` 선택 → `ChatConfig` 에셋 생성  
+2. 생성된 에셋을 선택하고 아래 값으로 조정:
+   - **Max Messages**: 150  
+   - **Max Chars Per Message**: 200  
+   - **Min Send Interval Sec**: 0.5  
+   - **Sync Batch Count**: 50  
+   - **Pool Default Capacity**: 32  
+   - **Pool Max Size**: 256  
 
 ---
 
-## 5) 마이그레이션 노트
+### **Step 2: 씬 오브젝트 배치**
 
-- 기존 `IInteractive.ToggleHighlight(bool)`/`OnInteract()`/`GetPosition()` **그대로 유지**
-- `InteractiveObjectEffect`는 **Deprecated** → `HighlightController`로 이관(래퍼 유지 가능)
-- 기존 상호작용 트리거: `InteractiveTriggerBase` 상속으로 교체
-- 타깃팅/하이라이트 로직을 각 클래스에서 제거(베이스/서비스로 일원화)
+#### **① ChatTransport (빈 오브젝트)**
 
----
+- **추가 컴포넌트**: `PhotonView`, `PhotonChatTransport`  
+- `PhotonView`의 Observed Components는 **비워둡니다.**
 
-## 6) 보안/안정성 체크리스트
+#### **② ChatUI (Canvas 하위)**
 
-- `RPC_RequestKill`에서 **killerViewID 소유권** 검증(`info.Sender`와 일치 확인)
-- 모든 권한/검증/판정은 **서버(마스터)** 에서 최종 결정
-- 쿨다운 **클라 로컬 상태 저장**(RPC 수신 시 `SetEndTimeFromServer`) → UI/로직 일관성
-- Fake-null/널 가드(싱글톤/뷰 탐색 실패 시 안전 종료/토스트)
-- Transform/레이어 **재귀 유틸**(중복 적용/핑퐁 방지)
+- **추가 컴포넌트**: `PhotonView`, `ChatUIController`  
+- **Inspector 연결**
+  - `Chat Content Root`: Scroll View의 `Content` Transform  
+  - `Input`: `TMP_InputField` (⚠️ **Rich Text 비활성화**)  
+  - `Scroll Rect`: `ScrollRect`  
+  - `Config`: `ChatConfig` 에셋  
+  - `Prefabs`: 각 상황별 채팅 버블 프리팹 (유령용 미지정 시 일반 프리팹 폴백)
 
----
+#### **③ ChatInstaller (빈 오브젝트)**
 
-## 7) 성능 최적화 포인트
-
-- OverlapCircle**NonAlloc** + 뷰ID 중복 제거(딕셔너리)
-- 하이라이트 변경은 **타깃 변경시에만** 적용/복구
-- 버튼 콜백 **delegate 캐시**(GC 감축)
-- 틱 분리(에임/UX 0.1s) + 쿨다운 중 타깃팅 **일시 정지**
-- 리스트/딕셔너리 간단 풀(ListPool/DictionaryPool)
+- **추가 컴포넌트**: `ChatInstaller`  
+- **Inspector 연결**
+  - `Config`: `ChatConfig` 에셋  
+  - `Transport`: `ChatTransport` 오브젝트  
+  - `UI`: `ChatUI` 오브젝트  
 
 ---
 
-## 8) 주요 코드 스니펫
+### **Step 3: 버블 프리팹 설정**
 
-### 8.1 Cooldown RPC 동기화 (클라 캐시 반영)
-```csharp
-[PunRPC]
-private void RPC_SyncCooldown(int viewID, double endTime)
-{
-    cooldowns.SetEndTimeFromServer(viewID, endTime);
-    UIManager.Instance?.UpdateAbilityCooldownUI(viewID, cooldowns.GetRemaining(viewID));
-}
-```
-
-### 8.2 Kill 요청의 소유권 검증
-```csharp
-[PunRPC]
-private void RPC_RequestKill(int targetViewID, int killerViewID, float killRadius, PhotonMessageInfo info)
-{
-    if (!PhotonNetwork.IsMasterClient) return;
-
-    var killerView = PhotonView.Find(killerViewID);
-    if (!killerView || killerView.OwnerActorNr != info.Sender?.ActorNumber)
-    {
-        Debug.LogWarning("[Ability] KillerView ownership mismatch.");
-        return;
-    }
-    // ... 검증 → 적용
-}
-```
-
-### 8.3 레이어 재귀 적용 유틸
-```csharp
-private static void SetLayerRecursively(GameObject root, int layer)
-{
-    if (!root) return;
-    if (root.layer != layer) root.layer = layer;
-    foreach (Transform child in root.transform)
-        SetLayerRecursively(child.gameObject, layer);
-}
-```
+1. 각 채팅 버블 프리팹에 `ChatBubbleView` 추가  
+2. `ChatBubbleView`의 닉네임/본문 `TMP_Text` 연결  
+3. `Content` 오브젝트에는 `Vertical Layout Group` + `Content Size Fitter (Vertical Fit: Preferred Size)` 권장  
 
 ---
 
-## 9) FAQ / 트러블슈팅
+### **Step 4: UI 이벤트 연결**
 
-- **Q. 하이라이트가 핑크로 출력됩니다.**  
-  A. 프로젝트의 outline 셰이더가 대상 렌더러(Sprite/Mesh/SkinnedMesh)에 호환되는지 확인하고, `HighlightController`의 override 머티리얼을 지정하세요.
-
-- **Q. 킬 버튼이 비활성화됩니다.**  
-  A. 쿨다운 중이거나 타깃이 없을 때 비활성화됩니다. `AbilityManager.IsOnCooldown()`/`GetRemainingCooldown()`로 확인하세요.
-
-- **Q. 탐정 판정 반경을 바꾸고 싶어요.**  
-  A. `AbilityManager.detectiveInspectTolerance`와 각 Ability의 `aimRadius`를 인스펙터에서 조절하세요.
+- **전송 버튼**: `Button.OnClick()` → `ChatUIController.OnClick_Send`  
+- **엔터 키 전송**: `TMP_InputField.OnSubmit()` → `ChatUIController.OnClick_Send`  
 
 ---
 
-## 10) 버전/호환성
+## **5. 기존 ChatManager 마이그레이션**
 
-- Unity **2022.3.62 LTS**
-- Photon **PUN 2.x**
-- `UnityEngine.Pool` (2021+)
+- 기존 `ChatManager`는 반드시 **비활성화 또는 제거**해야 함  
+- 중복 RPC 호출, 콜백 충돌 등 **심각한 오작동 위험**  
+- 코드상 `ChatManager.Instance` 참조는 브릿지(Bridge) 패턴으로 점진적 제거 권장  
 
-> 상이한 Unity/Photon 버전, 프로젝트별 데이터 구조(`GameDataManager`)에서 **Infrastructure 계층 수정**이 필요할 수 있습니다.
+---
+
+## **6. FAQ 및 문제 해결**
+
+**Q. 메시지가 두 번씩 표시됩니다.**  
+→ 씬 내 구버전 `ChatManager` 존재 가능성 99%. 완전히 제거하십시오.
+
+**Q. `GameDataAliveQuery`에서 컴파일 오류 발생**  
+→ `GameDataManager.Instance.TryGetInGameDataByActorId()` 및 `data.isAlive`를  
+프로젝트 구조에 맞게 수정 필요 (이 부분은 **커스터마이징 지점**입니다)
+
+**Q. 유령 채팅이 생존자에게 보입니다.**  
+→ `GameDataAliveQuery`의 상태 판정이 현재 게임 상태를 정확히 반환하는지 확인
+
+**Q. `<b>`, `<color>` 태그가 그대로 노출됩니다.**  
+→ `TMP_InputField`의 **Rich Text 옵션 비활성화** 필요  
+
+---
+
+## **7. 호환성 및 주의사항 ⚠️**
+
+- **Unity**: `2022.3.62 LTS`  
+- **Photon**: `PUN 2.x`  
+- **Dependencies**: `UnityEngine.Pool` (Unity 2021 이상)  
+
+본 문서는 상기 버전을 기준으로 작성되었습니다.  
+다른 버전의 Unity/Photon을 사용할 경우,  
+`Infrastructure` 계층 (`PhotonChatTransport`, `GameDataAliveQuery`) 수정이 필요할 수 있습니다.
