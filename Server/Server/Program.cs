@@ -25,7 +25,7 @@ namespace Server
         static Listener _listener = new Listener();
 
         // 🔧 Public 주소/포트(클라에게 내려줄 값)
-        public static string PublicHost { get; set; } = "game.colorpicker"; // 예시
+        public static string PublicHost { get; set; } = "game.colorpickerstudio.com"; // 예시
         public static int Port { get; set; } = 50000;
 
         // 🔧 Bind 주소(소켓 리슨용)

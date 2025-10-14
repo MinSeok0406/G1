@@ -58,7 +58,7 @@ namespace AccountServer
 
             var publicBaseUrl = Environment.GetEnvironmentVariable("ACCOUNTSERVER_PUBLIC_BASEURL")
                                 ?? cfg["PublicBaseUrl"]   // appsettings.json 에서도 받을 수 있게
-                                ?? "http://api.colorpicker:51000/api/"; // 마지막 기본값(필요 시 교체)
+                                ?? "http://api.colorpickerstudio.com:51000/api/"; // 마지막 기본값(필요 시 교체)
 
             if (!publicBaseUrl.EndsWith("/")) publicBaseUrl += "/";
             services.AddSingleton(new PublicUrlOptions { BaseUrl = publicBaseUrl });
@@ -92,7 +92,7 @@ namespace AccountServer
                 opt.AddDefaultPolicy(p => p
                     .WithOrigins(
                         "http://localhost", "http://localhost:51000",
-                        "http://api.colorpicker", "http://api.colorpicker:51000"
+                        "http://api.colorpickerstudio.com", "http://api.colorpickerstudio.com:51000"
                     )
                     .AllowAnyHeader()
                     .AllowAnyMethod());
@@ -133,6 +133,7 @@ namespace AccountServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGet("/health", async ctx => await ctx.Response.WriteAsync("OK"));
             });
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 public static class ServerConfig
 {
     public static string Scheme { get; private set; } = "http";
-    public static string Host { get; private set; } = "api.colorpicker";
+    public static string Host { get; private set; } = "api.colorpickerstudio.com";
     public static int Port { get; private set; } = 51000;
     public static string BasePath { get; private set; } = "/api/"; // 반드시 슬래시로 감싸진 형태
 
@@ -45,6 +45,6 @@ public static class ServerConfig
     }
 
     // GameServer fallback (ServerList 비었을 때 사용)
-    public const string GameHostFallback = "api.colorpicker";
+    public const string GameHostFallback = "game.colorpickerstudio.com";
     public const int GamePortFallback = 50000;
 }
