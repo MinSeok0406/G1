@@ -34,12 +34,39 @@ namespace Minseok
             Managers.Web.ConfigureBase("http", ServerConfig.Host, ServerConfig.Port, "/api/");
 
             Button.SetActive(false);
-            PlayGamesPlatform.Instance.Authenticate(OnClickCreateButton);
+            OnClickCreateButton();
+            /*PlayGamesPlatform.Instance.Authenticate(OnClickCreateButton);*/
         }
 
-        internal void OnClickCreateButton(SignInStatus status)
+        internal void OnClickCreateButton(/*SignInStatus status*/)
         {
-            if (status == SignInStatus.Success)
+            string displayName = "Test1";
+            string account = "abcdefg";
+
+            googleID.text = account ?? "(null)";
+            Name.text = displayName ?? "(null)";
+
+            if (string.IsNullOrEmpty(account))
+            {
+                Debug.Log("구글 로그인은 성공했지만 account(UserId)가 없음");
+                test.text = "account가 없음";
+                return;
+            }
+
+            CreateAccountPacketReq packet = new CreateAccountPacketReq()
+            {
+                AccountName = displayName,
+                GoogleID = account,
+            };
+
+            Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
+            {
+                Debug.Log(res.CreateOk);
+                test.text = res.CreateOk.ToString();
+                Button.SetActive(true);
+            });
+
+            /*if (status == SignInStatus.Success)
             {
                 string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
                 string account = PlayGamesPlatform.Instance.GetUserId();
@@ -73,14 +100,14 @@ namespace Minseok
                 googleID.text = "가져오기 실패";
                 Name.text = "가져오기 실패";
                 test.text = "가져오기 실패";
-            }
+            }*/
         }
 
         // 버튼 클릭 시 작동
         public void OnClickLoginButton()
         {
-            string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
-            string account = PlayGamesPlatform.Instance.GetUserId();
+            string displayName = "Test1";
+            string account = "abcdefg";
 
             LoginAccountPacketReq packet = new LoginAccountPacketReq()
             {

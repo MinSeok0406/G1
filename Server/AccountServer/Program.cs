@@ -3,6 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Net;
+using AccountServer.DB;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AccountServer
 {
@@ -10,7 +13,28 @@ namespace AccountServer
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            // 최초 부팅 시 스키마 자동 생성/업데이트
+            using (var scope = host.Services.CreateScope())
+            {
+                var sp = scope.ServiceProvider;
+
+                void EnsureSchema<TContext>() where TContext : DbContext
+                {
+                    var ctx = sp.GetRequiredService<TContext>();
+                    try { ctx.Database.Migrate(); }          // 마이그레이션이 있다면 적용
+                    catch { ctx.Database.EnsureCreated(); }  // 없으면 최소 테이블 생성
+                }
+
+                // Account DB (dbo.Account)
+                EnsureSchema<AppDbContext>();
+
+                // Shared DB (dbo.Token, dbo.ServerInfo)
+                EnsureSchema<SharedDB.SharedDbContext>();
+            }
+
+            host.Run();
         }
 
         // 환경설정 우선순위

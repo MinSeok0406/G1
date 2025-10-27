@@ -6,10 +6,16 @@ namespace SharedDB
 {
     public static class DbConfig
     {
-        public const string GameConnection =
-            "Server=tcp:gameserverdb.cnksqwoqm9qg.ap-northeast-2.rds.amazonaws.com,1433;Database=G1GameDB;User ID=admin;Password=wltjd456!@#$;Encrypt=True;TrustServerCertificate=False;";
+        public static string GameConnection =>
+            Env("ConnectionStrings__GameConnection")
+            ?? Env("GameConnection")
+            ?? throw new InvalidOperationException("GameConnection이 설정되지 않았습니다.");
 
-        public const string SharedConnection =
-            "Server=tcp:gameserverdb.cnksqwoqm9qg.ap-northeast-2.rds.amazonaws.com,1433;Database=G1SharedDB;User ID=admin;Password=wltjd456!@#$;Encrypt=True;TrustServerCertificate=False;";
+        public static string SharedConnection =>
+            Env("ConnectionStrings__SharedConnection")
+            ?? Env("SharedConnection")
+            ?? throw new InvalidOperationException("SharedConnection이 설정되지 않았습니다.");
+
+        static string Env(string key) => System.Environment.GetEnvironmentVariable(key);
     }
 }

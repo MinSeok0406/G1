@@ -37,10 +37,13 @@ namespace AccountServer
         {
             var cfg = Configuration;
 
-            string acc = Environment.GetEnvironmentVariable("AccountConnection")
-                         ?? cfg.GetConnectionString("AccountConnection");
-            string shared = Environment.GetEnvironmentVariable("SharedConnection")
-                            ?? cfg.GetConnectionString("SharedConnection");
+            var acc = Environment.GetEnvironmentVariable("ConnectionStrings__AccountConnection")
+                      ?? cfg.GetConnectionString("AccountConnection")
+                      ?? Environment.GetEnvironmentVariable("AccountConnection"); // 과거 호환
+
+            var shared = Environment.GetEnvironmentVariable("ConnectionStrings__SharedConnection")
+                         ?? cfg.GetConnectionString("SharedConnection")
+                         ?? Environment.GetEnvironmentVariable("SharedConnection"); // 과거 호환
 
             if (string.IsNullOrWhiteSpace(acc))
                 throw new InvalidOperationException("AccountConnection이 설정되지 않았습니다.");
@@ -91,7 +94,6 @@ namespace AccountServer
             {
                 opt.AddDefaultPolicy(p => p
                     .WithOrigins(
-                        "http://localhost", "http://localhost:51000",
                         "http://api.colorpickerstudio.com", "http://api.colorpickerstudio.com:51000"
                     )
                     .AllowAnyHeader()

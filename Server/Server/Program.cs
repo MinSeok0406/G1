@@ -31,7 +31,38 @@ namespace Server
         // 🔧 Bind 주소(소켓 리슨용)
         public static IPAddress BindAddress { get; set; } = IPAddress.Any;
 
-        public static string Name { get; set; } = "gameserver";
+        public static string Name { get; set; } = "gameserver-1";
+
+        static void EnsureGameSchemas()
+        {
+            // Game DB (dbo.Account, dbo.Player, dbo.Achievement 등)
+            try
+            {
+                using (var game = new Server.DB.AppDbContext())
+                {
+                    try { game.Database.Migrate(); }
+                    catch { game.Database.EnsureCreated(); }   // 여기에 Achievement도 같이 생성됨
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[SCHEMA] GameDb ensure failed: " + e.Message);
+            }
+
+            // Shared DB (토큰/서버리스트 – 콘솔에서도 쓰니까 함께 보장)
+            try
+            {
+                using (var shared = new SharedDB.SharedDbContext())
+                {
+                    try { shared.Database.Migrate(); }
+                    catch { shared.Database.EnsureCreated(); }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[SCHEMA] SharedDb ensure failed: " + e.Message);
+            }
+        }
 
         static void GameLogicTask()
         {
@@ -131,7 +162,9 @@ namespace Server
             }
 
             // --- SharedDB (EF Core) ---
-            var sharedConn = Environment.GetEnvironmentVariable("SharedConnection");
+            var sharedConn =
+                Environment.GetEnvironmentVariable("ConnectionStrings__SharedConnection")
+                ?? Environment.GetEnvironmentVariable("SharedConnection");
             if (string.IsNullOrWhiteSpace(sharedConn))
                 Console.WriteLine("[WARN] SharedConnection not set. Token DB fallback will be disabled.");
 
@@ -175,6 +208,7 @@ namespace Server
         static void Main(string[] args)
         {
             LoadEnv();
+            EnsureGameSchemas();
 
             // 백엔드(REDIS / SharedDB)
             ConfigureBackends();
