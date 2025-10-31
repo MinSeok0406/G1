@@ -40,8 +40,11 @@ namespace Minseok
                 uwr.uploadHandler = (jsonBytes != null) ? new UploadHandlerRaw(jsonBytes) : null;
                 uwr.downloadHandler = new DownloadHandlerBuffer();
                 uwr.SetRequestHeader("Content-Type", "application/json");
+                uwr.SetRequestHeader("Accept", "application/json");
+                uwr.timeout = 15; // ★ 타임아웃 추가
 
                 Debug.Log($"[HTTP] {method} {sendUrl}");
+                if (jsonBytes != null) Debug.Log($"[HTTP] payload {jsonBytes.Length} bytes");
 
                 yield return uwr.SendWebRequest();
 
@@ -49,25 +52,29 @@ namespace Minseok
                 bool hasError = uwr.result == UnityWebRequest.Result.ConnectionError ||
                                 uwr.result == UnityWebRequest.Result.ProtocolError;
 #else
-        bool hasError = uwr.isNetworkError || uwr.isHttpError;
+    bool hasError = uwr.isNetworkError || uwr.isHttpError;
 #endif
+
                 if (hasError)
                 {
-                    Debug.LogError($"[HTTP][ERR] code={uwr.responseCode}, error={uwr.error}, text={uwr.downloadHandler?.text}");
+                    var msg = $"[HTTP][ERR] code={uwr.responseCode}, error={uwr.error}, text={uwr.downloadHandler?.text}";
+                    Debug.LogError(msg);
+
+                    var ui = GameObject.FindObjectOfType<Minseok.UI_LoginScene>();
+                    if (ui != null) ui.SendMessage("OnHttpErrorText", msg, SendMessageOptions.DontRequireReceiver);
                     yield break;
                 }
 
-                // 응답 본문을 try 바깥 변수에 담아 catch에서도 접근 가능하게
-                string responseText = uwr.downloadHandler?.text;
+                var responseText = uwr.downloadHandler?.text;
+                Debug.Log($"[HTTP][OK] len={(responseText?.Length ?? 0)}");
 
                 try
                 {
-                    T resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText);
+                    var resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText);
                     res?.Invoke(resObj);
                 }
                 catch (Exception e)
                 {
-                    // 단순 라벨 출력은 보간 바깥에서 쓰면 됨. (서식 지정자 아님)
                     Debug.LogError($"[HTTP][PARSE] {e.Message}\ntext: {responseText}");
                 }
             }

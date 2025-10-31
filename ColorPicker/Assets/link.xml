@@ -1,0 +1,13 @@
+<linker>
+  <!-- 너의 게임 코드가 asmdef 없으면 Assembly-CSharp가 맞음 -->
+  <assembly fullname="Assembly-CSharp">
+    <type fullname="CreateAccountPacketReq" preserve="all"/>
+    <type fullname="CreateAccountPacketRes" preserve="all"/>
+    <type fullname="LoginAccountPacketReq" preserve="all"/>
+    <type fullname="LoginAccountPacketRes" preserve="all"/>
+    <type fullname="ServerInfo" preserve="all"/>
+  </assembly>
+
+  <!-- Newtonsoft.Json 어셈블리 보존 -->
+  <assembly fullname="Newtonsoft.Json" preserve="all"/>
+</linker>

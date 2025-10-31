@@ -489,7 +489,6 @@
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\LitShaders\SL2D_ShaderPassLibrary.cginc" />
     <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\RetroDepthNormalsPass.hlsl" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\LightShadow\LegacyGPU.shader" />
-    <None Include="Assets\Libs\Newtonsoft.Json.dll" />
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Misc\MultiplyDarkness.shader" />
     <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\CRT Mesh\CRTSurfaceInput.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
@@ -575,6 +574,7 @@
     <None Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Resources\Shaders\Internal\LightShadow\AlphaShadow.shader" />
     <None Include="Assets\AssetPack\Photon\PhotonLibs\Photon3Unity3D.xml" />
     <None Include="Assets\AssetPack\Retro Shaders Pro\Shaders\CRT Mesh\CRTMesh.shader" />
+    <None Include="Assets\link.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\Resources\Map\Map_001.txt" />
     <None Include="Assets\Minseok\UI_Sprite\Cainos\Pixel Art Top Down - Basic\Shader\SH Sprite Shadow Mask.shader" />
@@ -922,7 +922,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>Assets\Libs\Newtonsoft.Json.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.2\Runtime\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Google.Protobuf">
@@ -1643,6 +1643,10 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.State.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Mobile.AndroidLogcat.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Mobile.AndroidLogcat.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Mathematics">

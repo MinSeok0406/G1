@@ -2,6 +2,7 @@ using AccountServer.DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -61,7 +62,7 @@ namespace AccountServer
 
             var publicBaseUrl = Environment.GetEnvironmentVariable("ACCOUNTSERVER_PUBLIC_BASEURL")
                                 ?? cfg["PublicBaseUrl"]   // appsettings.json 에서도 받을 수 있게
-                                ?? "http://api.colorpickerstudio.com:51000/api/"; // 마지막 기본값(필요 시 교체)
+                                ?? "https://api.colorpickerstudio.com/api/"; // 마지막 기본값(필요 시 교체)
 
             if (!publicBaseUrl.EndsWith("/")) publicBaseUrl += "/";
             services.AddSingleton(new PublicUrlOptions { BaseUrl = publicBaseUrl });
@@ -93,9 +94,7 @@ namespace AccountServer
             services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(p => p
-                    .WithOrigins(
-                        "http://api.colorpickerstudio.com", "http://api.colorpickerstudio.com:51000"
-                    )
+                    .WithOrigins("https://api.colorpickerstudio.com")
                     .AllowAnyHeader()
                     .AllowAnyMethod());
             });
@@ -106,6 +105,11 @@ namespace AccountServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

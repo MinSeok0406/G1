@@ -31,6 +31,8 @@ namespace AccountServer.Controllers
         [Route("create")]
         public CreateAccountPacketRes CreateAccount([FromBody] CreateAccountPacketReq req)
         {
+            Console.WriteLine($"[AccountController] /api/account/create HIT. {req?.GoogleID}");
+
             CreateAccountPacketRes res = new CreateAccountPacketRes();
 
             AccountDb account = _context.Accounts

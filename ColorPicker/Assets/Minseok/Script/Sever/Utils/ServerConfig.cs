@@ -5,9 +5,9 @@ using UnityEngine;
 
 public static class ServerConfig
 {
-    public static string Scheme { get; private set; } = "http";
+    public static string Scheme { get; private set; } = "https";
     public static string Host { get; private set; } = "api.colorpickerstudio.com";
-    public static int Port { get; private set; } = 51000;
+    public static int Port { get; private set; } = 443;
     public static string BasePath { get; private set; } = "/api/"; // 반드시 슬래시로 감싸진 형태
 
     public static void Configure(string scheme, string host, int port, string basePath = "/api/")

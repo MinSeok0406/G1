@@ -25,49 +25,27 @@ namespace Minseok
         [SerializeField]
         private TMP_Text test;
 
+        [SerializeField]
+        private TMP_Text test2;
+
         public ServerInfo Info { get; set; }
 
         public override void Init()
         {
             base.Init();
 
-            Managers.Web.ConfigureBase("http", ServerConfig.Host, ServerConfig.Port, "/api/");
+            Managers.Web.ConfigureBase("https", ServerConfig.Host, ServerConfig.Port, "/api/");
 
             Button.SetActive(false);
-            OnClickCreateButton();
-            /*PlayGamesPlatform.Instance.Authenticate(OnClickCreateButton);*/
+            PlayGamesPlatform.Instance.Authenticate(OnClickCreateButton);
         }
 
-        internal void OnClickCreateButton(/*SignInStatus status*/)
+        internal void OnClickCreateButton(SignInStatus status)
         {
-            string displayName = "Test1";
-            string account = "abcdefg";
-
-            googleID.text = account ?? "(null)";
-            Name.text = displayName ?? "(null)";
-
-            if (string.IsNullOrEmpty(account))
+            if (status == SignInStatus.Success)
             {
-                Debug.Log("구글 로그인은 성공했지만 account(UserId)가 없음");
-                test.text = "account가 없음";
-                return;
-            }
+                test2.text = Managers.Web.BuildUrl("account/create");
 
-            CreateAccountPacketReq packet = new CreateAccountPacketReq()
-            {
-                AccountName = displayName,
-                GoogleID = account,
-            };
-
-            Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
-            {
-                Debug.Log(res.CreateOk);
-                test.text = res.CreateOk.ToString();
-                Button.SetActive(true);
-            });
-
-            /*if (status == SignInStatus.Success)
-            {
                 string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
                 string account = PlayGamesPlatform.Instance.GetUserId();
 
@@ -93,6 +71,8 @@ namespace Minseok
                     test.text = res.CreateOk.ToString();
                     Button.SetActive(true);
                 });
+
+                test.text = ServerConfig.BaseUri.ToString();
             }
             else
             {
@@ -100,14 +80,14 @@ namespace Minseok
                 googleID.text = "가져오기 실패";
                 Name.text = "가져오기 실패";
                 test.text = "가져오기 실패";
-            }*/
+            }
         }
 
         // 버튼 클릭 시 작동
         public void OnClickLoginButton()
         {
-            string displayName = "Test1";
-            string account = "abcdefg";
+            string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
+            string account = PlayGamesPlatform.Instance.GetUserId();
 
             LoginAccountPacketReq packet = new LoginAccountPacketReq()
             {
