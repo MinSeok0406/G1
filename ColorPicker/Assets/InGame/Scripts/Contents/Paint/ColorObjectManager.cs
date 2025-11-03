@@ -42,7 +42,7 @@ namespace ColorPicker.InGame
                 out Vector3 toastPos
             );
             
-            toastPos += Vector3.up * 1.5f;
+            toastPos += Vector3.up * 0.5f;
 
             // 요청자 UI/토스트 (케이스별)
             switch (result)
@@ -104,6 +104,82 @@ namespace ColorPicker.InGame
         private void RPC_ClientToast(string message, Vector3 worldPos)
         {
             UIManager.Instance?.ShowToast(message, worldPos);
+        }
+
+        /// <summary>
+        /// [Host Only] 죽은 플레이어의 색을 모두 색칠하지 않은 상태로 리셋
+        /// </summary>
+        public void ResetDeadPlayersColors()
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogWarning("[ColorObjectManager] ResetDeadPlayersColors is host-only.");
+                return;
+            }
+
+            // 죽은 플레이어들의 색상 수집
+            var deadPlayerColors = new System.Collections.Generic.HashSet<int>();
+            var allPlayers = GameDataManager.Instance?.GetAllPublicPlayerData();
+            if (allPlayers == null) return;
+
+            foreach (var player in allPlayers)
+            {
+                if (player == null) continue;
+
+                var inGameData = GameDataManager.Instance.GetInGameData(player.googleUID);
+                if (inGameData != null && !inGameData.isAlive)
+                {
+                    if (GameDataManager.Instance.TryGetPrivatePlayerData(player.googleUID, out var privateData))
+                    {
+                        deadPlayerColors.Add(privateData.identityColorId);
+                    }
+                }
+            }
+
+            if (deadPlayerColors.Count == 0) return;
+
+            // 죽은 플레이어의 색으로 칠해진 오브젝트를 모두 리셋
+            var paintDict = GameDataManager.Instance?.GetAllPaintObjectDictionary();
+            if (paintDict == null) return;
+
+            var viewIDsToReset = new System.Collections.Generic.List<int>();
+            foreach (var kvp in paintDict)
+            {
+                if (deadPlayerColors.Contains(kvp.Value))
+                {
+                    viewIDsToReset.Add(kvp.Key);
+                }
+            }
+
+            // 색상 리셋 및 브로드캐스트
+            foreach (var viewID in viewIDsToReset)
+            {
+                GameDataManager.Instance?.SetPaintObjectColor(viewID, -1);
+                photonView.RPC(nameof(RPC_ResetPaint), RpcTarget.All, viewID);
+            }
+
+            Debug.Log($"[ColorObjectManager] Reset {viewIDsToReset.Count} paint objects from dead players.");
+        }
+
+        /// <summary>클라: 특정 오브젝트의 색을 리셋(시각 반영)</summary>
+        [PunRPC]
+        private void RPC_ResetPaint(int viewID)
+        {
+            PhotonView view = PhotonView.Find(viewID);
+            if (!view)
+            {
+                Debug.LogWarning("[ColorObjectManager] invalid view id on ResetPaint");
+                return;
+            }
+
+            var trigger = view.GetComponent<PaintApplyTrigger>();
+            if (!trigger)
+            {
+                Debug.LogWarning("[ColorObjectManager] PaintApplyTrigger missing on target view");
+                return;
+            }
+
+            trigger.SetPaintColor(-1);
         }
     }
 }

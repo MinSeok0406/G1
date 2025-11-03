@@ -31,10 +31,7 @@ namespace ColorPicker.InGame
         [SerializeField] private TMP_Text voteMessage;
 
         [Header("Time Control UI")]
-        [SerializeField] private GameObject timeControlPopup;
-        [SerializeField] private Button addTimeButton;
-        [SerializeField] private Button reduceTimeButton;
-        [SerializeField] private TMP_Text timeControlMessage;
+        [SerializeField] private GameObject meetingTimerPopup;
 
         [Header("Meeting UI")]
         [SerializeField] private GameObject meetingOBJ;
@@ -128,8 +125,18 @@ namespace ColorPicker.InGame
             _hasVoted = false;
             _currentVoteActorNum = -1;
             CloseVotePopup();
-            CloseTimeControlPopup();
+
+            // 모든 투표 표시 초기화
+            meetingUI?.ClearAllVotes();
         }
+
+        public void BroadCastResetVoteState()
+        {
+            photonView.RPC(nameof(RPC_ResetVoteState), RpcTarget.All);
+        }
+        
+        [PunRPC]
+        public void RPC_ResetVoteState() => ResetVoteState();
         #endregion
 
         #region Interaction Button
@@ -369,9 +376,8 @@ namespace ColorPicker.InGame
                 return;
             }
 
-            // 기존 프로필 제거
-            meetingUI?.ClearAllProfilesSafe();
-            deductionUI?.ClearAllProfilesSafe();
+            // 모든 클라이언트에서 기존 프로필 제거
+            photonView.RPC(nameof(RPC_ClearAllProfiles), RpcTarget.All);
 
             // 모든 플레이어 데이터 가져오기
             var playerDataList = GameDataManager.Instance.GetAllPublicPlayerData();
@@ -396,8 +402,49 @@ namespace ColorPicker.InGame
         [PunRPC]
         private void RPC_CreatePlayerCard(int actorNum, string nickname, bool isAlive)
         {
+            // 기존 카드가 있으면 제거 후 재생성
             meetingUI?.CreatePlayerCard(actorNum, nickname, isAlive);
             deductionUI?.CreatePlayerCard(actorNum, nickname, isAlive);
+        }
+
+        /// <summary>
+        /// 클라이언트에서 기존 프로필 제거 (RPC로 호출됨)
+        /// </summary>
+        [PunRPC]
+        private void RPC_ClearAllProfiles()
+        {
+            meetingUI?.ClearAllProfilesSafe();
+            deductionUI?.ClearAllProfilesSafe();
+        }
+
+        /// <summary>
+        /// 특정 클라이언트에게 프로필 동기화 (마피아 킬 후 즉시 업데이트)
+        /// </summary>
+        [PunRPC]
+        private void RPC_SyncProfileToClient()
+        {
+            // 기존 프로필 제거
+            meetingUI?.ClearAllProfilesSafe();
+            deductionUI?.ClearAllProfilesSafe();
+
+            // 최신 데이터로 프로필 재생성
+            var playerDataList = GameDataManager.Instance?.GetAllPublicPlayerData();
+            if (playerDataList == null) return;
+
+            foreach (var data in playerDataList)
+            {
+                if (data == null) continue;
+
+                if (!GameDataManager.Instance.TryGetInGameDataByActorId(data.currentActorId, out var inGameData))
+                {
+                    continue;
+                }
+
+                string nickname = string.IsNullOrWhiteSpace(data.nickname) ? "Player" : data.nickname.Trim();
+
+                meetingUI?.CreatePlayerCard(data.currentActorId, nickname, inGameData.isAlive);
+                deductionUI?.CreatePlayerCard(data.currentActorId, nickname, inGameData.isAlive);
+            }
         }
         #endregion
 
@@ -447,17 +494,21 @@ namespace ColorPicker.InGame
         /// </summary>
         public void ShowVotePopup(int actorNum, string nickname)
         {
+            // 죽은 플레이어는 투표할 수 없음
+            int myActorNum = PhotonNetwork.LocalPlayer?.ActorNumber ?? -1;
+            if (myActorNum > 0 && GameDataManager.Instance.TryGetInGameDataByActorId(myActorNum, out var myData))
+            {
+                if (!myData.isAlive)
+                {
+                    ShowToastToScreen("사망한 플레이어는 투표할 수 없습니다.");
+                    return;
+                }
+            }
+
             // 이미 투표했는지 확인
             if (_hasVoted)
             {
                 ShowToastToScreen(MSG_ALREADY_VOTED);
-                return;
-            }
-
-            // 시간 조정을 사용했는지 확인
-            if (GameManager.Instance != null && !GameManager.Instance.CanModifyTime())
-            {
-                ShowToastToScreen("시간 조정 후에는 투표할 수 없습니다.");
                 return;
             }
 
@@ -522,131 +573,29 @@ namespace ColorPicker.InGame
         {
             return _hasVoted;
         }
+
+        public void OnClick_OpenMeetingTimerPopup()
+        {
+            // 1) 이미 투표 완료 → 팝업 열지 않고 메시지
+            if (HasVoted())
+            {
+                ShowToastToScreen(MSG_ALREADY_VOTED);
+                return;
+            }
+
+            // 2) 이미 시간 조정 1회 사용됨 → 팝업 열지 않고 메시지
+            if (!GameManager.Instance._meetingTimer.CanModifyTime())
+            {
+                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
+                return;
+            }
+
+            // 3) 조건 통과 → 팝업 오픈
+            meetingTimerPopup?.SetActive(true);
+        }
         #endregion
 
-        #region Time Control UI
-        /// <summary>
-        /// 시간 조정 팝업 표시
-        /// </summary>
-        public void ShowTimeControlPopup()
-        {
-            if (GameManager.Instance == null) return;
 
-            // 이미 투표했다면 시간 조정 불가
-            if (_hasVoted)
-            {
-                ShowToastToScreen(MSG_VOTE_AFTER_TIME_CONTROL);
-                return;
-            }
-
-            // 이미 시간 조정을 사용했다면 불가
-            if (!GameManager.Instance.CanModifyTime())
-            {
-                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
-                return;
-            }
-
-            if (timeControlPopup != null)
-            {
-                timeControlPopup.SetActive(true);
-            }
-
-            UpdateTimeControlButtons();
-        }
-
-        /// <summary>
-        /// 시간 조정 팝업 닫기
-        /// </summary>
-        public void CloseTimeControlPopup()
-        {
-            if (timeControlPopup != null)
-            {
-                timeControlPopup.SetActive(false);
-            }
-        }
-
-        /// <summary>
-        /// 시간 조정 버튼 상태 업데이트
-        /// </summary>
-        private void UpdateTimeControlButtons()
-        {
-            if (GameManager.Instance == null) return;
-
-            // 시간 추가 버튼 (항상 가능)
-            if (addTimeButton != null)
-            {
-                addTimeButton.interactable = GameManager.Instance.CanModifyTime();
-            }
-
-            // 시간 감소 버튼 (10초 초과일 때만 가능)
-            if (reduceTimeButton != null)
-            {
-                reduceTimeButton.interactable = GameManager.Instance.CanReduceTime();
-            }
-
-            // 안내 메시지
-            if (timeControlMessage != null)
-            {
-                if (!GameManager.Instance.CanModifyTime())
-                {
-                    timeControlMessage.text = MSG_TIME_ALREADY_MODIFIED;
-                }
-                else if (!GameManager.Instance.CanReduceTime())
-                {
-                    timeControlMessage.text = "시간 증가만 가능합니다.\n(감소는 10초 초과 시 가능)";
-                }
-                else
-                {
-                    timeControlMessage.text = "시간을 증가 또는 감소하시겠습니까?";
-                }
-            }
-        }
-
-        /// <summary>
-        /// 시간 추가 버튼 클릭
-        /// </summary>
-        public void OnClick_AddTime()
-        {
-            if (GameManager.Instance == null) return;
-
-            if (!GameManager.Instance.CanModifyTime())
-            {
-                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
-                CloseTimeControlPopup();
-                return;
-            }
-
-            GameManager.Instance.RequestAddMeetingTime();
-            CloseTimeControlPopup();
-            ShowToastToScreen("시간이 추가되었습니다.");
-        }
-
-        /// <summary>
-        /// 시간 감소 버튼 클릭
-        /// </summary>
-        public void OnClick_ReduceTime()
-        {
-            if (GameManager.Instance == null) return;
-
-            if (!GameManager.Instance.CanModifyTime())
-            {
-                ShowToastToScreen(MSG_TIME_ALREADY_MODIFIED);
-                CloseTimeControlPopup();
-                return;
-            }
-
-            if (!GameManager.Instance.CanReduceTime())
-            {
-                ShowToastToScreen(MSG_CANNOT_REDUCE_TIME);
-                CloseTimeControlPopup();
-                return;
-            }
-
-            GameManager.Instance.RequestReduceMeetingTime();
-            CloseTimeControlPopup();
-            ShowToastToScreen("시간이 감소되었습니다.");
-        }
-        #endregion
 
         #region Meeting UI
         /// <summary>
@@ -755,6 +704,14 @@ namespace ColorPicker.InGame
             {
                 ResetVoteState();
             }
+        }
+
+        /// <summary>
+        /// 특정 플레이어의 득표수 업데이트 (RPC로 호출됨)
+        /// </summary>
+        public void UpdateVoteDisplay(int actorNumber, int voteCount)
+        {
+            meetingUI?.UpdatePlayerVoteCount(actorNumber, voteCount);
         }
         #endregion
 

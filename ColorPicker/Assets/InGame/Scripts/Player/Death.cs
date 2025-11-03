@@ -25,29 +25,48 @@ namespace ColorPicker.InGame
 
         private void OnDisable()
         {
-            deathEvent.OnDeathEvent += DeathEvent_OnDeathEvent; 
+            deathEvent.OnDeathEvent -= DeathEvent_OnDeathEvent;
         }
 
         private void DeathEvent_OnDeathEvent(DeathEvent obj)
         {
             if (!player.photonView.IsMine)
             {
-                gameObject.SetActive(false);
+                // 다른 플레이어가 죽었을 때는 아무것도 하지 않음
+                // Player.cs의 RPC_UpdateGhostVisibility가 모든 가시성을 처리함
+                return;
             }
-            else
+
+            // 내가 죽었을 때
+            if (Camera.main != null)
             {
-                Camera.main.GetComponent<Volume>().profile = GameResources.Instance.deathVFXVolumeProfile;
+                var volume = Camera.main.GetComponent<Volume>();
+                if (volume != null && GameResources.Instance != null && GameResources.Instance.deathVFXVolumeProfile != null)
+                {
+                    volume.profile = GameResources.Instance.deathVFXVolumeProfile;
+                }
+            }
+
+            if (AbilityManager.Instance != null && AbilityManager.Instance.abilityBinder != null)
+            {
                 AbilityManager.Instance.abilityBinder.DisableAllAbilities();
             }
 
             if (!PhotonNetwork.IsMasterClient) return;
 
-            PhotonNetwork.Instantiate(GameResources.Instance.playerDeathBodyPrefab.name, transform.position, Quaternion.identity);
-            //GameDataManager.Instance.TryGetPlayerDataByActorId(player.photonView.Owner.ActorNumber, out PlayerData playerData);
+            // 시체 생성 및 DeathBodyManager에 등록
+            var deathBody = PhotonNetwork.Instantiate(
+                GameResources.Instance.playerDeathBodyPrefab.name,
+                transform.position,
+                Quaternion.identity);
 
-            //InGameData data = GameDataManager.Instance.GetInGameData(player.photonView);
-
-            //data.isAlive = false;
+            if (deathBody != null)
+            {
+                if (DeathBodyManager.Instance != null)
+                {
+                    DeathBodyManager.Instance.RegisterDeathBody(deathBody);
+                }
+            }
         }
     }
 }

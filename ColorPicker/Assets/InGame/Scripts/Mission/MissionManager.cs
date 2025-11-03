@@ -136,7 +136,7 @@ namespace ColorPicker.InGame
             }
 
             SaveMissionBackup();
-            
+            BroadcastMissionProgress();
             Debug.Log($"[MissionManager] Round missions initialized for {assignedCount}/{playerDatas.Count} players.");
         }
 

@@ -9,7 +9,7 @@ namespace ColorPicker.InGame
     public abstract class TargetingAbilityBase : MonoBehaviourPun
     {
         [Header("Targeting")]
-        [SerializeField, Min(0.1f)] protected float aimRadius = 1f;
+        [SerializeField, Min(0.1f)] protected float aimRadius = 5f;
         [SerializeField] protected LayerMask aimMask2D;    // "Player" 레이어만 포함 추천
         [SerializeField, Min(0.05f)] protected float aimTickInterval = 0.1f;
         [SerializeField, Min(0.05f)] protected float uiTickInterval = 0.1f;

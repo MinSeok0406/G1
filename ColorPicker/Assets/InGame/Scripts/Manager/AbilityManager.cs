@@ -55,7 +55,6 @@ namespace ColorPicker.InGame
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            // ★ 소유권 검증
             var killerView = PhotonView.Find(killerViewID);
             if (!killerView || killerView.OwnerActorNr != info.Sender?.ActorNumber)
             {

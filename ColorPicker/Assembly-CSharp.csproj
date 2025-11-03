@@ -199,6 +199,7 @@
     <Compile Include="Assets\InGame\Scripts\ClassAbility\ClassAblilityInterface\ICooldownService.cs" />
     <Compile Include="Assets\InGame\Scripts\Chat\Infrastructure\IChatTransport.cs" />
     <Compile Include="Assets\InGame\Scripts\Manager\CacheDataManager.cs" />
+    <Compile Include="Assets\InGame\Scripts\CutScene\CutsceneCatalog.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\SuperTilemapEditor\Components\TilemapRoom2D.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\Types\Rectangle.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Main.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Assets\AssetPack\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Settings\Presets\LightPresets.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ResizableWindow\WindowResizeHandle.cs" />
+    <Compile Include="Assets\InGame\Scripts\CutScene\CutsceneManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\Collider3DShape.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartUtilities2D\Scripts\Utilities\2D\Vector2DList.cs" />
     <Compile Include="Assets\InGame\Scripts\Chat\Infrastructure\GameDataAliveQuery.cs" />
@@ -575,6 +577,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarGridLinearAuto.cs" />
     <Compile Include="Assets\InGame\Scripts\Movement\IdleEvent.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ModalWindow\ModalWindowInputFieldUI.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\VoteArea.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemapOcclusion\OcclusionTileset.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\Mask\Tile.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameBase.cs" />
@@ -597,6 +600,7 @@
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarBubbleAuto.cs" />
     <Compile Include="Assets\InGame\Scripts\Mission\Validators\MissionValidator.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\LightTilemap2D\TilemapEvents.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\DeathBodyManager.cs" />
     <Compile Include="Assets\InGame\Scripts\Chat\Application\RingChatHistory.cs" />
     <Compile Include="Assets\AssetPack\DongJu\Customizing\ScrollBarFixed.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Tooltip\TooltipInDetermine.cs" />

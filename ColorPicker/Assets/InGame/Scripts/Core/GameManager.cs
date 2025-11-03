@@ -26,8 +26,8 @@ namespace ColorPicker.InGame
         #endregion
 
         #region Managers
-        private MeetingTimerManager _meetingTimer;
-        private VotingSystemManager _voting; // 기존 사용하던 클래스 가정
+        [HideInInspector] public MeetingTimerManager _meetingTimer;
+        [HideInInspector] public VotingSystemManager _voting;
         #endregion
 
         #region Unity
@@ -171,8 +171,10 @@ namespace ColorPicker.InGame
         #endregion
 
         #region Voting
-        public void RequestVote(int targetActorNumber) =>
+        public void RequestVote(int targetActorNumber)
+        {
             photonView.RPC(nameof(RPC_SubmitVote), RpcTarget.MasterClient, targetActorNumber);
+        }
 
         [PunRPC]
         private void RPC_SubmitVote(int targetActorNumber, PhotonMessageInfo info)
@@ -184,13 +186,59 @@ namespace ColorPicker.InGame
                 targetActorNumber,
                 PhotonNetwork.CurrentRoom?.PlayerCount ?? 0);
 
+            // 투표 결과를 모든 클라이언트에 브로드캐스트
+            BroadcastVoteUpdate(targetActorNumber);
+
             if (allVoted) _meetingTimer.CapTimerOnAllVoted();
+        }
+
+        /// <summary>
+        /// [Host Only] 투표 결과를 모든 클라이언트에 동기화
+        /// </summary>
+        private void BroadcastVoteUpdate(int targetActorNumber)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            // 해당 플레이어의 현재 득표수 가져오기
+            var voteDict = _voting.GetVoteDictionary();
+            int voteCount = voteDict.ContainsKey(targetActorNumber) ? voteDict[targetActorNumber] : 0;
+
+            // 모든 클라이언트에 투표 결과 업데이트 RPC 전송
+            photonView.RPC(nameof(RPC_UpdateVoteDisplay), RpcTarget.All, targetActorNumber, voteCount);
+        }
+
+        [PunRPC]
+        private void RPC_UpdateVoteDisplay(int actorNumber, int voteCount)
+        {
+            UIManager.Instance?.UpdateVoteDisplay(actorNumber, voteCount);
         }
 
         public int GetMostVotedPlayer() => _voting.GetMostVotedPlayer();
         public Dictionary<int, int> GetVoteDictionary() => _voting.GetVoteDictionary();
         public int GetVotedPlayerCount() => _voting.GetVotedPlayerCount();
         public int GetTotalPlayerCount() => PhotonNetwork.CurrentRoom?.PlayerCount ?? 0;
+        #endregion
+
+        #region Death Body Management
+        /// <summary>
+        /// [Host Only] 시체 정리를 지연 후 실행 (투표 처형 후 생성된 시체 포함)
+        /// </summary>
+        public void ClearDeathBodiesDelayed(float delay = 0.5f)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogWarning("[GameManager] ClearDeathBodiesDelayed is host-only.");
+                return;
+            }
+
+            StartCoroutine(ClearDeathBodiesCoroutine(delay));
+        }
+
+        private System.Collections.IEnumerator ClearDeathBodiesCoroutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            DeathBodyManager.Instance?.ClearAllDeathBodies();
+        }
         #endregion
     }
 }

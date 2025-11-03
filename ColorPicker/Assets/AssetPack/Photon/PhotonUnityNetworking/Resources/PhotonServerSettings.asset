@@ -140,6 +140,21 @@ MonoBehaviour:
   - RPC_CompleteMission
   - RPC_ReceiveReward
   - RPC_UpdateMissionProgress
+  - RPC_RequestPlayForActor
+  - RPC_RequestPlayForActors
+  - RPC_RequestPlayForAll
+  - RPC_RequestStop
+  - ResetLocalVote
+  - RPC_ResetVoteState
+  - RPC_ResetPaint
+  - RPC_ClearAllDeathBodies
+  - RPC_ClearAllProfiles
+  - RPC_SyncProfileToClient
+  - RPC_TriggerVoteDeath
+  - RPC_UpdateGhostVisibility
+  - RPC_UpdateVoteDisplay
+  - RPC_RequestVisibilityUpdate
+  - RPC_UpdatePlayerVisibility
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

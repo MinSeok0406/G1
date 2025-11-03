@@ -409,4 +409,4 @@ MonoBehaviour:
   includeInactiveChildren: 1
   outlineMaterial: {fileID: 2100000, guid: afa366f7a142c9146b4c81c29d26bbba, type: 2}
   defaultSpriteMaterial: {fileID: 0}
-  initialState: 1
+  initialState: 0

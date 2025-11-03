@@ -23,6 +23,16 @@ namespace ColorPicker.InGame
         /// <returns>전원 투표 완료 여부</returns>
         public bool ProcessVote(int voterActorNumber, int targetActorNumber, int totalPlayers)
         {
+            // 죽은 플레이어의 투표 차단
+            if (GameDataManager.Instance.TryGetInGameDataByActorId(voterActorNumber, out var voterData))
+            {
+                if (!voterData.isAlive)
+                {
+                    Debug.LogWarning($"[Vote] Actor {voterActorNumber} is dead and cannot vote.");
+                    return false;
+                }
+            }
+
             // 중복 투표 방지
             if (!_voters.Add(voterActorNumber))
             {
@@ -42,9 +52,9 @@ namespace ColorPicker.InGame
 
             Debug.Log($"[Vote] Actor {voterActorNumber} voted for Actor {targetActorNumber}. Current votes: {_voteCounts[targetActorNumber]}");
 
-            // 전원 투표 완료 확인
+            // 전원 투표 완료 확인 (생존한 플레이어 수 기준)
             bool allVoted = CheckAllVoted(totalPlayers);
-            
+
             if (allVoted)
             {
                 LogVoteResults();
@@ -120,18 +130,38 @@ namespace ColorPicker.InGame
         {
             _voters.Clear();
             _voteCounts.Clear();
+
+            UIManager.Instance.BroadCastResetVoteState();
         }
         #endregion
 
         #region Private Helpers
         /// <summary>
-        /// 전원 투표 완료 확인
+        /// 전원 투표 완료 확인 (생존한 플레이어만 카운트)
         /// </summary>
         private bool CheckAllVoted(int totalPlayers)
         {
             if (totalPlayers <= 0) return false;
 
-            return _voters.Count >= totalPlayers;
+            // 생존한 플레이어 수 계산
+            int alivePlayerCount = 0;
+            var allPlayers = GameDataManager.Instance?.GetAllPublicPlayerData();
+            if (allPlayers != null)
+            {
+                foreach (var player in allPlayers)
+                {
+                    if (player == null) continue;
+                    var inGameData = GameDataManager.Instance.GetInGameData(player.googleUID);
+                    if (inGameData != null && inGameData.isAlive)
+                    {
+                        alivePlayerCount++;
+                    }
+                }
+            }
+
+            // 생존한 플레이어 수가 0이면 전체 플레이어 수 사용 (초기화 전)
+            int requiredVotes = alivePlayerCount > 0 ? alivePlayerCount : totalPlayers;
+            return _voters.Count >= requiredVotes;
         }
 
         /// <summary>
@@ -146,7 +176,7 @@ namespace ColorPicker.InGame
             }
 
             Debug.Log("===== Vote Results =====");
-            
+
             foreach (var kvp in _voteCounts)
             {
                 Debug.Log($"Actor {kvp.Key}: {kvp.Value} vote(s)");
@@ -163,6 +193,7 @@ namespace ColorPicker.InGame
                 Debug.Log($"[Vote Result] Most voted player: Actor {mostVoted}");
             }
         }
+        
         #endregion
     }
 }

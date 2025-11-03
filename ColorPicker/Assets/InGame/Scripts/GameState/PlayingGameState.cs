@@ -18,8 +18,22 @@ namespace ColorPicker.InGame
         public override void Enter()
         {
             base.Enter();
-            
             InitializeRoundMissions();
+
+            GameManager.Instance._voting.ResetVotes();
+            GameManager.Instance._meetingTimer.ResetRequests();
+
+            // PlayerCardUI와 DeductionUI 최신화 (죽은 플레이어 상태 반영)
+            if (Photon.Pun.PhotonNetwork.IsMasterClient)
+            {
+                UIManager.Instance?.InitializePlayerProfile();
+
+                // 죽은 플레이어의 색을 모두 색칠하지 않은 상태로 리셋
+                ColorObjectManager.Instance?.ResetDeadPlayersColors();
+
+                // 모든 시체 제거 (투표 처형 후 생성된 시체 포함, 딜레이 적용)
+                GameManager.Instance?.ClearDeathBodiesDelayed(0.5f);
+            }
         }
 
         /// <summary>
@@ -42,6 +56,7 @@ namespace ColorPicker.InGame
             }
 
             MissionManager.Instance?.InitializeRoundMissions(alivePlayers);
+            
             
             Debug.Log($"[PlayingGameState] Missions redistributed to {alivePlayers.Count} alive players.");
         }

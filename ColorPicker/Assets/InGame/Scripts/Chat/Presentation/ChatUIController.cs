@@ -167,7 +167,7 @@ namespace ColorPicker.Chat
             }
         }
 
-        private void ClearUI()
+        public void ClearUI()
         {
             if (!chatContentRoot) return;
             for (int i = chatContentRoot.childCount - 1; i >= 0; i--)

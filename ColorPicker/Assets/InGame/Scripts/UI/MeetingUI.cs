@@ -21,6 +21,7 @@ namespace ColorPicker.InGame
                 var child = playerProfileContainer.GetChild(i);
                 if (child) Destroy(child.gameObject);
             }
+            meetingProfiles.Clear();
         }
 
         public void CreatePlayerCard(int actorNum, string nickname, bool isAlive)
@@ -42,6 +43,35 @@ namespace ColorPicker.InGame
 
             profileUI.Initialize(actorNum, nickname, isAlive);
             meetingProfiles[actorNum] = profileUI;
+        }
+
+        /// <summary>
+        /// 특정 플레이어의 득표수 업데이트
+        /// </summary>
+        public void UpdatePlayerVoteCount(int actorNum, int voteCount)
+        {
+            if (meetingProfiles.TryGetValue(actorNum, out var profile))
+            {
+                profile.UpdateVoteCount(voteCount);
+            }
+            else
+            {
+                Debug.LogWarning($"[MeetingUI] Cannot update vote count for Actor {actorNum} - profile not found.");
+            }
+        }
+
+        /// <summary>
+        /// 모든 플레이어의 투표 표시 초기화
+        /// </summary>
+        public void ClearAllVotes()
+        {
+            foreach (var profile in meetingProfiles.Values)
+            {
+                if (profile != null)
+                {
+                    profile.ClearVotes();
+                }
+            }
         }
 
         public void ClearPlayerCard()

@@ -119,6 +119,11 @@ namespace ColorPicker.InGame
             int myViewID = me.photonView.ViewID;
 
             AbilityManager.Instance.TryRequestKill(targetViewID, myViewID, aimRadius);
+
+            var killerPV = PhotonView.Find(myViewID);
+            var targetPV = PhotonView.Find(targetViewID);
+
+            killerPV.transform.position = targetPV.transform.position;
         }
 
         private void OnColorPickKillButtonPressed()

@@ -7,6 +7,7 @@ namespace ColorPicker.InGame
     {
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private GameObject deathIcon;
+        [SerializeField] private VoteArea voteArea;
 
         private int actorNum;
         private string nickname;
@@ -23,6 +24,12 @@ namespace ColorPicker.InGame
             this.actorNum = actorNum;
 
             SetAlive(isAlive);
+
+            // 투표 영역 초기화
+            if (voteArea != null)
+            {
+                voteArea.Clear();
+            }
         }
 
         public void Initialzed(int actorNum, string nickname, bool isAlive) => Initialize(actorNum,nickname, isAlive);
@@ -35,6 +42,34 @@ namespace ColorPicker.InGame
         public void OnClick_ShowVotePopup()
         {
             UIManager.Instance.ShowVotePopup(actorNum, playerNameText.text);
+        }
+
+        /// <summary>
+        /// 득표수 업데이트
+        /// </summary>
+        /// <param name="voteCount">받은 투표 수</param>
+        public void UpdateVoteCount(int voteCount)
+        {
+            if (voteArea != null)
+            {
+                voteArea.SetVoteCount(voteCount);
+            }
+        }
+
+        /// <summary>
+        /// ActorNumber 반환
+        /// </summary>
+        public int GetActorNum() => actorNum;
+
+        /// <summary>
+        /// 투표 영역 초기화
+        /// </summary>
+        public void ClearVotes()
+        {
+            if (voteArea != null)
+            {
+                voteArea.Clear();
+            }
         }
     }
 }

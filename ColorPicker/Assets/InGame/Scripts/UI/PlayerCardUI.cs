@@ -12,6 +12,7 @@ namespace ColorPicker.InGame
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private Button playerDeductionButton;
         [SerializeField] private Image backgroundImage;
+        [SerializeField] private GameObject deathIcon;
 
         private int actorNum;
         private string nickname;
@@ -28,6 +29,13 @@ namespace ColorPicker.InGame
                 playerNameText.text = nickname;
                 this.nickname = nickname;
             }
+
+            SetAlive(isAlive);
+        }
+
+        private void SetAlive(bool isAlive)
+        {
+            if (deathIcon) deathIcon.SetActive(!isAlive);
         }
 
         public void SetDeductionColor(ColorType color = ColorType.White)
