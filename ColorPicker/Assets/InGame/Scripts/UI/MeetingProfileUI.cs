@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
@@ -8,6 +9,9 @@ namespace ColorPicker.InGame
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private GameObject deathIcon;
         [SerializeField] private VoteArea voteArea;
+
+        [Header("Customization Display")]
+        [SerializeField] private Image[] customizationImages; // 커스터마이즈 색상을 적용할 이미지 배열
 
         private int actorNum;
         private string nickname;
@@ -33,6 +37,9 @@ namespace ColorPicker.InGame
             {
                 voteArea.Clear();
             }
+
+            // 커스터마이즈 색상 자동 적용
+            ApplyCustomizationColor();
         }
 
         /// <summary>
@@ -119,6 +126,44 @@ namespace ColorPicker.InGame
             {
                 voteArea.Clear();
             }
+        }
+
+        /// <summary>
+        /// 미팅 프로필의 커스터마이즈 이미지 배열에 색상 적용
+        /// </summary>
+        private void ApplyCustomizationColor()
+        {
+            if (customizationImages == null || customizationImages.Length == 0)
+            {
+                return; // 커스터마이즈 이미지가 설정되지 않은 경우
+            }
+
+            if (CustomizeManager.Instance == null)
+            {
+                Debug.LogWarning("[MeetingProfileUI] CustomizeManager instance not found.");
+                return;
+            }
+
+            int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNum);
+            if (colorIndex < 0)
+            {
+                Debug.LogWarning($"[MeetingProfileUI] No color assigned for actor {actorNum}");
+                return;
+            }
+
+            Color color = CustomizeManager.Instance.GetColor(colorIndex);
+
+            int appliedCount = 0;
+            foreach (var image in customizationImages)
+            {
+                if (image != null)
+                {
+                    image.color = color;
+                    appliedCount++;
+                }
+            }
+
+            Debug.Log($"[MeetingProfileUI] Applied color index {colorIndex} to {appliedCount} image(s) for actor {actorNum}");
         }
     }
 }

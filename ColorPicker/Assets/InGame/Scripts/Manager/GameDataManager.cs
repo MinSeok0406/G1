@@ -449,6 +449,49 @@ namespace ColorPicker.InGame
             TryApplyMyPrivateDataFrom(payload);
 
             Debug.Log($"[GameDataManager] Snapshot applied. public={_publicByUid.Count}, inGame={_inGameByUid.Count}, viewMap={_viewIdByUid.Count}");
+
+            // CustomizeManager와 동기화
+            if (CustomizeManager.Instance != null)
+            {
+                CustomizeManager.Instance.SyncFromGameDataManager();
+            }
+
+            // 모든 플레이어 객체에 색상 재적용
+            ReapplyColorsToAllPlayers();
+        }
+
+        /// <summary>
+        /// 모든 Player 객체에 색상을 재적용
+        /// GameDataManager 스냅샷 수신 후 호출됨
+        /// </summary>
+        private void ReapplyColorsToAllPlayers()
+        {
+            var allPlayers = UnityEngine.Object.FindObjectsOfType<Player>();
+            if (allPlayers == null || allPlayers.Length == 0)
+            {
+                Debug.Log("[GameDataManager] No players found to reapply colors");
+                return;
+            }
+
+            int reappliedCount = 0;
+            foreach (var player in allPlayers)
+            {
+                if (player == null || player.photonView == null || player.photonView.Owner == null) continue;
+
+                int actorNumber = player.photonView.Owner.ActorNumber;
+                if (CustomizeManager.Instance == null) continue;
+
+                int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNumber);
+                if (colorIndex >= 0)
+                {
+                    Color color = CustomizeManager.Instance.GetColor(colorIndex);
+                    player.ApplyCustomizeColor(color);
+                    reappliedCount++;
+                    Debug.Log($"[GameDataManager] Reapplied color {colorIndex} to player actor {actorNumber}");
+                }
+            }
+
+            Debug.Log($"[GameDataManager] Reapplied colors to {reappliedCount} player(s)");
         }
 
         private void TryApplyMyPrivateDataFrom(BackupPayload payload)

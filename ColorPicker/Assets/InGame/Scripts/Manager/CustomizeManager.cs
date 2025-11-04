@@ -324,6 +324,49 @@ namespace ColorPicker.InGame
             return -1;
         }
 
+        /// <summary>
+        /// GameDataManager로부터 모든 플레이어의 색상 정보를 동기화
+        /// 스냅샷 수신 후 호출하여 메모리 캐시를 업데이트
+        /// </summary>
+        public void SyncFromGameDataManager()
+        {
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogWarning("[CustomizeManager] GameDataManager not available for sync");
+                return;
+            }
+
+            var allPlayerData = GameDataManager.Instance.GetAllPublicPlayerData();
+            if (allPlayerData == null || allPlayerData.Count == 0)
+            {
+                Debug.Log("[CustomizeManager] No player data to sync");
+                return;
+            }
+
+            int syncedCount = 0;
+            foreach (var playerData in allPlayerData)
+            {
+                if (playerData == null || playerData.customizationData == null) continue;
+
+                int actorId = playerData.currentActorId;
+                int colorIndex = playerData.customizationData.customColorId;
+
+                if (colorIndex >= 0 && colorIndex < availableColors.Length)
+                {
+                    // 메모리 캐시 업데이트
+                    if (!_playerColorAssignments.ContainsKey(actorId))
+                    {
+                        _playerColorAssignments[actorId] = colorIndex;
+                        _usedColorIndices.Add(colorIndex);
+                        syncedCount++;
+                        Debug.Log($"[CustomizeManager] Synced color {colorIndex} for actor {actorId} from GameDataManager");
+                    }
+                }
+            }
+
+            Debug.Log($"[CustomizeManager] Synced {syncedCount} player color(s) from GameDataManager");
+        }
+
         #endregion
 
         #region Photon Callbacks

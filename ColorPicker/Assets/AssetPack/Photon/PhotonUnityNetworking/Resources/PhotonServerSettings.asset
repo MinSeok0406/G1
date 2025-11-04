@@ -160,6 +160,7 @@ MonoBehaviour:
   - RPC_RequestColorChange
   - RPC_ResetDetectiveAbility
   - RPC_ResetMafiaAbility
+  - RPC_ApplyCustomizeColor
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

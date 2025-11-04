@@ -650,8 +650,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f0b4884bdb1ee4697bff4a4e93be78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customizableRenderers: []
-  nicknameText: {fileID: 0}
+  customizableRenderers:
+  - {fileID: 172984467453621652}
+  nicknameText: {fileID: 5337501840409400541}
 --- !u!114 &9078414379442433384
 MonoBehaviour:
   m_ObjectHideFlags: 0

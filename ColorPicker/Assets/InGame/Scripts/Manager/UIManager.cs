@@ -39,6 +39,10 @@ namespace ColorPicker.InGame
         [SerializeField] private GameObject pickerUI;
         [SerializeField] private List<ColorPickButton> colorPickButtons;
 
+        [Header("Picker Player Display")]
+        [SerializeField] private Image[] pickerPlayerImages; // 피커 UI에서 플레이어 색상 표시용
+        [SerializeField] private TMP_Text pickerPlayerNameText; // 피커 UI에서 플레이어 이름 표시용
+
         [Header("UI Scripts")]
         [SerializeField] private MeetingUI meetingUI;
         [SerializeField] private DeductionUI deductionUI;
@@ -457,10 +461,17 @@ namespace ColorPicker.InGame
         public void ShowDeductionPickerUI(PlayerCardUI playerCard)
         {
             _currentPlayerCard = playerCard;
-            
+
             if (pickerUI != null)
             {
                 pickerUI.SetActive(true);
+            }
+
+            // 플레이어 커스터마이즈 정보를 피커 UI에 적용
+            if (playerCard != null)
+            {
+                int actorNum = playerCard.GetActorNum();
+                ApplyPlayerCustomizationToUI(actorNum, pickerPlayerImages, pickerPlayerNameText);
             }
         }
 
@@ -722,6 +733,76 @@ namespace ColorPicker.InGame
         public void ShowMessage(string message)
         {
             ShowToastToScreen(message);
+        }
+        #endregion
+
+        #region Player Customization Display
+        /// <summary>
+        /// 플레이어의 커스터마이즈 색상과 이름을 UI에 적용
+        /// </summary>
+        /// <param name="actorNumber">플레이어 액터 번호</param>
+        /// <param name="images">색상을 적용할 UI 이미지 배열</param>
+        /// <param name="nameText">이름을 표시할 TMP_Text</param>
+        public void ApplyPlayerCustomizationToUI(int actorNumber, Image[] images, TMP_Text nameText)
+        {
+            if (actorNumber < 0)
+            {
+                Debug.LogWarning($"[UIManager] Invalid actor number: {actorNumber}");
+                return;
+            }
+
+            // 1. 플레이어 닉네임 가져오기
+            string nickname = "Unknown";
+            if (GameDataManager.Instance != null &&
+                GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorNumber, out var playerData))
+            {
+                nickname = string.IsNullOrWhiteSpace(playerData.nickname)
+                    ? $"Player_{actorNumber}"
+                    : playerData.nickname;
+            }
+
+            // 2. 이름 텍스트에 적용
+            if (nameText != null)
+            {
+                nameText.text = nickname;
+                Debug.Log($"[UIManager] Set player name: {nickname} for actor {actorNumber}");
+            }
+
+            // 3. 커스터마이즈 색상 가져오기
+            if (CustomizeManager.Instance == null)
+            {
+                Debug.LogWarning("[UIManager] CustomizeManager instance not found. Cannot apply color.");
+                return;
+            }
+
+            int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNumber);
+            if (colorIndex < 0)
+            {
+                Debug.LogWarning($"[UIManager] No color assigned for actor {actorNumber}");
+                return;
+            }
+
+            Color color = CustomizeManager.Instance.GetColor(colorIndex);
+
+            // 4. UI 이미지 배열에 색상 적용
+            if (images == null || images.Length == 0)
+            {
+                Debug.LogWarning("[UIManager] Image array is null or empty. Cannot apply color.");
+                return;
+            }
+
+            int appliedCount = 0;
+            foreach (var image in images)
+            {
+                if (image != null)
+                {
+                    image.color = color;
+                    appliedCount++;
+                }
+            }
+
+            Debug.Log($"[UIManager] Applied color index {colorIndex} (RGB: {color.r:F2}, {color.g:F2}, {color.b:F2}) " +
+                     $"to {appliedCount} UI image(s) for player {nickname} (actor {actorNumber})");
         }
         #endregion
     }

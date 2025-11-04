@@ -152,9 +152,9 @@ namespace ColorPicker.InGame
             int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNumber);
             if (colorIndex >= 0)
             {
-                Color color = CustomizeManager.Instance.GetColor(colorIndex);
-                ApplyCustomizeColor(color);
-                Debug.Log($"[Player] Successfully applied color index {colorIndex} (RGB: {color.r:F2}, {color.g:F2}, {color.b:F2}) for actor {actorNumber}");
+                // 모든 클라이언트에게 색상 동기화 (호스트 포함)
+                photonView.RPC(nameof(RPC_ApplyCustomizeColor), RpcTarget.AllBuffered, colorIndex);
+                Debug.Log($"[Player] Broadcasting color index {colorIndex} to all clients for actor {actorNumber}");
             }
             else
             {
@@ -167,6 +167,31 @@ namespace ColorPicker.InGame
                     Debug.LogWarning($"[Player] PlayerData exists but customization data is missing for {playerData.nickname}");
                 }
             }
+        }
+
+        /// <summary>
+        /// [RPC] 모든 클라이언트에서 커스터마이즈 색상 적용
+        /// </summary>
+        [PunRPC]
+        private void RPC_ApplyCustomizeColor(int colorIndex)
+        {
+            if (CustomizeManager.Instance == null)
+            {
+                Debug.LogError("[Player] CustomizeManager not available in RPC_ApplyCustomizeColor", this);
+                return;
+            }
+
+            if (colorIndex < 0)
+            {
+                Debug.LogWarning($"[Player] Invalid color index {colorIndex} in RPC_ApplyCustomizeColor", this);
+                return;
+            }
+
+            Color color = CustomizeManager.Instance.GetColor(colorIndex);
+            ApplyCustomizeColor(color);
+
+            int actorNumber = photonView.Owner.ActorNumber;
+            Debug.Log($"[Player] RPC applied color index {colorIndex} (RGB: {color.r:F2}, {color.g:F2}, {color.b:F2}) for actor {actorNumber}");
         }
 
         /// <summary>
