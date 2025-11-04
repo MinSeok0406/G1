@@ -15,7 +15,7 @@ namespace ColorPicker.InGame
 
         protected HighlightController highlight;
         protected Collider2D triggerCollider;
-        protected PlayerControl localPlayer; // 트리거 안에 있는 로컬 플레이어
+        protected PlayerControlBase localPlayerControl; // 트리거 안에 있는 로컬 플레이어 컨트롤
         private UnityAction _cachedClick;
 
         protected virtual void Awake()
@@ -40,11 +40,30 @@ namespace ColorPicker.InGame
             // 안전 정리
             SetHighlight(false);
             HideButton();
-            if (localPlayer != null)
+            CleanupPlayerInteraction();
+        }
+
+        private void CleanupPlayerInteraction()
+        {
+            if (localPlayerControl != null)
             {
-                localPlayer.InteractionDetector.RemoveInteractable(this);
-                localPlayer = null;
+                // PlayerControl 또는 LobbyPlayerControl 모두 InteractionDetector 프로퍼티를 가짐
+                var interactionDetector = GetInteractionDetector(localPlayerControl);
+                if (interactionDetector != null)
+                {
+                    interactionDetector.RemoveInteractable(this);
+                }
+                localPlayerControl = null;
             }
+        }
+
+        private InteractionDetector GetInteractionDetector(PlayerControlBase playerControl)
+        {
+            if (playerControl is PlayerControl pc)
+                return pc.InteractionDetector;
+            if (playerControl is LobbyPlayerControl lpc)
+                return lpc.InteractionDetector;
+            return null;
         }
 
         // ===== IInteractive =====
@@ -59,12 +78,18 @@ namespace ColorPicker.InGame
         {
             if (!other.CompareTag("Player")) return;
 
-            var pc = other.GetComponent<PlayerControl>();
-            if (!pc || pc.photonView == null || !pc.photonView.IsMine) return;
+            var playerControl = other.GetComponent<PlayerControlBase>();
+            if (!playerControl || playerControl.photonView == null || !playerControl.photonView.IsMine) return;
             if (!CanInteract()) return; // 상황 제한(예: 이미 도색 완료)
 
-            localPlayer = pc;
-            localPlayer.InteractionDetector.AddInteractable(this);
+            localPlayerControl = playerControl;
+
+            var interactionDetector = GetInteractionDetector(playerControl);
+            if (interactionDetector != null)
+            {
+                interactionDetector.AddInteractable(this);
+            }
+
             SetHighlight(true);
             ShowButton();
         }
@@ -73,24 +98,25 @@ namespace ColorPicker.InGame
         {
             if (!other.CompareTag("Player")) return;
 
-            var pc = other.GetComponent<PlayerControl>();
-            if (!pc || pc.photonView == null || !pc.photonView.IsMine) return;
+            var playerControl = other.GetComponent<PlayerControlBase>();
+            if (!playerControl || playerControl.photonView == null || !playerControl.photonView.IsMine) return;
 
-            if (ReferenceEquals(pc, localPlayer))
-                localPlayer = null;
+            if (ReferenceEquals(playerControl, localPlayerControl))
+                localPlayerControl = null;
 
-            pc.InteractionDetector.RemoveInteractable(this);
+            var interactionDetector = GetInteractionDetector(playerControl);
+            if (interactionDetector != null)
+            {
+                interactionDetector.RemoveInteractable(this);
+            }
+
             SetHighlight(false);
             HideButton();
         }
 
         protected void CleanupLocalInteraction()
         {
-            if (localPlayer != null)
-            {
-                localPlayer.InteractionDetector.RemoveInteractable(this);
-                localPlayer = null;
-            }
+            CleanupPlayerInteraction();
             SetHighlight(false);
             HideButton();
         }
@@ -98,14 +124,28 @@ namespace ColorPicker.InGame
         // ===== 버튼/하이라이트 유틸 =====
         protected void ShowButton()
         {
-            if (UIManager.Instance != null)
+            // 로비 또는 인게임에 따라 적절한 매니저 사용
+            if (LobbyUIManager.Instance != null)
+            {
+                LobbyUIManager.Instance.ShowInteractionButton(true, _cachedClick);
+            }
+            else if (UIManager.Instance != null)
+            {
                 UIManager.Instance.ShowInteractionButton(true, _cachedClick);
+            }
         }
 
         protected void HideButton()
         {
-            if (UIManager.Instance != null)
+            // 로비 또는 인게임에 따라 적절한 매니저 사용
+            if (LobbyUIManager.Instance != null)
+            {
+                LobbyUIManager.Instance.ShowInteractionButton(false);
+            }
+            else if (UIManager.Instance != null)
+            {
                 UIManager.Instance.ShowInteractionButton(false);
+            }
         }
 
         protected void SetHighlight(bool on)

@@ -74,7 +74,7 @@ namespace ColorPicker.InGame
         #region [호스트 전용] Player Data 생성/갱신/재접속
 
         /// <summary>새로 접속한 플레이어 데이터 생성 (Host Only)</summary>
-        public void CreateNewPlayerData(string uid, int actorNumber, int viewID)
+        public void CreateNewPlayerData(string uid, int actorNumber, int viewID, PlayerCustomizationData customizationData = null)
         {
             if (!IsHost) { Debug.LogWarning("[GameDataManager] CreateNewPlayerData on non-host."); return; }
             if (string.IsNullOrEmpty(uid)) { Debug.LogWarning("[GameDataManager] CreateNewPlayerData invalid uid."); return; }
@@ -87,13 +87,25 @@ namespace ColorPicker.InGame
                     googleUID = uid,
                     currentActorId = actorNumber,
                     nickname = $"Player_{actorNumber}",
-                    customizationData = new PlayerCustomizationData()
+                    customizationData = customizationData ?? new PlayerCustomizationData()
                 };
                 _publicByUid[uid] = pub;
+
+                if (customizationData != null)
+                {
+                    Debug.Log($"[GameDataManager] Created player data with customization (color: {customizationData.customColorId}) for {uid}");
+                }
             }
             else
             {
                 pub.currentActorId = actorNumber;
+
+                // 기존 플레이어 재접속 시에도 customizationData 업데이트
+                if (customizationData != null)
+                {
+                    pub.customizationData = customizationData;
+                    Debug.Log($"[GameDataManager] Updated existing player with customization (color: {customizationData.customColorId}) for {uid}");
+                }
             }
 
             // Private upsert(호스트는 전원)
@@ -584,6 +596,16 @@ namespace ColorPicker.InGame
         {
             // 필요 시 깊은 복사 고려
             _missionBackup = backup;
+        }
+
+        public bool TryGetMissionData(string uid, out PlayerMissionData missionData)
+        {
+            missionData = null;
+
+            if (_missionBackup == null || string.IsNullOrEmpty(uid))
+                return false;
+
+            return _missionBackup.TryGetValue(uid, out missionData);
         }
 
         public bool TryAddMissionReward(string uid)

@@ -9,17 +9,18 @@ namespace ColorPicker.InGame
     public class InteractionDetector : MonoBehaviour
     {
         private readonly List<IInteractive> _nearby = new();
-        private PlayerControl _player;
+        private PlayerControlBase _playerControl;
 
         private IInteractive _current;              // 현재 타겟
         private UnityAction _cachedClickAction;     // 버튼 콜백 캐시
 
         private void Awake()
         {
-            _player = GetComponentInParent<PlayerControl>();
-            if (!_player)
+            // PlayerControl 또는 LobbyPlayerControl 찾기
+            _playerControl = GetComponentInParent<PlayerControlBase>();
+            if (!_playerControl)
             {
-                Debug.LogError("[InteractionDetector] PlayerControl not found.", this);
+                Debug.LogError("[InteractionDetector] PlayerControlBase not found.", this);
                 enabled = false;
                 return;
             }
@@ -28,7 +29,7 @@ namespace ColorPicker.InGame
 
         private void OnEnable()
         {
-            if (_player?.photonView == null || !_player.photonView.IsMine)
+            if (_playerControl?.photonView == null || !_playerControl.photonView.IsMine)
             {
                 enabled = false; // 로컬 소유 아닐 때는 완전 비활성
                 return;
@@ -40,10 +41,14 @@ namespace ColorPicker.InGame
             // 하이라이트/버튼 정리
             SetHighlighted(_current, false);
             _current = null;
-            if (_player != null) _player.CurrentInteractive = null;
 
-            if (UIManager.Instance != null)
-                UIManager.Instance.ShowInteractionButton(false);
+            // PlayerControl 또는 LobbyPlayerControl의 CurrentInteractive 초기화
+            if (_playerControl is PlayerControl pc)
+                pc.CurrentInteractive = null;
+            else if (_playerControl is LobbyPlayerControl lpc)
+                lpc.CurrentInteractive = null;
+
+            HideButton();
 
             _nearby.Clear();
         }
@@ -99,29 +104,41 @@ namespace ColorPicker.InGame
                 SetHighlighted(closest, true);
 
                 _current = closest;
-                if (_player != null) _player.CurrentInteractive = _current;
+
+                // PlayerControl 또는 LobbyPlayerControl에 CurrentInteractive 설정
+                if (_playerControl is PlayerControl pc)
+                    pc.CurrentInteractive = _current;
+                else if (_playerControl is LobbyPlayerControl lpc)
+                    lpc.CurrentInteractive = _current;
 
                 if (_current != null)
                 {
-                    if (UIManager.Instance != null)
-                        UIManager.Instance.ShowInteractionButton(true, _cachedClickAction);
+                    ShowButton();
                 }
                 else
                 {
-                    if (UIManager.Instance != null)
-                        UIManager.Instance.ShowInteractionButton(false);
+                    HideButton();
                 }
             }
         }
 
         private void OnInteractionClicked()
         {
-            if (_player == null) { HideButton(); return; }
+            if (_playerControl == null) { HideButton(); return; }
 
-            var target = _player.CurrentInteractive;
+            IInteractive target = null;
+            if (_playerControl is PlayerControl pc)
+                target = pc.CurrentInteractive;
+            else if (_playerControl is LobbyPlayerControl lpc)
+                target = lpc.CurrentInteractive;
+
             if (!IsValid(target)) { HideButton(); return; }
 
-            _player.TryInteract();
+            // TryInteract 호출
+            if (_playerControl is PlayerControl playerControl)
+                playerControl.TryInteract();
+            else if (_playerControl is LobbyPlayerControl lobbyPlayerControl)
+                lobbyPlayerControl.TryInteract();
         }
 
         private static bool IsValid(IInteractive it)
@@ -131,9 +148,21 @@ namespace ColorPicker.InGame
             return obj != null; // Unity fake-null 방지
         }
 
-        private static void HideButton()
+        private void ShowButton()
         {
-            if (UIManager.Instance != null)
+            // 로비 또는 인게임에 따라 적절한 매니저 사용
+            if (LobbyUIManager.Instance != null)
+                LobbyUIManager.Instance.ShowInteractionButton(true, _cachedClickAction);
+            else if (UIManager.Instance != null)
+                UIManager.Instance.ShowInteractionButton(true, _cachedClickAction);
+        }
+
+        private void HideButton()
+        {
+            // 로비 또는 인게임에 따라 적절한 매니저 사용
+            if (LobbyUIManager.Instance != null)
+                LobbyUIManager.Instance.ShowInteractionButton(false);
+            else if (UIManager.Instance != null)
                 UIManager.Instance.ShowInteractionButton(false);
         }
 

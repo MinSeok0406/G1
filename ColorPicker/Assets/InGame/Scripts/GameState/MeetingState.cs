@@ -39,6 +39,61 @@ namespace ColorPicker.InGame
             }
 
             UIManager.Instance.ShowMeetingUI(false);
+
+            // 채팅창 클리어
+            ClearChatUI();
+
+            // 미팅 후 스킬 초기화 (호스트만)
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ResetAbilities();
+            }
+        }
+
+        /// <summary>
+        /// 채팅창 클리어
+        /// </summary>
+        private void ClearChatUI()
+        {
+            var chatUI = UnityEngine.Object.FindObjectOfType<ColorPicker.Chat.ChatUIController>();
+            if (chatUI != null)
+            {
+                chatUI.ClearUI();
+            }
+        }
+
+        /// <summary>
+        /// [Host Only] 미팅 후 스킬 초기화
+        /// </summary>
+        private void ResetAbilities()
+        {
+            // 모든 플레이어 순회
+            var allPlayers = GameDataManager.Instance?.GetAllPublicPlayerData();
+            if (allPlayers == null) return;
+
+            foreach (var playerData in allPlayers)
+            {
+                if (playerData == null) continue;
+
+                // 뷰 ID 가져오기
+                if (!GameDataManager.Instance.TryGetViewIDByUID(playerData.googleUID, out int viewID))
+                    continue;
+
+                // 개인 데이터 가져오기
+                if (!GameDataManager.Instance.TryGetPrivatePlayerData(playerData.googleUID, out var privateData))
+                    continue;
+
+                // 마피아 스킬 초기화
+                if (privateData.classType == (int)PlayerClassType.mafia)
+                {
+                    AbilityManager.Instance?.ResetMafiaAbility(viewID);
+                }
+                // 탐정 스킬 초기화
+                else if (privateData.classType == (int)PlayerClassType.detective)
+                {
+                    AbilityManager.Instance?.ResetDetectiveAbility(viewID);
+                }
+            }
         }
 
         /// <summary>

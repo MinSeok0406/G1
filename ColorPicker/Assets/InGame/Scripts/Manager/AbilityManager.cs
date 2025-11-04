@@ -247,5 +247,66 @@ namespace ColorPicker.InGame
             foreach (Transform child in root.transform)
                 SetLayerRecursively(child.gameObject, layer);
         }
+
+        // ===== 스킬 초기화 =====
+        /// <summary>
+        /// [Host Only] 마피아 스킬 초기화
+        /// </summary>
+        public void ResetMafiaAbility(int viewID)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            var view = PhotonView.Find(viewID);
+            if (view == null) return;
+
+            // 쿨다운 초기화
+            cooldowns.RemoveForPlayerLeftRoom(view.OwnerActorNr);
+
+            // 해당 플레이어에게 스킬 초기화 RPC 전송
+            var player = PhotonNetwork.CurrentRoom.GetPlayer(view.OwnerActorNr);
+            if (player != null)
+            {
+                photonView.RPC(nameof(RPC_ResetMafiaAbility), player);
+            }
+        }
+
+        [PunRPC]
+        private void RPC_ResetMafiaAbility()
+        {
+            // 마피아 어빌리티 컴포넌트 찾아서 초기화
+            var mafiaAbility = GetComponentInChildren<MafiaAbility>();
+            if (mafiaAbility != null)
+            {
+                mafiaAbility.InitAbility();
+            }
+        }
+
+        /// <summary>
+        /// [Host Only] 탐정 스킬 초기화
+        /// </summary>
+        public void ResetDetectiveAbility(int viewID)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            var view = PhotonView.Find(viewID);
+            if (view == null) return;
+
+            // 해당 플레이어에게 스킬 초기화 RPC 전송
+            var player = PhotonNetwork.CurrentRoom.GetPlayer(view.OwnerActorNr);
+            if (player != null)
+            {
+                photonView.RPC(nameof(RPC_ResetDetectiveAbility), player);
+            }
+        }
+
+        [PunRPC]
+        private void RPC_ResetDetectiveAbility()
+        {
+            // 탐정 어빌리티 컴포넌트 찾아서 초기화
+            if (detectiveAbility != null)
+            {
+                detectiveAbility.InitAbility();
+            }
+        }
     }
 }

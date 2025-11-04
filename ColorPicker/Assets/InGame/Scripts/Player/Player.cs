@@ -1,5 +1,6 @@
 using FunkyCode;
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
 namespace ColorPicker.InGame
@@ -11,6 +12,7 @@ namespace ColorPicker.InGame
     public sealed class Player : PlayerBase
     {
         [SerializeField] private Light2D playerLight;
+        [SerializeField] private TMP_Text nicknameText;
 
         private DeathEvent _deathEvent;
         private PlayerCameraSetup _cameraSetup;
@@ -34,6 +36,8 @@ namespace ColorPicker.InGame
             EnableLight();
             CacheOwnerInfo();
             RegisterToManager();
+            SetupNickname();
+            LoadCustomizeColor();
         }
 
         private void SetupCamera()
@@ -60,6 +64,109 @@ namespace ColorPicker.InGame
             }
 
             PlayerManager.Instance.SetMyPlayer(this);
+        }
+
+        private void SetupNickname()
+        {
+            if (nicknameText == null) return;
+
+            // 플레이어 닉네임 설정
+            int actorNum = photonView.Owner.ActorNumber;
+            if (GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorNum, out var publicData))
+            {
+                nicknameText.text = publicData.nickname;
+            }
+
+            // 로컬 플레이어 관점에서 마피아 표시
+            UpdateNicknameColor();
+        }
+
+        /// <summary>
+        /// 로컬 플레이어가 마피아면 다른 마피아 플레이어들을 빨간색으로 표시
+        /// </summary>
+        public void UpdateNicknameColor()
+        {
+            if (nicknameText == null) return;
+
+            // 로컬 플레이어의 직업 확인
+            var myPlayer = PlayerManager.Instance?.GetMyPlayer();
+            if (myPlayer == null) return;
+
+            int myActorNum = myPlayer.OwnerActNum;
+            if (!GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(myActorNum, out var myPrivateData))
+            {
+                nicknameText.color = Color.white;
+                return;
+            }
+
+            // 로컬 플레이어가 마피아가 아니면 모두 흰색
+            if (myPrivateData.classType != (int)PlayerClassType.mafia)
+            {
+                nicknameText.color = Color.white;
+                return;
+            }
+
+            // 로컬 플레이어가 마피아면, 이 플레이어도 마피아인지 확인
+            int targetActorNum = photonView.Owner.ActorNumber;
+            if (GameDataManager.Instance.TryGetPrivatePlayerDataByActorId(targetActorNum, out var targetPrivateData))
+            {
+                if (targetPrivateData.classType == (int)PlayerClassType.mafia)
+                {
+                    nicknameText.color = Color.red; // 마피아끼리는 빨간색
+                }
+                else
+                {
+                    nicknameText.color = Color.white;
+                }
+            }
+            else
+            {
+                nicknameText.color = Color.white;
+            }
+        }
+
+        private void LoadCustomizeColor()
+        {
+            if (CustomizeManager.Instance == null)
+            {
+                Debug.LogError("[Player] CustomizeManager instance not found. Cannot load color.", this);
+                return;
+            }
+
+            if (photonView == null || photonView.Owner == null)
+            {
+                Debug.LogError("[Player] photonView or Owner is null. Cannot load color.", this);
+                return;
+            }
+
+            int actorNumber = photonView.Owner.ActorNumber;
+            if (actorNumber < 0)
+            {
+                Debug.LogError($"[Player] Invalid actor number: {actorNumber}", this);
+                return;
+            }
+
+            Debug.Log($"[Player] Loading customize color for actor {actorNumber}...");
+
+            // GameDataManager 기반으로 색상 로드
+            int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNumber);
+            if (colorIndex >= 0)
+            {
+                Color color = CustomizeManager.Instance.GetColor(colorIndex);
+                ApplyCustomizeColor(color);
+                Debug.Log($"[Player] Successfully applied color index {colorIndex} (RGB: {color.r:F2}, {color.g:F2}, {color.b:F2}) for actor {actorNumber}");
+            }
+            else
+            {
+                Debug.LogWarning($"[Player] No color assigned for actor {actorNumber}. Color will not be applied.", this);
+
+                // GameDataManager 상태 확인
+                if (GameDataManager.Instance != null &&
+                    GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorNumber, out var playerData))
+                {
+                    Debug.LogWarning($"[Player] PlayerData exists but customization data is missing for {playerData.nickname}");
+                }
+            }
         }
 
         /// <summary>

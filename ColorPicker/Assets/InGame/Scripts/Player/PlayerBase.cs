@@ -13,6 +13,9 @@ namespace ColorPicker.InGame
     [DisallowMultipleComponent]
     public abstract class PlayerBase : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     {
+        [Header("Customize Settings")]
+        [SerializeField] private SpriteRenderer[] customizableRenderers; // 색상을 변경할 렌더러 배열
+
         // Lazy-loaded components (캐싱)
         private IdleEvent _idleEvent;
         private MovementByVelocityEvent _movementByVelocityEvent;
@@ -32,6 +35,9 @@ namespace ColorPicker.InGame
         // Properties
         public bool IsLocalPlayer => photonView != null && photonView.IsMine;
         public int OwnerActorNumber => photonView?.OwnerActorNr ?? -1;
+
+        // Customize color
+        private Color _customizeColor = Color.white;
 
         protected virtual void Awake()
         {
@@ -109,6 +115,47 @@ namespace ColorPicker.InGame
         public virtual void OnOwnershipTransferFailed(PhotonView targetView, Photon.Realtime.Player senderOfFailedRequest)
         {
             Debug.LogWarning($"[{GetType().Name}] 소유권 이전 실패: {senderOfFailedRequest?.NickName}", this);
+        }
+
+        #endregion
+
+        #region Customize Color
+
+        /// <summary>
+        /// 커스터마이즈 색상 적용
+        /// </summary>
+        public virtual void ApplyCustomizeColor(Color color)
+        {
+            _customizeColor = color;
+
+            // customizableRenderers가 할당되어 있지 않으면 적용하지 않음
+            // (특정 렌더러에만 색상을 적용하기 위함)
+            if (customizableRenderers == null || customizableRenderers.Length == 0)
+            {
+                Debug.LogWarning($"[{GetType().Name}] customizableRenderers is not assigned. Color will not be applied.", this);
+                return;
+            }
+
+            // 지정된 렌더러들에만 색상 적용
+            int appliedCount = 0;
+            foreach (var renderer in customizableRenderers)
+            {
+                if (renderer != null)
+                {
+                    renderer.color = color;
+                    appliedCount++;
+                }
+            }
+
+            Debug.Log($"[{GetType().Name}] Applied color (RGB: {color.r:F2}, {color.g:F2}, {color.b:F2}) to {appliedCount} renderer(s)", this);
+        }
+
+        /// <summary>
+        /// 현재 커스터마이즈 색상 가져오기
+        /// </summary>
+        public Color GetCustomizeColor()
+        {
+            return _customizeColor;
         }
 
         #endregion

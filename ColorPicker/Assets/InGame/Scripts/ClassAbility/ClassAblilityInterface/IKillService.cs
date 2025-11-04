@@ -24,6 +24,13 @@ namespace ColorPicker.InGame
             if (killer.classType != (int)PlayerClassType.mafia) return false;
             if (target.classType == (int)PlayerClassType.ghost) return false;
 
+            // 마피아끼리는 서로 죽일 수 없음
+            if (target.classType == (int)PlayerClassType.mafia)
+            {
+                Debug.LogWarning("[Kill] Mafia cannot kill other mafia.");
+                return false;
+            }
+
             if (radius > 0f)
             {
                 var kv = PhotonView.Find(killerViewId);

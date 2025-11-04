@@ -167,6 +167,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Components\Manager\LightingManager2D.cs" />
     <Compile Include="Assets\InGame\Scripts\Utilities\PoolUtility.cs" />
     <Compile Include="Assets\InGame\Scripts\UI\ColorPickButton.cs" />
+    <Compile Include="Assets\InGame\Scripts\UI\CustomizeUI.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\InputField\InputFieldTransition.cs" />
     <Compile Include="Assets\AssetPack\SuGyun\Scripts\UI\InGame\LeaveGameModule.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameTrigger.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Assets\InGame\Scripts\Manager\LocalBackupManager.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\Demos - SmartLighting2D\Export Demo\GUIFPS.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Shadow\SpriteRendererShadow.cs" />
+    <Compile Include="Assets\InGame\Scripts\Interactive\InteractiveCustomize.cs" />
     <Compile Include="Assets\InGame\Scripts\Core\SingletonMonobehaviour.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Sprite Mesh\Simple\SpriteMesh.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\ProgressBar\ProgressBarCircularRound.cs" />
@@ -496,6 +498,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Day\Sorting\SortDepth.cs" />
     <Compile Include="Assets\InGame\Scripts\MiniGame\MiniGameInputHandler.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Notification\NotificationWithButton.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\CustomizeManager.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Dropdown\DropdownTransition.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\LightShapes\Extensions\SpritePhysicsShape.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Components\DayLightCollider2D\DayLightColliderTransfom.cs" />
@@ -537,6 +540,7 @@
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Rendering\Light\ShadowEngine\Extensions\UnityTilemap.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Slider\SliderCircular.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\SmartLighting2D\Scripts\Material\Extended\Lights.cs" />
+    <Compile Include="Assets\InGame\Scripts\Manager\WinConditionChecker.cs" />
     <Compile Include="Assets\AssetPack\FunkyCode\Demos - SmartLighting2D\Demos - Intermediate\5 - Race\Scripts\RacerController.cs" />
     <Compile Include="Assets\AssetPack\AssetPlus\CleanFlatUI\Scripts\Toggle\ToggleTransition.cs" />
     <Compile Include="Assets\InGame\Scripts\Core\SingletonNetworkBehaviour.cs" />

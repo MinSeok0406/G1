@@ -41,7 +41,8 @@ namespace ColorPicker.InGame
         {
             foreach(LobbyPlayerData data in cachedPlayerDataList)
             {
-                SpawnPlayer(data.staticData.googleUID, data.staticData.actorId);
+                PlayerCustomizationData customizationData = data.dynamicData?.playerCustomizationData;
+                SpawnPlayer(data.staticData.googleUID, data.staticData.actorId, customizationData);
             }
 
             CacheDataManager.Instance.Clear();
@@ -144,8 +145,10 @@ namespace ColorPicker.InGame
         /// <summary>
         /// 새로 입장한 플레이어의 오브젝트를 스폰하고 ViewID 포함 데이터를 등록하는 함수
         /// </summary>
-        /// <param name="googleUID"></param>
-        public void SpawnPlayer(string googleUID, int actorId)
+        /// <param name="googleUID">플레이어 고유 식별자</param>
+        /// <param name="actorId">액터 번호</param>
+        /// <param name="customizationData">커스터마이즈 데이터 (캐시에서 복원)</param>
+        public void SpawnPlayer(string googleUID, int actorId, PlayerCustomizationData customizationData = null)
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
@@ -154,9 +157,34 @@ namespace ColorPicker.InGame
             Player player = playerObj.GetComponent<Player>();
             int viewID = player.photonView.ViewID;
 
-            GameDataManager.Instance.CreateNewPlayerData(googleUID, actorId, viewID);
+            // CreateNewPlayerData에 customizationData를 직접 전달하여 초기화 시점에 포함
+            GameDataManager.Instance.CreateNewPlayerData(googleUID, actorId, viewID, customizationData);
+
+            if (customizationData != null)
+            {
+                Debug.Log($"[NetworkManager] Spawned player with customization (color: {customizationData.customColorId}) for actor {actorId} (UID: {googleUID})");
+            }
 
             ReassignOwnershipToPlayer(googleUID, actorId);
+
+            // 모든 클라이언트에게 최신 데이터 전송 (customizationData 포함)
+            BroadcastPlayerDataToAll();
+        }
+
+        /// <summary>
+        /// 모든 클라이언트에게 GameDataManager 스냅샷 전송
+        /// </summary>
+        private void BroadcastPlayerDataToAll()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            foreach (var player in PhotonNetwork.PlayerList)
+            {
+                if (player != null && !player.IsLocal)
+                {
+                    GameDataManager.Instance.SendFullSnapshotTo(player);
+                }
+            }
         }
 
         /// <summary>

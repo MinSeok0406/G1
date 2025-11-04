@@ -14,6 +14,7 @@ namespace ColorPicker.InGame
         [Header("UI Elements")]
         [SerializeField] private Button readyButton;
         [SerializeField] private Button startButton;
+        [SerializeField] private Button interactButton; // 상호작용 버튼
 
         [SerializeField] private GameObject playerSlotsRoot;
         [SerializeField] private Transform playerContainer;
@@ -30,6 +31,9 @@ namespace ColorPicker.InGame
 
         private bool isLocalReady;
         private bool isStartingGame;
+
+        // 상호작용 버튼 기본 클릭 동작
+        private UnityEngine.Events.UnityAction _defaultInteractionClick;
 
         #region Unity
 
@@ -66,6 +70,9 @@ namespace ColorPicker.InGame
                 startButton.onClick.AddListener(OnClickStartGame);
             }
 
+            // 상호작용 버튼 초기화
+            InitializeInteractionButton();
+
             UpdatePlayerCountUI();
         }
 
@@ -73,6 +80,22 @@ namespace ColorPicker.InGame
         {
             if (readyButton) readyButton.onClick.RemoveAllListeners();
             if (startButton) startButton.onClick.RemoveAllListeners();
+            if (interactButton) interactButton.onClick.RemoveAllListeners();
+        }
+
+        /// <summary>
+        /// 상호작용 버튼 초기화
+        /// </summary>
+        private void InitializeInteractionButton()
+        {
+            _defaultInteractionClick = () => { /* 기본 동작 없음 */ };
+
+            if (interactButton != null)
+            {
+                interactButton.onClick.RemoveAllListeners();
+                interactButton.onClick.AddListener(_defaultInteractionClick);
+                interactButton.gameObject.SetActive(false); // 기본적으로 숨김
+            }
         }
 
         #endregion
@@ -328,6 +351,31 @@ namespace ColorPicker.InGame
 
         #endregion
 
+        #region Interaction Button
+
+        /// <summary>
+        /// 상호작용 버튼 표시/숨김 및 이벤트 설정
+        /// </summary>
+        public void ShowInteractionButton(bool show, UnityEngine.Events.UnityAction onClick = null)
+        {
+            if (interactButton == null) return;
+
+            if (show)
+            {
+                interactButton.onClick.RemoveAllListeners();
+                interactButton.onClick.AddListener(onClick ?? _defaultInteractionClick);
+                interactButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                interactButton.onClick.RemoveAllListeners();
+                interactButton.onClick.AddListener(_defaultInteractionClick);
+                interactButton.gameObject.SetActive(false);
+            }
+        }
+
+        #endregion
+
         #region Start Game
 
         public void OnClickStartGame()
@@ -338,9 +386,55 @@ namespace ColorPicker.InGame
 
             isStartingGame = true;
 
-            CacheDataManager.Instance.SaveAll(LobbyManager.Instance.GetLobbyPlayerList());
+            // 커스터마이즈 데이터를 LobbyPlayerData에 저장
+            var lobbyPlayerDataList = LobbyManager.Instance.GetLobbyPlayerList();
+            PopulateCustomizationData(lobbyPlayerDataList);
+
+            CacheDataManager.Instance.SaveAll(lobbyPlayerDataList);
 
             photonView.RPC(nameof(Rpc_StartGame), RpcTarget.AllViaServer);
+        }
+
+        /// <summary>
+        /// LobbyPlayerData에 CustomizeManager의 색상 데이터를 저장
+        /// </summary>
+        private void PopulateCustomizationData(List<LobbyPlayerData> lobbyPlayerDataList)
+        {
+            if (CustomizeManager.Instance == null)
+            {
+                Debug.LogWarning("[LobbyUIManager] CustomizeManager not found while populating customization data");
+                return;
+            }
+
+            foreach (var playerData in lobbyPlayerDataList)
+            {
+                if (playerData == null || playerData.staticData == null) continue;
+
+                int actorId = playerData.staticData.actorId;
+                int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorId);
+
+                if (colorIndex >= 0)
+                {
+                    // dynamicData가 null이면 초기화
+                    if (playerData.dynamicData == null)
+                    {
+                        playerData.dynamicData = new LobbyPlayerDynamicData();
+                    }
+
+                    // playerCustomizationData가 null이면 초기화
+                    if (playerData.dynamicData.playerCustomizationData == null)
+                    {
+                        playerData.dynamicData.playerCustomizationData = new PlayerCustomizationData();
+                    }
+
+                    playerData.dynamicData.playerCustomizationData.customColorId = colorIndex;
+                    Debug.Log($"[LobbyUIManager] Saved color {colorIndex} for actor {actorId} to cache");
+                }
+                else
+                {
+                    Debug.LogWarning($"[LobbyUIManager] No color found for actor {actorId}");
+                }
+            }
         }
 
         [PunRPC]

@@ -155,6 +155,11 @@ MonoBehaviour:
   - RPC_UpdateVoteDisplay
   - RPC_RequestVisibilityUpdate
   - RPC_UpdatePlayerVisibility
+  - RPC_ColorChangeConfirmed
+  - RPC_ColorChangeRejected
+  - RPC_RequestColorChange
+  - RPC_ResetDetectiveAbility
+  - RPC_ResetMafiaAbility
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

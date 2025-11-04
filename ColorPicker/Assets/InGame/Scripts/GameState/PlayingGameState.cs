@@ -8,6 +8,10 @@ namespace ColorPicker.InGame
     /// </summary>
     public partial class PlayingGameState : GameState
     {
+        private readonly WinConditionChecker _winChecker = new WinConditionChecker();
+        private float _winCheckCooldown = 0f;
+        private const float WIN_CHECK_INTERVAL = 2f; // 2초마다 체크
+
         public PlayingGameState(GameStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -84,6 +88,49 @@ namespace ColorPicker.InGame
             }
 
             return alivePlayers;
+        }
+
+        /// <summary>
+        /// Update - 승리 조건 체크
+        /// </summary>
+        public override void Update()
+        {
+            base.Update();
+
+            if (!Photon.Pun.PhotonNetwork.IsMasterClient) return;
+
+            // 승리 조건 체크 (2초마다)
+            _winCheckCooldown -= Time.deltaTime;
+            if (_winCheckCooldown <= 0f)
+            {
+                _winCheckCooldown = WIN_CHECK_INTERVAL;
+
+                if (_winChecker.CheckWinCondition(out GameResult result))
+                {
+                    HandleGameEnd(result);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 게임 종료 처리
+        /// </summary>
+        private void HandleGameEnd(GameResult result)
+        {
+            if (result == GameResult.CitizenWin)
+            {
+                Debug.Log("[PlayingGameState] 시민팀 승리!");
+                // 승리 UI 표시 또는 게임 종료 처리
+                UIManager.Instance?.ShowToastToScreen("시민팀 승리!");
+                // TODO: 승리 화면으로 전환
+            }
+            else if (result == GameResult.MafiaWin)
+            {
+                Debug.Log("[PlayingGameState] 마피아팀 승리!");
+                // 승리 UI 표시 또는 게임 종료 처리
+                UIManager.Instance?.ShowToastToScreen("마피아팀 승리!");
+                // TODO: 승리 화면으로 전환
+            }
         }
     }
 }
