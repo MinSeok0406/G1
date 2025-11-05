@@ -361,6 +361,7 @@ MonoBehaviour:
   playerNameText: {fileID: 1733383807406690239}
   deathIcon: {fileID: 6355312016006610112}
   voteArea: {fileID: 973846050984109531}
+  voteButton: {fileID: 9070797917031898742}
   customizationImages:
   - {fileID: 1113373399221049045}
 --- !u!114 &9070797917031898742

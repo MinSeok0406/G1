@@ -161,6 +161,10 @@ MonoBehaviour:
   - RPC_ResetDetectiveAbility
   - RPC_ResetMafiaAbility
   - RPC_ApplyCustomizeColor
+  - RPC_ReceivePhotonViewID
+  - RPC_ReceivePlayerAliveStates
+  - RPC_RequestPhotonView
+  - RPC_RequestPlayerAliveStates
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

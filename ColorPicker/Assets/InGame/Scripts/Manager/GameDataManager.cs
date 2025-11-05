@@ -603,6 +603,101 @@ namespace ColorPicker.InGame
         public bool TryGetViewIDByUID(string uid, out int viewID) => _viewIdByUid.TryGetValue(uid, out viewID);
         public bool TryGetUIDByViewID(int viewID, out string uid) => _uidByViewId.TryGetValue(viewID, out uid);
 
+        /// <summary>
+        /// [호스트 전용] ActorID로 PhotonView 조회
+        /// </summary>
+        public PhotonView GetPhotonViewByActorId(int actorId)
+        {
+            if (!_uidByActor.TryGetValue(actorId, out var uid))
+            {
+                Debug.LogWarning($"[GameDataManager] No UID found for actor {actorId}");
+                return null;
+            }
+
+            if (!_viewIdByUid.TryGetValue(uid, out var viewID))
+            {
+                Debug.LogWarning($"[GameDataManager] No ViewID found for UID {uid}");
+                return null;
+            }
+
+            var photonView = PhotonView.Find(viewID);
+            if (photonView == null)
+            {
+                Debug.LogWarning($"[GameDataManager] PhotonView not found for ViewID {viewID}");
+            }
+
+            return photonView;
+        }
+
+        /// <summary>
+        /// 클라이언트가 호스트에게 ActorID로 PhotonView를 요청
+        /// </summary>
+        /// <param name="actorId">조회할 ActorID</param>
+        /// <param name="callback">결과를 받을 콜백 (PhotonView)</param>
+        public void RequestPhotonViewByActorId(int actorId, System.Action<PhotonView> callback)
+        {
+            if (IsHost)
+            {
+                // 호스트는 직접 조회
+                var photonView = GetPhotonViewByActorId(actorId);
+                callback?.Invoke(photonView);
+                return;
+            }
+
+            // 클라이언트는 RPC로 요청
+            _photonViewCallback = callback;
+            photonView.RPC(nameof(RPC_RequestPhotonView), RpcTarget.MasterClient, actorId);
+        }
+
+        private System.Action<PhotonView> _photonViewCallback;
+
+        [PunRPC]
+        private void RPC_RequestPhotonView(int actorId, PhotonMessageInfo info)
+        {
+            if (!IsHost) return;
+
+            // 호스트가 ActorID로 PhotonView 조회
+            var targetPhotonView = GetPhotonViewByActorId(actorId);
+
+            if (targetPhotonView != null)
+            {
+                // ViewID를 클라이언트에게 전송 (PhotonView 자체는 직렬화 불가)
+                photonView.RPC(nameof(RPC_ReceivePhotonViewID), info.Sender, targetPhotonView.ViewID);
+            }
+            else
+            {
+                // PhotonView를 찾지 못한 경우 -1 전송
+                photonView.RPC(nameof(RPC_ReceivePhotonViewID), info.Sender, -1);
+            }
+        }
+
+        [PunRPC]
+        private void RPC_ReceivePhotonViewID(int viewID)
+        {
+            PhotonView result = null;
+
+            if (viewID > 0)
+            {
+                result = PhotonView.Find(viewID);
+                if (result != null)
+                {
+                    Debug.Log($"[GameDataManager] Received PhotonView with ViewID {viewID}");
+                }
+                else
+                {
+                    Debug.LogWarning($"[GameDataManager] PhotonView not found for received ViewID {viewID}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[GameDataManager] Invalid ViewID received from host");
+            }
+
+            // 콜백 호출
+            _photonViewCallback?.Invoke(result);
+            _photonViewCallback = null;
+        }
+
         public bool IsGameStarted() => _gameState != GameStateType.None;
 
         public void SetGameState(GameStateType state)
@@ -629,6 +724,101 @@ namespace ColorPicker.InGame
         }
 
         public GameRuleSettings GetGameRules() => _rules;
+
+        /// <summary>
+        /// [호스트 전용] 모든 플레이어의 생사여부를 조회
+        /// </summary>
+        /// <returns>ActorNumber -> isAlive 딕셔너리</returns>
+        public Dictionary<int, bool> GetAllPlayerAliveStates()
+        {
+            var result = new Dictionary<int, bool>();
+
+            foreach (var kv in _publicByUid)
+            {
+                var publicData = kv.Value;
+                if (publicData == null) continue;
+
+                int actorId = publicData.currentActorId;
+                bool isAlive = true; // 기본값
+
+                if (_inGameByUid.TryGetValue(publicData.googleUID, out var inGameData))
+                {
+                    isAlive = inGameData.isAlive;
+                }
+
+                result[actorId] = isAlive;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 클라이언트가 호스트에게 모든 플레이어의 생사여부를 요청
+        /// </summary>
+        /// <param name="callback">결과를 받을 콜백 (ActorNumber -> isAlive)</param>
+        public void RequestPlayerAliveStates(System.Action<Dictionary<int, bool>> callback)
+        {
+            if (IsHost)
+            {
+                // 호스트는 직접 조회
+                var states = GetAllPlayerAliveStates();
+                callback?.Invoke(states);
+                return;
+            }
+
+            // 클라이언트는 RPC로 요청
+            _aliveStatesCallback = callback;
+            photonView.RPC(nameof(RPC_RequestPlayerAliveStates), RpcTarget.MasterClient);
+        }
+
+        private System.Action<Dictionary<int, bool>> _aliveStatesCallback;
+
+        [PunRPC]
+        private void RPC_RequestPlayerAliveStates(PhotonMessageInfo info)
+        {
+            if (!IsHost) return;
+
+            // 호스트가 모든 플레이어의 생사여부 조회
+            var states = GetAllPlayerAliveStates();
+
+            // ActorNumber 배열과 isAlive 배열로 변환 (직렬화 가능하도록)
+            var actorNumbers = new int[states.Count];
+            var aliveStates = new bool[states.Count];
+
+            int index = 0;
+            foreach (var kv in states)
+            {
+                actorNumbers[index] = kv.Key;
+                aliveStates[index] = kv.Value;
+                index++;
+            }
+
+            // 요청한 클라이언트에게만 전송
+            photonView.RPC(nameof(RPC_ReceivePlayerAliveStates), info.Sender, actorNumbers, aliveStates);
+        }
+
+        [PunRPC]
+        private void RPC_ReceivePlayerAliveStates(int[] actorNumbers, bool[] aliveStates)
+        {
+            if (actorNumbers == null || aliveStates == null || actorNumbers.Length != aliveStates.Length)
+            {
+                Debug.LogWarning("[GameDataManager] Invalid alive states data received");
+                return;
+            }
+
+            // 배열을 딕셔너리로 변환
+            var result = new Dictionary<int, bool>();
+            for (int i = 0; i < actorNumbers.Length; i++)
+            {
+                result[actorNumbers[i]] = aliveStates[i];
+            }
+
+            Debug.Log($"[GameDataManager] Received alive states for {result.Count} player(s)");
+
+            // 콜백 호출
+            _aliveStatesCallback?.Invoke(result);
+            _aliveStatesCallback = null;
+        }
 
         #endregion
 

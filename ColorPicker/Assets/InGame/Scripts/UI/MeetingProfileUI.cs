@@ -9,6 +9,7 @@ namespace ColorPicker.InGame
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private GameObject deathIcon;
         [SerializeField] private VoteArea voteArea;
+        [SerializeField] private Button voteButton;
 
         [Header("Customization Display")]
         [SerializeField] private Image[] customizationImages; // 커스터마이즈 색상을 적용할 이미지 배열
@@ -93,6 +94,8 @@ namespace ColorPicker.InGame
         private void SetAlive(bool isAlive)
         {
             if (deathIcon) deathIcon.gameObject.SetActive(!isAlive);
+
+            voteButton.enabled = isAlive;
         }
 
         public void OnClick_ShowVotePopup()

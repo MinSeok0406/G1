@@ -42,6 +42,8 @@ namespace ColorPicker.InGame
         private void SetAlive(bool isAlive)
         {
             if (deathIcon) deathIcon.SetActive(!isAlive);
+
+            playerDeductionButton.enabled = isAlive;
         }
 
         public void SetDeductionColor(ColorType color = ColorType.White)

@@ -355,6 +355,7 @@ MonoBehaviour:
   outlineMaterial: {fileID: 0}
   toastOffset: {x: 0, y: 0, z: 0}
   bodyRenderer: {fileID: 5702664630970139590}
+  requiredProgressRatio: 0.5
 --- !u!58 &227415030119045852
 CircleCollider2D:
   m_ObjectHideFlags: 0
