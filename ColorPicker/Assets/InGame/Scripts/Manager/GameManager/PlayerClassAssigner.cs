@@ -30,8 +30,11 @@ namespace ColorPicker.InGame
             int assigned = 0;
 
             // 직업 종류 데이터 추후 자동화 업데이트 필요 **********
-            AssignRoleToCount(shuffled, PlayerClassType.mafia, gameRules.mafiaAmount, ref assigned); // 랜덤으로 섞인 리스트 기준으로 마피아 수 만큼 할당
-            AssignRoleToCount(shuffled, PlayerClassType.detective, gameRules.detectiveAmount, ref assigned); // 랜덤으로 섞인 리스트 기준으로 탐정 수 만큼 할당
+            //AssignRoleToCount(shuffled, PlayerClassType.mafia, gameRules.mafiaAmount, ref assigned); // 랜덤으로 섞인 리스트 기준으로 마피아 수 만큼 할당
+            //AssignRoleToCount(shuffled, PlayerClassType.detective, gameRules.detectiveAmount, ref assigned); // 랜덤으로 섞인 리스트 기준으로 탐정 수 만큼 할당
+            AssignRoleToCount(shuffled, PlayerClassType.mafia, 1, ref assigned); // 랜덤으로 섞인 리스트 기준으로 마피아 수 만큼 할당
+            AssignRoleToCount(shuffled, PlayerClassType.detective, 1, ref assigned); //test
+
 
             // 나머지 플레이어 시민으로 할당
             for (int i = assigned; i < shuffled.Count; i++)
@@ -63,6 +66,8 @@ namespace ColorPicker.InGame
 
         private void AssignColorsBasedOnClass()
         {
+            if (!PhotonNetwork.IsMasterClient) return;
+
             var availableColors = System.Enum.GetValues(typeof(ColorType))
                 .Cast<ColorType>()
                 .Where(c => c != ColorType.Black && c != ColorType.White)
@@ -93,6 +98,15 @@ namespace ColorPicker.InGame
                 }
 
                 GameDataManager.Instance.UpdatePrivatePlayerData(player);
+
+                GameDataManager.Instance.SyncAllPlayerDataToClients();
+
+                ClientAckManager.Instance.WaitForAllClients(() =>
+                {
+                    UIManager.Instance.BroadcastUpdateColorIcon();
+                    AbilityManager.Instance.abilityBinder.BroadCastApplyLocalAbilities();
+                    UIManager.Instance.BroadcastInitializeAssignSceneUI();
+                });
             }
         }
     }

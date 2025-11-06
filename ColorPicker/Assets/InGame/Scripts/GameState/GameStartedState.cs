@@ -1,4 +1,5 @@
 ﻿
+using ColorPicker.Chat;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using System.Collections;
@@ -34,9 +35,11 @@ namespace ColorPicker.InGame
 
         private void Initialized()
         {
-            GameManager.Instance.playerClassAssigner.AssignRoles();
+            GameManager.Instance.PlayerClassAssigner.AssignRoles();
 
             GameDataManager.Instance.InitializedPlayerInGameData();
+
+            UIManager.Instance.InitializePlayerProfile();
 
             GameManager.Instance.RequestPhaseChange(GameStateType.Playing);
         }

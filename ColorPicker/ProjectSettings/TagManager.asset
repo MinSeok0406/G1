@@ -10,6 +10,9 @@ TagManager:
   - task-wire
   - AIGoal
   - PlayerGoal
+  - ToyBox
+  - PillContainer
+  - Patient
   layers:
   - Default
   - TransparentFX
@@ -17,9 +20,9 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
-  - 
-  - 
+  - CRT
+  - Mafia
+  - Ghost
   - 
   - 
   - 
@@ -64,4 +67,13 @@ TagManager:
     locked: 0
   - name: FrontDecoration
     uniqueID: 1192120731
+    locked: 0
+  - name: PaintApply
+    uniqueID: 2648575305
+    locked: 0
+  - name: Lighting
+    uniqueID: 1703569725
+    locked: 0
+  - name: UI
+    uniqueID: 3114267279
     locked: 0

@@ -6,7 +6,7 @@ namespace ColorPicker.InGame
 {
     public interface IClickable
     {
-        void OnClick();
+        void OnClick(Vector2 localPosition);
     }
 
     public interface IDraggable

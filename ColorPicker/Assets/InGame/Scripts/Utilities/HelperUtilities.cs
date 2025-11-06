@@ -10,7 +10,7 @@ namespace ColorPicker.InGame
     public static class HelperUtilities
     {
         /// <summary>
-        /// ½ºÅ©¸° ÁÂÇ¥¸¦ ·ÎÄÃ ÁÂÇ¥(RectTransform ±âÁØ)·Î º¯È¯ÇØÁÖ´Â ÇÔ¼ö
+        /// ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥(RectTransform ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½
         /// </summary>
         public static Vector2 ScreenToLocalPointInRect(Canvas canvas, RectTransform targetRect, Vector2 screenPosition)
         {
@@ -25,8 +25,8 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// Ä¿½ºÅÍ¸¶ÀÌÂ¡ »ö»ó(Enum)À» UnityÀÇ Color Å¸ÀÔÀ¸·Î º¯È¯ÇØÁÖ´Â ÇÔ¼ö  
-        /// ÇÃ·¹ÀÌ¾î »ö»ó Àû¿ë ½Ã »ç¿ë
+        /// Ä¿ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½Â¡ ï¿½ï¿½ï¿½ï¿½(Enum)ï¿½ï¿½ Unityï¿½ï¿½ Color Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½  
+        /// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
         /// </summary>
         public static Color GetUnityColor(CustomizationColor color)
         {
@@ -48,7 +48,30 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// ÇöÀç GameState °´Ã¼¸¦ GameStateType enum °ªÀ¸·Î ¸ÅÇÎÇÏ´Â ÇÔ¼ö  
+        /// ColorTypeì— ëŒ€ì‘í•˜ëŠ” UnityEngine.Colorë¥¼ ë°˜í™˜
+        /// </summary>
+        public static Color ToUnityColor(ColorType type)
+        {
+            switch (type)
+            {
+                case ColorType.White: return Color.white;
+                case ColorType.Red: return Color.red;
+                case ColorType.Green: return Color.green;
+                case ColorType.Blue: return Color.blue;
+                case ColorType.Yellow: return Color.yellow;
+                case ColorType.Orange: return new Color(1f, 0.5f, 0f);         // ì˜¤ë Œì§€ (255,128,0)
+                case ColorType.Purple: return new Color(0.5f, 0f, 0.5f);       // í¼í”Œ (128,0,128)
+                case ColorType.Cyan: return Color.cyan;
+                case ColorType.Pink: return new Color(1f, 0.4f, 0.7f);       // í•‘í¬ (255,102,178)
+                case ColorType.Brown: return new Color(0.6f, 0.3f, 0.1f);     // ë¸Œë¼ìš´ (153,76,25)
+                case ColorType.Black: return Color.black;
+                default: return Color.magenta; // ë§¤í•‘ ì•ˆëœ ê²½ìš° ë””ë²„ê·¸ ìƒ‰
+            }
+        }
+        
+
+        /// <summary>
+        /// ï¿½ï¿½ï¿½ï¿½ GameState ï¿½ï¿½Ã¼ï¿½ï¿½ GameStateType enum ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½  
         /// </summary>
         public static GameStateType ToPhase(GameState state)
         {
@@ -60,8 +83,8 @@ namespace ColorPicker.InGame
                     return GameStateType.Playing;
                 case MeetingState:
                     return GameStateType.Meeting;
-                case VotingState:
-                    return GameStateType.Voting;
+                case ResultState:
+                    return GameStateType.Result;
 
                 default:
                     Debug.Log($"Unknown GameState: {state.GetType().Name}");
@@ -71,7 +94,7 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// GameStateType enum °ªÀ» ½ÇÁ¦ GameState °´Ã¼·Î º¯È¯ÇÏ´Â ÇÔ¼ö  
+        /// GameStateType enum ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ GameState ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½  
         /// </summary>
         public static GameState ToState(GameStateType phase)
         {
@@ -83,8 +106,8 @@ namespace ColorPicker.InGame
                     return GameManager.Instance.PlayingGameState;
                 case GameStateType.Meeting:
                     return GameManager.Instance.MeetingState;
-                case GameStateType.Voting:
-                    return GameManager.Instance.VotingState;
+                case GameStateType.Result:
+                    return GameManager.Instance.ResultState;
 
                 default:
                     Debug.Log($"Not find state : {phase}");
@@ -93,7 +116,7 @@ namespace ColorPicker.InGame
         }
 
         /// <summary>
-        /// ¸®½ºÆ®ÀÇ ¿ä¼ÒµéÀ» ¹«ÀÛÀ§·Î ¼¯´Â ÇÔ¼ö  
+        /// ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Òµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½  
         /// </summary>
         public static void Shuffle<T>(this List<T> list)
         {
@@ -107,16 +130,16 @@ namespace ColorPicker.InGame
                 list[n] = value;
             }
         }
-        public static bool IsRoomView(this PhotonView view) // this È®Àå ¸Å¼­µå·Î ¸¶Ä¡ view °´Ã¼ÀÇ ¿ø·¡ ¸Ş¼­µåÃ³·³ »ç¿ë °¡´É
+        public static bool IsRoomView(this PhotonView view) // this È®ï¿½ï¿½ ï¿½Å¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ view ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ş¼ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         {
             return view.GetComponent<RoomObjectMarker>() != null ||
                    view.gameObject.name.StartsWith("Room_");
         }
 
         /// <summary>
-        /// ÇöÀç ¹æÀÇ CurrentScene Ä¿½ºÅÒ ÇÁ·ÎÆÛÆ¼¸¦ ¼³Á¤ÇÕ´Ï´Ù.
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CurrentScene Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         /// </summary>
-        /// <param name="sceneName">¼³Á¤ÇÒ ¾À ÀÌ¸§ (¿¹: "LobbyScene", "InGameScene")</param>
+        /// <param name="sceneName">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ (ï¿½ï¿½: "LobbyScene", "InGameScene")</param>
         public static void SetCurrentScene(string sceneName)
         {
             if (PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null && PhotonNetwork.IsMasterClient)

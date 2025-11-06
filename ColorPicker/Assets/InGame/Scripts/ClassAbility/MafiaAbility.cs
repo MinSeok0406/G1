@@ -1,66 +1,165 @@
-using Photon.Pun;
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace ColorPicker.InGame
 {
-    public class MafiaAbility : CitizenAbility
+    [RequireComponent(typeof(PhotonView))]
+    public class MafiaAbility : TargetingAbilityBase
     {
-        private KillEvent killEvent;
-        private Player currentPlayer;
+        private static readonly WaitForSeconds k_1sec = new WaitForSeconds(1f);
 
-        private void Awake()
+        [Header("UI")]
+        [SerializeField] private Button killButton;
+        [SerializeField] private TMP_Text cooldownText;
+        [SerializeField] private ColorPickKillButton colorPickKillButton;
+
+        private Coroutine cooldownRoutine;
+
+        #region Public API (í˜¸í™˜ ìœ ì§€)
+        public void InitAbility()
         {
-            killEvent = gameObject.AddComponent<KillEvent>();
+            if (killButton)
+            {
+                killButton.onClick.RemoveAllListeners();
+                killButton.onClick.AddListener(OnKillButtonPressed);
+                killButton.gameObject.SetActive(false);
+            }
 
- 
+            if (colorPickKillButton)
+            {
+                var btn = colorPickKillButton.GetColorPickKillButton();
+                if (btn)
+                {
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(OnColorPickKillButtonPressed);
+                }
+                colorPickKillButton.gameObject.SetActive(false);
+            }
+
+            if (cooldownText) cooldownText.text = "";
+
+            AbilityManager.Instance.RequestMafiaLayerSync(PhotonNetwork.LocalPlayer.ActorNumber);
+            ClearHighlight();
         }
 
-        protected override void Start()
+        public void EnableAbility()
         {
-            base.Start();
+            InitAbility();
+            gameObject.SetActive(true);
 
+            if (killButton) killButton.gameObject.SetActive(true);
+            if (colorPickKillButton) colorPickKillButton.gameObject.SetActive(true);
         }
 
-
-
-        private void OnEnable()
+        public void DisableAbility()
         {
-            killEvent.OnKill += KillEvent_OnKill;
+            if (killButton)
+            {
+                killButton.onClick.RemoveListener(OnKillButtonPressed);
+                killButton.gameObject.SetActive(false);
+            }
+
+            if (colorPickKillButton)
+            {
+                var btn = colorPickKillButton.GetColorPickKillButton();
+                if (btn) btn.onClick.RemoveAllListeners();
+                colorPickKillButton.gameObject.SetActive(false);
+            }
+
+            ClearHighlight();
+            gameObject.SetActive(false);
         }
 
-        private void OnDisable()
+        public void StartCooldownUI(float duration)
         {
-            killEvent.OnKill -= KillEvent_OnKill;
+            if (cooldownRoutine != null) StopCoroutine(cooldownRoutine);
+            colorPickKillButton?.CoolInitialize();
+
+            cooldownRoutine = StartCoroutine(Co_Cooldown(duration));
+        }
+        #endregion
+
+        #region Base overrides
+        protected override bool ShouldPauseTargeting() => cooldownRoutine != null;
+
+        protected override void OnTargetChanged(PhotonView newTarget)
+        {
+            // íƒ€ê¹ƒì´ ìžˆì„ ë•Œë§Œ í‚¬ ë²„íŠ¼ í™œì„± í›„ë³´
+            UpdateKillButtonInteractable();
         }
 
-        private void KillEvent_OnKill(KillEvent killEvent, KillEventArgs killEventArgs)
+        protected override void OnUiTick()
         {
-            AbilityManager.Instance.TryRequestKill(killEventArgs.playerId, this.photonView.ViewID);
+            UpdateKillButtonInteractable();
+        }
+        #endregion
+
+        #region UI/Action
+        private void UpdateKillButtonInteractable()
+        {
+            if (!killButton) return;
+            killButton.interactable = CanUseAbility();
         }
 
+        private bool CanUseAbility()
+        {
+            return currentTarget && currentTarget.ViewID > 0 && cooldownRoutine == null;
+        }
 
         private void OnKillButtonPressed()
         {
-            if (currentPlayer == null)
-            {
-                Debug.LogWarning("ÇöÀç Å¸°Ù ÇÃ·¹ÀÌ¾î°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.");
-                return;
-            }
+            if (!CanUseAbility()) return;
 
-            int targetPlayerId = currentPlayer.photonView.Owner.ActorNumber;
+            int targetViewID = currentTarget.ViewID;
+            var me = PlayerManager.Instance.GetMyPlayer();
+            if (!me) return;
+            int myViewID = me.photonView.ViewID;
 
-            killEvent.CallKillEvent(targetPlayerId);
+            AbilityManager.Instance.TryRequestKill(targetViewID, myViewID, aimRadius);
 
+            var killerPV = PhotonView.Find(myViewID);
+            var targetPV = PhotonView.Find(targetViewID);
+
+            killerPV.transform.position = targetPV.transform.position;
         }
 
-        public Player GetCurrentPlayer()
+        private void OnColorPickKillButtonPressed()
         {
-            return currentPlayer;
+            AbilityManager.Instance.TryRequestColorPick();
+        }
+        #endregion
+
+        #region Cooldown UI
+        private IEnumerator Co_Cooldown(float duration)
+        {
+            float end = Time.time + Mathf.Max(0f, duration);
+            while (true)
+            {
+                float remain = end - Time.time;
+                if (remain <= 0f)
+                {
+                    UpdateCooldownUI(0f);
+                    colorPickKillButton?.CoolInitialize();
+                    cooldownRoutine = null;
+                    yield break;
+                }
+
+                UpdateCooldownUI(remain);
+                yield return k_1sec; // 1ì´ˆ ë‹¨ìœ„ ê°±ì‹ 
+            }
         }
 
+        private void UpdateCooldownUI(float remain)
+        {
+            if (cooldownText)
+                cooldownText.text = remain > 0f ? Mathf.CeilToInt(remain).ToString() : "";
+
+            if (remain > 0f) colorPickKillButton?.UpdateCooldownUI(remain);
+            else colorPickKillButton?.CoolInitialize();
+        }
+        #endregion
     }
 }

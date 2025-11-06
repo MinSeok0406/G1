@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: MiniGameTemplate_Clean1
   m_EditorClassIdentifier: 
   miniGameName: Clean1
-  miniGameType: 0
+  miniGameType: 1
+  missionInfo: Clean1

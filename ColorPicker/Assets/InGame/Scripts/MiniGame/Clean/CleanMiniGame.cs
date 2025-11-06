@@ -65,5 +65,21 @@ namespace ColorPicker.InGame
                 cleanable.Initialized();
             }
         }
+
+        /// <summary>
+        /// 미션 초기화 (라운드 시작 시 호출)
+        /// </summary>
+        public void ResetMission()
+        {
+            cleanedCount = 0;
+
+            foreach (CleanableObject cleanable in cleanables)
+            {
+                cleanable.gameObject.SetActive(true);
+                cleanable.Initialized();
+            }
+
+            Debug.Log("[CleanMiniGame] Mission reset");
+        }
     }
 }

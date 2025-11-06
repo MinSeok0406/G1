@@ -4,18 +4,19 @@ using UnityEngine;
 
 namespace ColorPicker.InGame
 {
+    public enum AbilitySkillId
+    {
+        Default = 0,
+        MafiaKill = 1,
+        ColorPickerSKill = 2
+    }
+
     public enum PlayerClassType
     {
         citizen, // 0
         mafia, // 1
         detective, //2
         ghost // 3
-    }
-
-    public enum MiniGameType
-    {
-        clean_1,
-        clean_2
     }
 
     public enum ColorType
@@ -54,7 +55,8 @@ namespace ColorPicker.InGame
         GameStarted = 0,
         Playing = 1,
         Meeting = 2,
-        Voting = 3
+        Voting = 3,
+        Result = 4       // 게임 결과 화면
     }
 
     public enum GameEventCode : byte

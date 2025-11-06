@@ -1,58 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ColorPicker.InGame
 {
+    [RequireComponent(typeof(Collider2D))]
     [RequireComponent(typeof(MiniGameTag))]
     [DisallowMultipleComponent]
-    public class MiniGameTrigger : MonoBehaviour, IInteractive
+    public class MiniGameTrigger : InteractiveTriggerBase
     {
-        private InteractiveObjectEffect interactiveObjectEffect;
-        private MiniGameTag miniGameTag;
+        private MiniGameTag _miniGame;
 
-        private void Awake()
+        protected override void Awake()
         {
-            interactiveObjectEffect = GetComponent<InteractiveObjectEffect>();
-            miniGameTag = GetComponent<MiniGameTag>();
-        }
-        public Vector3 GetPosition()
-        {
-            return transform.position;
+            base.Awake();
+            _miniGame = GetComponent<MiniGameTag>();
         }
 
-        public void OnInteract()
+        protected override bool CanInteract()
         {
-            MiniGameManager.Instance.StartMiniGame(miniGameTag.miniGameType);
+            // 필요시 미니게임 가능 조건을 여기서 제한 (쿨다운/상태 등)
+            return _miniGame != null && MiniGameManager.Instance != null;
         }
 
-        public void ToggleHighlight(bool active)
+        protected override void HandleInteractLocal()
         {
-            interactiveObjectEffect.SetOutline(active);
-        }
+            // 미니게임 시작(로컬 트리거)
+            MiniGameManager.Instance.StartMiniGame(_miniGame.miniGameType);
 
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (!other.CompareTag("Player")) return;
-
-            var playerControl = other.GetComponent<PlayerControl>();
-            if (playerControl == null) return;
-
-            if (!playerControl.photonView.IsMine) return; // ���� �÷��̾ ó��
-
-            playerControl.interactionDetector.AddInteractable(this);
-        }
-
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag("Player")) return;
-
-            var playerControl = other.GetComponent<PlayerControl>();
-            if (playerControl == null) return;
-
-            if (!playerControl.photonView.IsMine) return;
-
-            playerControl.interactionDetector.RemoveInteractable(this);
+            // 필요 시 버튼/하이라이트 유지/해제 정책 선택
+            // 보통은 즉시 정리 (사용자 피드백 후 중복입력 방지)
+            CleanupLocalInteraction();
         }
     }
 }

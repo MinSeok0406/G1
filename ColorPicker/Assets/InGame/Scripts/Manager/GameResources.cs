@@ -1,5 +1,6 @@
 ﻿using ColorPicker.InGame;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ColorPicker
 {
@@ -42,5 +43,8 @@ namespace ColorPicker
         #endregion
         public Material outlineMaterial;
         public Material interactiveMaterial;
+
+        [Header("VFX Ref")]
+        public VolumeProfile deathVFXVolumeProfile;
     }
 }

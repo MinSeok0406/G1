@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1956895008542353352}
   - component: {fileID: 7460253391806985230}
-  - component: {fileID: 5814984820114824347}
   - component: {fileID: 2824459620223963491}
   - component: {fileID: 2222753277409908304}
   - component: {fileID: 8585148640082177533}
+  - component: {fileID: 4620869019587843804}
   m_Layer: 0
   m_Name: MinigameInteractiveObj
   m_TagString: Untagged
@@ -88,18 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5814984820114824347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5632306430738236596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e02f80805ca7df4b95d768d415e4341, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2824459620223963491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +113,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b22ef540d3c3f9458572f1374e84556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMaterial: {fileID: 0}
+  toastOffset: {x: 0, y: 0, z: 0}
 --- !u!58 &8585148640082177533
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -160,3 +150,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 2.5
+--- !u!114 &4620869019587843804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5632306430738236596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7493b50dcd3e46842bf8e0486854ac60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderers: []
+  includeInactiveChildren: 1
+  outlineMaterial: {fileID: 2100000, guid: c1d30f7c8a67a784599d244f28ad911d, type: 2}
+  defaultSpriteMaterial: {fileID: 2100000, guid: 8c1d009f0c3bb8a43a98f32266329424, type: 2}
+  initialState: 1
