@@ -46,7 +46,7 @@ namespace ColorPicker.InGame
                     }
                     else if (hit.TryGetComponent<IClickable>(out var click))
                     {
-                        click.OnClick();
+                        click.OnClick(targetPos);
                     }
                 }
             }

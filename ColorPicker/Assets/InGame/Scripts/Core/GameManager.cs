@@ -21,6 +21,7 @@ namespace ColorPicker.InGame
         public GameStartedState GameStartedState { get; private set; }
         public PlayingGameState PlayingGameState { get; private set; }
         public MeetingState MeetingState { get; private set; }
+        public ResultState ResultState { get; private set; }
 
         [HideInInspector] public float meetingTimer;
         #endregion
@@ -55,6 +56,7 @@ namespace ColorPicker.InGame
             GameStartedState = new GameStartedState(StateMachine);
             PlayingGameState = new PlayingGameState(StateMachine);
             MeetingState     = new MeetingState(StateMachine);
+            ResultState      = new ResultState(StateMachine);
         }
         #endregion
 

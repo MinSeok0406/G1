@@ -165,6 +165,15 @@ MonoBehaviour:
   - RPC_ReceivePlayerAliveStates
   - RPC_RequestPhotonView
   - RPC_RequestPlayerAliveStates
+  - RPC_GameEnd
+  - RPC_OnMeetingEnded
+  - RPC_OnMeetingStarted
+  - RPC_OnRoundEnded
+  - RPC_OnRoundStarted
+  - RPC_OnRoundStarting
+  - RPC_RequestBodyReportMeeting
+  - RPC_RequestEmergencyMeeting
+  - RPC_TeleportPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -353,9 +353,21 @@ namespace ColorPicker.InGame
 
                 if (colorIndex >= 0 && colorIndex < availableColors.Length)
                 {
-                    // 메모리 캐시 업데이트
-                    if (!_playerColorAssignments.ContainsKey(actorId))
+                    // 이미 할당된 플레이어인 경우 업데이트
+                    if (_playerColorAssignments.TryGetValue(actorId, out int existingColorIndex))
                     {
+                        // 색상이 변경된 경우
+                        if (existingColorIndex != colorIndex)
+                        {
+                            _usedColorIndices.Remove(existingColorIndex);
+                            _playerColorAssignments[actorId] = colorIndex;
+                            _usedColorIndices.Add(colorIndex);
+                            Debug.Log($"[CustomizeManager] Updated color {existingColorIndex} -> {colorIndex} for actor {actorId}");
+                        }
+                    }
+                    else
+                    {
+                        // 새로운 플레이어 색상 할당
                         _playerColorAssignments[actorId] = colorIndex;
                         _usedColorIndices.Add(colorIndex);
                         syncedCount++;

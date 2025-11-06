@@ -16,13 +16,16 @@ namespace ColorPicker.InGame
         [SerializeField] private Button[] colorButtons; // 12개의 색상 버튼 배열
 
         private Image[] _buttonImages;
+        private Color[] _originalColors; // 원본 색상 저장
 
         private void Awake()
         {
-            // 버튼 이미지 캐싱
+            // 버튼 이미지 및 원본 색상 캐싱
             if (colorButtons != null && colorButtons.Length > 0)
             {
                 _buttonImages = new Image[colorButtons.Length];
+                _originalColors = new Color[colorButtons.Length];
+
                 for (int i = 0; i < colorButtons.Length; i++)
                 {
                     if (colorButtons[i] != null)
@@ -73,9 +76,10 @@ namespace ColorPicker.InGame
             {
                 if (colorButtons[i] == null) continue;
 
-                // 버튼 색상 설정
+                // 버튼 색상 설정 및 원본 색상 저장
                 if (_buttonImages[i] != null)
                 {
+                    _originalColors[i] = allColors[i];
                     _buttonImages[i].color = allColors[i];
                 }
 
@@ -113,12 +117,18 @@ namespace ColorPicker.InGame
             int myColorIndex = CustomizeManager.Instance.GetPlayerColorIndex(myActorNum);
             var availableColors = CustomizeManager.Instance.GetAvailableColorIndices();
 
+            // 내 색상이 할당되어 있으면 사용 가능한 색상 리스트에 추가
+            if (myColorIndex >= 0 && !availableColors.Contains(myColorIndex))
+            {
+                availableColors.Add(myColorIndex);
+            }
+
             for (int i = 0; i < colorButtons.Length; i++)
             {
                 if (colorButtons[i] == null) continue;
 
                 bool isMyColor = (i == myColorIndex);
-                bool isAvailable = availableColors.Contains(i) || isMyColor;
+                bool isAvailable = availableColors.Contains(i);
 
                 // 버튼 활성화/비활성화 (어몽어스 스타일)
                 colorButtons[i].interactable = isAvailable;
@@ -127,18 +137,13 @@ namespace ColorPicker.InGame
                 var transform = colorButtons[i].transform;
                 transform.localScale = isMyColor ? Vector3.one * 1.2f : Vector3.one;
 
-                // 비활성화된 버튼 시각적 표시 (어둡게)
-                if (_buttonImages[i] != null && !isAvailable)
+                // 버튼 색상 복원 (원본 색상 유지)
+                if (_buttonImages[i] != null && _originalColors != null && i < _originalColors.Length)
                 {
-                    var tempColor = _buttonImages[i].color;
-                    tempColor.a = 0.3f; // 투명도로 비활성화 표시
-                    _buttonImages[i].color = tempColor;
-                }
-                else if (_buttonImages[i] != null && isAvailable)
-                {
-                    var tempColor = _buttonImages[i].color;
-                    tempColor.a = 1f; // 완전 불투명
-                    _buttonImages[i].color = tempColor;
+                    // 원본 색상에서 알파 값만 조정
+                    Color displayColor = _originalColors[i];
+                    displayColor.a = isAvailable ? 1f : 0.3f; // 사용 불가능한 색상은 투명하게
+                    _buttonImages[i].color = displayColor;
                 }
             }
         }

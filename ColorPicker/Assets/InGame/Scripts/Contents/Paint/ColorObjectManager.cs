@@ -54,6 +54,12 @@ namespace ColorPicker.InGame
 
                     // 전체에 해당 오브젝트만 브로드캐스트 (네트워크 효율성 ↑)
                     photonView.RPC(nameof(RPC_PaintApply), RpcTarget.All, viewID, appliedColorType);
+
+                    // 승리 조건 체크 (모든 페인트가 칠해졌는지 확인)
+                    if (VictoryConditionManager.Instance != null)
+                    {
+                        VictoryConditionManager.Instance.CheckVictoryConditionOnPaint();
+                    }
                     break;
 
                 case PaintApplyResult.AlreadyPainted:

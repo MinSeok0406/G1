@@ -7,16 +7,25 @@ using UnityEngine.Rendering;
 namespace ColorPicker.InGame
 {
     [RequireComponent(typeof(DeathEvent))]
+    [RequireComponent(typeof(Player))]
     [DisallowMultipleComponent]
     public class Death : MonoBehaviour
     {
         private DeathEvent deathEvent;
         private Player player;
+        private PlayerControl playerControl;
+
+        // WaitForSeconds 캐싱 (GC 최적화)
+        private WaitForSeconds waitForDeathAnimation;
 
         private void Awake()
         {
             deathEvent = GetComponent<DeathEvent>();
             player = GetComponent<Player>();
+            playerControl = GetComponent<PlayerControl>();
+
+            // WaitForSeconds 캐싱
+            waitForDeathAnimation = new WaitForSeconds(1f);
         }
 
         private void OnEnable()
@@ -57,6 +66,12 @@ namespace ColorPicker.InGame
             {
                 // === 다른 사람이 죽었을 때 ===
                 HandleOtherPlayerDeath();
+
+                // 승리 조건 체크 (호스트만)
+                if (PhotonNetwork.IsMasterClient && VictoryConditionManager.Instance != null)
+                {
+                    VictoryConditionManager.Instance.CheckVictoryConditionOnDeath();
+                }
             }
         }
 
@@ -85,6 +100,12 @@ namespace ColorPicker.InGame
             {
                 AbilityManager.Instance.abilityBinder.DisableAllAbilities();
             }
+
+            // 승리 조건 체크 (호스트만)
+            if (PhotonNetwork.IsMasterClient && VictoryConditionManager.Instance != null)
+            {
+                VictoryConditionManager.Instance.CheckVictoryConditionOnDeath();
+            }
         }
 
         /// <summary>
@@ -100,9 +121,9 @@ namespace ColorPicker.InGame
                 // 내가 살아있는지 확인 (안전하게)
                 if (aliveStates.TryGetValue(myActorId, out bool isAlive) && isAlive)
                 {
-                    // 내가 살아있으면 죽은 플레이어를 숨김
-                    gameObject.SetActive(false);
-                    Debug.Log($"[Death] Other player died - hiding their body (I'm alive)");
+                    // 내가 살아있으면 죽은 플레이어를 숨김 (애니메이션 재생을 위해 지연 후 비활성화)
+                    StartCoroutine(HideDeadPlayerAfterAnimation());
+                    Debug.Log($"[Death] Other player died - will hide after death animation (I'm alive)");
                 }
                 else
                 {
@@ -110,6 +131,37 @@ namespace ColorPicker.InGame
                     Debug.Log($"[Death] Other player died - keeping visible (I'm dead)");
                 }
             });
+        }
+
+        /// <summary>
+        /// 죽음 애니메이션 재생 후 플레이어를 숨김
+        /// </summary>
+        private System.Collections.IEnumerator HideDeadPlayerAfterAnimation()
+        {
+            // 죽음 애니메이션이 재생될 시간을 줌 (캐싱된 WaitForSeconds 사용)
+            yield return waitForDeathAnimation;
+
+            // 컨트롤 비활성화 (움직임 방지) - 캐싱된 참조 사용
+            if (playerControl != null)
+            {
+                playerControl.SetControlEnabled(false);
+            }
+
+            // 렌더러만 비활성화 (애니메이터는 유지)
+            var renderers = GetComponentsInChildren<SpriteRenderer>();
+            foreach (var renderer in renderers)
+            {
+                renderer.enabled = false;
+            }
+
+            // Collider 비활성화 (상호작용 방지)
+            var colliders = GetComponentsInChildren<Collider2D>();
+            foreach (var collider in colliders)
+            {
+                collider.enabled = false;
+            }
+
+            Debug.Log($"[Death] Dead player hidden after animation");
         }
 
         private void ShowAllPlayers()

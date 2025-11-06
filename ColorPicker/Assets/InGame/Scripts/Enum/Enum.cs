@@ -19,12 +19,6 @@ namespace ColorPicker.InGame
         ghost // 3
     }
 
-    public enum MiniGameType
-    {
-        clean_1,
-        clean_2
-    }
-
     public enum ColorType
     {
         White,
@@ -61,7 +55,8 @@ namespace ColorPicker.InGame
         GameStarted = 0,
         Playing = 1,
         Meeting = 2,
-        Voting = 3
+        Voting = 3,
+        Result = 4       // 게임 결과 화면
     }
 
     public enum GameEventCode : byte

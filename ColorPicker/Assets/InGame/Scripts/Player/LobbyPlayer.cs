@@ -58,16 +58,30 @@ namespace ColorPicker.InGame
 
             // 플레이어 닉네임 설정
             int actorNum = photonView.Owner.ActorNumber;
-            string displayName = photonView.Owner.NickName; // 기본값
+            string displayName = photonView.Owner.NickName; // Photon 기본 닉네임
 
             // GameDataManager에서 닉네임 가져오기 시도
-            if (GameDataManager.Instance != null &&
-                GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorNum, out var publicData))
+            if (GameDataManager.Instance != null)
             {
-                if (!string.IsNullOrEmpty(publicData.nickname))
+                if (GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorNum, out var publicData))
                 {
-                    displayName = publicData.nickname;
+                    if (!string.IsNullOrEmpty(publicData.nickname))
+                    {
+                        displayName = publicData.nickname;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[LobbyPlayer] PlayerData exists but nickname is empty for actor {actorNum}. Using Photon nickname: {displayName}");
+                    }
                 }
+                else
+                {
+                    Debug.LogWarning($"[LobbyPlayer] No PlayerData found in GameDataManager for actor {actorNum}. Using Photon nickname: {displayName}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[LobbyPlayer] GameDataManager not available. Using Photon nickname: {displayName}");
             }
 
             nicknameText.text = displayName;
@@ -93,9 +107,19 @@ namespace ColorPicker.InGame
 
             Debug.Log($"[LobbyPlayer] Loading customize color for actor {actorNumber}...");
 
+            // GameDataManager에서 모든 플레이어 색상 동기화 (신규 입장자용)
+            if (!Photon.Pun.PhotonNetwork.IsMasterClient)
+            {
+                CustomizeManager.Instance.SyncFromGameDataManager();
+                Debug.Log($"[LobbyPlayer] Synced all player colors from GameDataManager");
+            }
+
             // 호스트에게 색상 자동 할당 요청 (GameDataManager에 색상이 없으면)
             if (Photon.Pun.PhotonNetwork.IsMasterClient)
             {
+                // 기존 플레이어들의 색상 먼저 동기화
+                CustomizeManager.Instance.SyncFromGameDataManager();
+
                 int existingColorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNumber);
                 if (existingColorIndex < 0)
                 {
@@ -104,11 +128,17 @@ namespace ColorPicker.InGame
                 }
                 else
                 {
-                    Debug.Log($"[LobbyPlayer] Found existing color {existingColorIndex} in GameDataManager for actor {actorNumber}");
+                    Debug.Log($"[LobbyPlayer] Found existing color {existingColorIndex} for actor {actorNumber}");
+                    // 기존 색상을 다시 할당하여 RPC_ColorChangeConfirmed 호출
+                    Color color = CustomizeManager.Instance.GetColor(existingColorIndex);
+                    ApplyCustomizeColor(color);
                 }
             }
 
-            // GameDataManager 기반으로 색상 로드 및 적용
+            // 모든 존재하는 LobbyPlayer에게 색상 적용 (새 플레이어가 기존 플레이어 색상 보기)
+            ApplyAllPlayerColors();
+
+            // 내 색상 로드 및 적용
             int colorIndex = CustomizeManager.Instance.GetPlayerColorIndex(actorNumber);
             if (colorIndex >= 0)
             {
@@ -119,12 +149,27 @@ namespace ColorPicker.InGame
             else
             {
                 Debug.LogWarning($"[LobbyPlayer] No color assigned for actor {actorNumber} after initialization", this);
+            }
+        }
 
-                // GameDataManager 상태 확인
-                if (GameDataManager.Instance != null &&
-                    GameDataManager.Instance.TryGetPublicPlayerDataByActorId(actorNumber, out var playerData))
+        /// <summary>
+        /// 씬에 있는 모든 LobbyPlayer에게 색상 적용
+        /// </summary>
+        private void ApplyAllPlayerColors()
+        {
+            var allLobbyPlayers = FindObjectsOfType<LobbyPlayer>();
+            foreach (var lobbyPlayer in allLobbyPlayers)
+            {
+                if (lobbyPlayer == null || lobbyPlayer.photonView == null) continue;
+
+                int playerActorNum = lobbyPlayer.photonView.Owner.ActorNumber;
+                int playerColorIndex = CustomizeManager.Instance.GetPlayerColorIndex(playerActorNum);
+
+                if (playerColorIndex >= 0)
                 {
-                    Debug.LogWarning($"[LobbyPlayer] PlayerData exists but customization data is missing for {playerData.nickname}");
+                    Color playerColor = CustomizeManager.Instance.GetColor(playerColorIndex);
+                    lobbyPlayer.ApplyCustomizeColor(playerColor);
+                    Debug.Log($"[LobbyPlayer] Applied color {playerColorIndex} to existing player {playerActorNum}");
                 }
             }
         }
