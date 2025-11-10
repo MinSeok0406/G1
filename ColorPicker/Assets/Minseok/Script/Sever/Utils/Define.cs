@@ -12,6 +12,8 @@ namespace Minseok
             Login,
             Lobby,
             InLocal,
+            InMainMenu,
+            InGame,
             Game,
         }
 

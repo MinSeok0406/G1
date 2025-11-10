@@ -3,30 +3,17 @@
 public static class bl_JoystickUtils
 {
 
-    public static Vector3 TouchPosition(this Canvas _Canvas,int touchID)
+    /// <summary>
+    /// 스크린 좌표를 Canvas 기준(Overlay/Camera 모두) 좌표로 변환
+    /// </summary>
+    public static Vector3 ToCanvasPosition(this Canvas canvas, Vector2 screenPos)
     {
-        Vector3 Return = Vector3.zero;
+        if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            return screenPos;
 
-        if (_Canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-        {
-#if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
-            Return = Input.GetTouch(touchID).position;
-#else
-            Return = Input.mousePosition;
-#endif
-        }
-        else if (_Canvas.renderMode == RenderMode.ScreenSpaceCamera)
-        {
-            Vector2 tempVector = Vector2.zero;
-#if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
-           Vector3 pos = Input.GetTouch(touchID).position;
-#else
-            Vector3 pos = Input.mousePosition;
-#endif
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(_Canvas.transform as RectTransform, pos, _Canvas.worldCamera, out tempVector);
-            Return = _Canvas.transform.TransformPoint(tempVector);
-        }
-
-        return Return;
+        var rt = canvas.transform as RectTransform;
+        var cam = canvas.worldCamera;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, screenPos, cam, out var local);
+        return canvas.transform.TransformPoint(local);
     }
 }
