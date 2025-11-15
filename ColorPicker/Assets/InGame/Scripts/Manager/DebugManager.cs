@@ -1,3 +1,6 @@
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 using Photon.Pun;
 using UnityEngine;
 
@@ -39,43 +42,87 @@ namespace ColorPicker.InGame
             if (!enableDebugMode) return;
 
             // 디버그 메뉴 토글
-            if (Input.GetKeyDown(debugMenuKey))
+            if (IsKeyDown(debugMenuKey))
             {
                 _showDebugMenu = !_showDebugMenu;
             }
 
             // 단축키 체크
-            if (Input.GetKeyDown(forceWinCitizenKey))
+            if (IsKeyDown(forceWinCitizenKey))
             {
                 Debug_ForceWin(0);
             }
 
-            if (Input.GetKeyDown(forceWinMafiaKey))
+            if (IsKeyDown(forceWinMafiaKey))
             {
                 Debug_ForceWin(1);
             }
 
-            if (Input.GetKeyDown(startRoundKey))
+            if (IsKeyDown(startRoundKey))
             {
                 Debug_StartRound();
             }
 
-            if (Input.GetKeyDown(endRoundKey))
+            if (IsKeyDown(endRoundKey))
             {
                 Debug_EndRound();
             }
 
-            if (Input.GetKeyDown(startBodyReportMeetingKey))
+            if (IsKeyDown(startBodyReportMeetingKey))
             {
                 Debug_StartBodyReportMeeting();
             }
 
-            if (Input.GetKeyDown(startEmergencyMeetingKey))
+            if (IsKeyDown(startEmergencyMeetingKey))
             {
                 Debug_StartEmergencyMeeting();
             }
 #endif
         }
+
+        /// <summary>
+        /// 키 입력 체크 (새 Input System과 레거시 모두 지원)
+        /// </summary>
+        private bool IsKeyDown(KeyCode keyCode)
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = Keyboard.current;
+            if (kb == null) return false;
+
+            // KeyCode를 Key로 변환
+            var key = ConvertKeyCodeToKey(keyCode);
+            if (key == Key.None) return false;
+
+            return kb[key].wasPressedThisFrame;
+#else
+            return Input.GetKeyDown(keyCode);
+#endif
+        }
+
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+        /// <summary>
+        /// KeyCode를 새 Input System의 Key로 변환
+        /// </summary>
+        private Key ConvertKeyCodeToKey(KeyCode keyCode)
+        {
+            return keyCode switch
+            {
+                KeyCode.F1 => Key.F1,
+                KeyCode.F2 => Key.F2,
+                KeyCode.F3 => Key.F3,
+                KeyCode.F4 => Key.F4,
+                KeyCode.F5 => Key.F5,
+                KeyCode.F6 => Key.F6,
+                KeyCode.F7 => Key.F7,
+                KeyCode.F8 => Key.F8,
+                KeyCode.F9 => Key.F9,
+                KeyCode.F10 => Key.F10,
+                KeyCode.F11 => Key.F11,
+                KeyCode.F12 => Key.F12,
+                _ => Key.None
+            };
+        }
+#endif
 
         private void OnGUI()
         {

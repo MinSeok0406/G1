@@ -14,13 +14,9 @@ namespace ColorPicker.InGame
     [RequireComponent(typeof(CircleCollider2D))]
     public abstract class PlayerControlBase : MonoBehaviourPun
     {
-<<<<<<< HEAD
         [Header("Input Settings")]
-        [SerializeField] protected bl_Joystick joystick;
-
-=======
         [SerializeField] private bl_Joystick _joystick;
->>>>>>> 9ccbd7be9016a3c41e786a51375977596e1b44b2
+
         protected PlayerBase _player;
         protected CircleCollider2D _circleCollider;
         protected float _moveSpeed;
@@ -50,7 +46,6 @@ namespace ColorPicker.InGame
         protected virtual void InitializeComponents()
         {
             _player = GetComponent<PlayerBase>();
-            _joystick = GetComponent<bl_Joystick>();
             _circleCollider = GetComponentInChildren<CircleCollider2D>(includeInactive: true);
 
             ValidateComponents();
@@ -62,13 +57,13 @@ namespace ColorPicker.InGame
         /// </summary>
         protected virtual void InitializeJoystick()
         {
-            if (joystick == null)
+            if (_joystick == null)
             {
-                joystick = FindObjectOfType<bl_Joystick>();
+                _joystick = FindObjectOfType<bl_Joystick>();
 
-                if (joystick != null)
+                if (_joystick != null)
                 {
-                    Debug.Log($"[{GetType().Name}] 조이스틱을 자동으로 찾았습니다: {joystick.name}", this);
+                    Debug.Log($"[{GetType().Name}] 조이스틱을 자동으로 찾았습니다: {_joystick.name}", this);
                 }
             }
         }
@@ -134,36 +129,12 @@ namespace ColorPicker.InGame
 
         /// <summary>
         /// 이동 입력 벡터 가져오기
-        /// 조이스틱 입력 우선, 없으면 키보드 입력 사용
+        /// 조이스틱 입력 우선, 없으면 키보드/게임패드 입력 사용
         /// </summary>
         protected virtual Vector2 GetMovementInput()
         {
-<<<<<<< HEAD
-            float horizontal = 0f;
-            float vertical = 0f;
-
-            // 조이스틱 입력 체크 (우선순위) - 터치 중일 때만
-            if (joystick != null && joystick.IsTouching)
-            {
-                horizontal = joystick.Horizontal;
-                vertical = joystick.Vertical;
-            }
-
-            // 조이스틱 입력이 없으면 키보드 입력 사용
-            if (Mathf.Approximately(horizontal, 0f) && Mathf.Approximately(vertical, 0f))
-            {
-                horizontal = Input.GetAxisRaw("Horizontal");
-                vertical = Input.GetAxisRaw("Vertical");
-            }
-
-            Vector2 direction = new Vector2(horizontal, vertical);
-
-            // 대각선 이동 시 정규화
-            if (horizontal != 0f && vertical != 0f)
-=======
-            // 1) 우선순위: 모바일/온스크린 조이스틱
-            if (_joystick != null)
->>>>>>> 9ccbd7be9016a3c41e786a51375977596e1b44b2
+            // 1) 우선순위: 모바일/온스크린 조이스틱 - 터치 중일 때만
+            if (_joystick != null && _joystick.IsTouching)
             {
                 var j = new Vector2(_joystick.Horizontal, _joystick.Vertical);
                 if (j.sqrMagnitude > 0.0001f)
@@ -194,10 +165,10 @@ namespace ColorPicker.InGame
 
             return Vector2.ClampMagnitude(move, 1f);
 #else
-    // 3) 레거시 입력(구 Input Manager)로 빌드할 때만 사용
-    float h = Input.GetAxisRaw("Horizontal");
-    float v = Input.GetAxisRaw("Vertical");
-    return new Vector2(h, v);
+            // 3) 레거시 입력(구 Input Manager)로 빌드할 때만 사용
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
+            return new Vector2(h, v);
 #endif
         }
 

@@ -25,7 +25,6 @@ public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Image backImage;
     private Canvas m_Canvas;
     private float diff;
-    private Vector3 PressScaleVector;
 
     void Start()
     {
@@ -44,7 +43,6 @@ public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         DeathArea = CenterReference.position;
         diff = CenterReference.position.magnitude;
-        PressScaleVector = new Vector3(OnPressScale, OnPressScale, OnPressScale);
 
         backImage = GetComponent<Image>();
         stickImage = StickRect.GetComponent<Image>();
@@ -141,44 +139,20 @@ public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private float radio => (Radio * 5 + Mathf.Abs((diff - CenterReference.position.magnitude)));
     private float smoothTime => (1 - (SmoothTime));
 
-<<<<<<< HEAD
     /// <summary>
     /// 조이스틱이 현재 터치되어 있는지 여부
     /// </summary>
-    public bool IsTouching
-    {
-        get
-        {
-            return lastId != -2;
-        }
-    }
+    public bool IsTouching => lastPointerId != int.MinValue;
 
     /// <summary>
     /// Value Horizontal of the Joystick
     /// Get this for get the horizontal value of joystick
     /// </summary>
-    public float Horizontal
-    {
-        get
-        {
-            return (StickRect.position.x - DeathArea.x) / Radio;
-        }
-    }
+    public float Horizontal => (StickRect.position.x - DeathArea.x) / Radio;
 
     /// <summary>
     /// Value Vertical of the Joystick
     /// Get this for get the vertical value of joystick
     /// </summary>
-    public float Vertical
-    {
-        get
-        {
-            return (StickRect.position.y - DeathArea.y) / Radio;
-        }
-    }
-}
-=======
-    public float Horizontal => (StickRect.position.x - DeathArea.x) / Radio;
     public float Vertical => (StickRect.position.y - DeathArea.y) / Radio;
 }
->>>>>>> 9ccbd7be9016a3c41e786a51375977596e1b44b2

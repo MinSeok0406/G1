@@ -870,7 +870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7186f8a38ceeab949809a35ba1e3d1f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joystick: {fileID: 0}
+  _joystick: {fileID: 0}
 --- !u!114 &4869805244156693485
 MonoBehaviour:
   m_ObjectHideFlags: 0

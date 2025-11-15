@@ -26,13 +26,6 @@ namespace ColorPicker.InGame
         // ====== Utility ======
         private bool IsHost => PhotonNetwork.IsMasterClient;
 
-#if UNITY_EDITOR
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F1))
-                DumpMaps();
-        }
-#endif
 
         protected override void Awake()
         {
