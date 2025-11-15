@@ -5,83 +5,62 @@ using System.Collections;
 
 public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
-
     [Header("Settings")]
-    [SerializeField, Range(1, 15)]private float Radio = 5;//the ratio of the circumference of the joystick
-    [SerializeField, Range(0.01f, 1)]private float SmoothTime = 0.5f;//return to default position speed
-    [SerializeField, Range(0.5f, 4)] private float OnPressScale = 1.5f;//return to default position speed
+    [SerializeField, Range(1, 15)] private float Radio = 5;
+    [SerializeField, Range(0.01f, 1)] private float SmoothTime = 0.5f;
+    [SerializeField, Range(0.5f, 4)] private float OnPressScale = 1.5f;
     public Color NormalColor = new Color(1, 1, 1, 1);
     public Color PressColor = new Color(1, 1, 1, 1);
-    [SerializeField, Range(0.1f, 5)]private float Duration = 1;
+    [SerializeField, Range(0.1f, 5)] private float Duration = 1;
 
     [Header("Reference")]
-    [SerializeField]private RectTransform StickRect;//The middle joystick UI
+    [SerializeField] private RectTransform StickRect;
     [SerializeField] private RectTransform CenterReference;
 
-    //Privates
     private Vector3 DeathArea;
     private Vector3 currentVelocity;
     private bool isFree = false;
-    private int lastId = -2;
+    private int lastPointerId = int.MinValue; // 현재 드래그 중 포인터ID
     private Image stickImage;
     private Image backImage;
     private Canvas m_Canvas;
     private float diff;
     private Vector3 PressScaleVector;
 
-    /// <summary>
-    /// 
-    /// </summary>
     void Start()
     {
         if (StickRect == null)
         {
             Debug.LogError("Please add the stick for joystick work!.");
-            this.enabled = false;
-            return;
+            enabled = false; return;
         }
 
-        if (transform.root.GetComponent<Canvas>() != null)
+        m_Canvas = transform.root.GetComponentInChildren<Canvas>();
+        if (m_Canvas == null)
         {
-            m_Canvas = transform.root.GetComponent<Canvas>();
+            Debug.LogError("Required at least one canvas for joystick work!");
+            enabled = false; return;
         }
-        else if (transform.root.GetComponentInChildren<Canvas>() != null)
-        {
-            m_Canvas = transform.root.GetComponentInChildren<Canvas>();
-        }
-        else
-        {
-            Debug.LogError("Required at lest one canvas for joystick work.!");
-            this.enabled = false;
-            return;
-        }
-       
-        //Get the default area of joystick
+
         DeathArea = CenterReference.position;
         diff = CenterReference.position.magnitude;
         PressScaleVector = new Vector3(OnPressScale, OnPressScale, OnPressScale);
-        if (GetComponent<Image>() != null)
+
+        backImage = GetComponent<Image>();
+        stickImage = StickRect.GetComponent<Image>();
+        if (backImage != null)
         {
-            backImage = GetComponent<Image>();
-            stickImage = StickRect.GetComponent<Image>();
             backImage.CrossFadeColor(NormalColor, 0.1f, true, true);
             stickImage.CrossFadeColor(NormalColor, 0.1f, true, true);
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     void Update()
     {
         DeathArea = CenterReference.position;
-        //If this not free (not touched) then not need continue
-        if (!isFree)
-            return;
+        if (!isFree) return;
 
-        //Return to default position with a smooth movement
         StickRect.position = Vector3.SmoothDamp(StickRect.position, DeathArea, ref currentVelocity, smoothTime);
-        //When is in default position, we not need continue update this
         if (Vector3.Distance(StickRect.position, DeathArea) < .1f)
         {
             isFree = false;
@@ -89,126 +68,80 @@ public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    /// <summary>
-    /// When click here event
-    /// </summary>
-    /// <param name="data"></param>
     public void OnPointerDown(PointerEventData data)
     {
-        //Detect if is the default touchID
-        if (lastId == -2)
+        if (lastPointerId != int.MinValue) return;
+
+        lastPointerId = data.pointerId;
+        StopAllCoroutines();
+        StartCoroutine(ScaleJoystick(true));
+
+        // 이벤트 좌표 사용
+        Vector3 pos = m_Canvas.ToCanvasPosition(data.position);
+        MoveStick(pos);
+
+        if (backImage != null)
         {
-            //then get the current id of the current touch.
-            //this for avoid that other touch can take effect in the drag position event.
-            //we only need get the position of this touch
-            lastId = data.pointerId;
-            StopAllCoroutines();
-            StartCoroutine(ScaleJoysctick(true));
-            OnDrag(data);
-            if (backImage != null)
-            {
-                backImage.CrossFadeColor(PressColor, Duration, true, true);
-                stickImage.CrossFadeColor(PressColor, Duration, true, true);
-            }
+            backImage.CrossFadeColor(PressColor, Duration, true, true);
+            stickImage.CrossFadeColor(PressColor, Duration, true, true);
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="data"></param>
     public void OnDrag(PointerEventData data)
     {
-        //If this touch id is the first touch in the event
-        if (data.pointerId == lastId)
-        {
-            isFree = false;
-            //Get Position of current touch
-            Vector3 position = bl_JoystickUtils.TouchPosition(m_Canvas,GetTouchID);
+        if (data.pointerId != lastPointerId) return;
 
-            //Rotate into the area circumferential of joystick
-            if (Vector2.Distance(DeathArea, position) < radio)
-            {
-                StickRect.position = position;
-            }
-            else
-            {
-                StickRect.position = DeathArea + (position - DeathArea).normalized * radio;
-            }
-        }
+        isFree = false;
+
+        Vector3 pos = m_Canvas.ToCanvasPosition(data.position);
+        MoveStick(pos);
     }
 
-    /// <summary>
-    /// When touch is Up
-    /// </summary>
-    /// <param name="data"></param>
     public void OnPointerUp(PointerEventData data)
     {
+        if (data.pointerId != lastPointerId) return;
+
         isFree = true;
         currentVelocity = Vector3.zero;
-        //leave the default id again
-        if (data.pointerId == lastId)
+        lastPointerId = int.MinValue;
+
+        StopAllCoroutines();
+        StartCoroutine(ScaleJoystick(false));
+
+        if (backImage != null)
         {
-            //-2 due -1 is the first touch id
-            lastId = -2;
-            StopAllCoroutines();
-            StartCoroutine(ScaleJoysctick(false));
-            if (backImage != null)
-            {
-                backImage.CrossFadeColor(NormalColor, Duration, true, true);
-                stickImage.CrossFadeColor(NormalColor, Duration, true, true);
-            }
+            backImage.CrossFadeColor(NormalColor, Duration, true, true);
+            stickImage.CrossFadeColor(NormalColor, Duration, true, true);
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator ScaleJoysctick(bool increase)
+    private void MoveStick(Vector3 position)
     {
-        float _time = 0;
-
-            while (_time < Duration)
-            {
-                Vector3 v = StickRect.localScale;
-            if (increase)
-            {
-                v = Vector3.Lerp(StickRect.localScale, PressScaleVector, (_time / Duration));
-            }
-            else
-            {
-                v = Vector3.Lerp(StickRect.localScale, Vector3.one, (_time / Duration));
-            }
-            StickRect.localScale = v;
-                _time += Time.deltaTime;
-                yield return null;
-            }
+        if (Vector2.Distance(DeathArea, position) < radio)
+            StickRect.position = position;
+        else
+            StickRect.position = DeathArea + (position - DeathArea).normalized * radio;
     }
-    
 
-    /// <summary>
-    /// Get the touch by the store touchID 
-    /// </summary>
-    public int GetTouchID
+    IEnumerator ScaleJoystick(bool increase)
     {
-        get
+        float t = 0f;
+        Vector3 from = StickRect.localScale;
+        Vector3 to = increase ? new Vector3(OnPressScale, OnPressScale, OnPressScale) : Vector3.one;
+
+        while (t < Duration)
         {
-            //find in all touches
-            for (int i = 0; i < Input.touches.Length; i++)
-            {
-                if (Input.touches[i].fingerId == lastId)
-                {
-                    return i;
-                }
-            }
-            return -1;
+            StickRect.localScale = Vector3.Lerp(from, to, t / Duration);
+            t += Time.deltaTime;
+            yield return null;
         }
+        StickRect.localScale = to;
     }
 
-    private float radio { get { return (Radio * 5 + Mathf.Abs((diff - CenterReference.position.magnitude))); } }
-    private float smoothTime { get { return (1 - (SmoothTime)); } }
+    private float radio => (Radio * 5 + Mathf.Abs((diff - CenterReference.position.magnitude)));
+    private float smoothTime => (1 - (SmoothTime));
 
+<<<<<<< HEAD
     /// <summary>
     /// 조이스틱이 현재 터치되어 있는지 여부
     /// </summary>
@@ -244,3 +177,8 @@ public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 }
+=======
+    public float Horizontal => (StickRect.position.x - DeathArea.x) / Radio;
+    public float Vertical => (StickRect.position.y - DeathArea.y) / Radio;
+}
+>>>>>>> 9ccbd7be9016a3c41e786a51375977596e1b44b2

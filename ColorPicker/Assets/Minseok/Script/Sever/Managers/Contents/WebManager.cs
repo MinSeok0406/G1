@@ -68,14 +68,32 @@ namespace Minseok
                 var responseText = uwr.downloadHandler?.text;
                 Debug.Log($"[HTTP][OK] len={(responseText?.Length ?? 0)}");
 
+                // 1) 파싱만 시도
+                T resObj;
                 try
                 {
-                    var resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(responseText);
+                    resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(
+                        responseText,
+                        new Newtonsoft.Json.JsonSerializerSettings
+                        {
+                            MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore,
+                            NullValueHandling = Newtonsoft.Json.NullValueHandling.Include
+                        });
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[HTTP][PARSE] {e}\ntext: {responseText}");
+                    yield break;
+                }
+
+                // 2) 콜백은 별도 try/catch로
+                try
+                {
                     res?.Invoke(resObj);
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"[HTTP][PARSE] {e.Message}\ntext: {responseText}");
+                    Debug.LogError($"[HTTP][HANDLER] {e}");
                 }
             }
         }

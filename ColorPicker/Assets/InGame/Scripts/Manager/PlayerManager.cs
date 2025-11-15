@@ -2,6 +2,7 @@
 using Photon.Pun;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ColorPicker.InGame
 {
@@ -21,10 +22,18 @@ namespace ColorPicker.InGame
 
         void Update()
         {
-            if(Input.GetKeyDown(KeyCode.P))
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = Keyboard.current;
+            if (kb != null && kb.pKey.wasPressedThisFrame)
             {
                 Debug.Log("[PlayerManager] myplayer: " + (myPlayer ? myPlayer.name : "null"));
             }
+#else
+    if (Input.GetKeyDown(KeyCode.P))
+    {
+        Debug.Log("[PlayerManager] myplayer: " + (myPlayer ? myPlayer.name : "null"));
+    }
+#endif
         }
         protected override void Awake()
         {

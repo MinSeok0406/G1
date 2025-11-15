@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem; // Keyboard, Gamepad, Mouse, Touchscreen
+using UnityEngine.InputSystem.Controls;
+#endif
+using UnityEngine;
 
 namespace ColorPicker.InGame
 {
@@ -18,6 +22,19 @@ namespace ColorPicker.InGame
         {
             get => _interactionHandler?.CurrentInteractive;
             set => _interactionHandler?.SetCurrentInteractive(value);
+        }
+
+        // 탭 키 홀드 여부(새 입력/레거시 모두 지원)
+        private bool IsTabHeld()
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            var kb = Keyboard.current;
+            // kb가 null일 수도 있으니 널 가드
+            return kb != null && (kb.tabKey?.isPressed ?? false);
+#else
+    // 레거시 입력 병행 또는 Old 모드
+    return Input.GetKey(KeyCode.Tab);
+#endif
         }
 
         public InteractionDetector InteractionDetector => _interactionDetector;
@@ -77,8 +94,8 @@ namespace ColorPicker.InGame
         /// </summary>
         private void HandleSlotUIInput()
         {
-            bool isTabPressed = Input.GetKey(KeyCode.Tab);
-            _slotUIHandler?.UpdateVisibility(isTabPressed);
+            bool isTabHeld = IsTabHeld();
+            _slotUIHandler?.UpdateVisibility(isTabHeld);
         }
 
         /// <summary>

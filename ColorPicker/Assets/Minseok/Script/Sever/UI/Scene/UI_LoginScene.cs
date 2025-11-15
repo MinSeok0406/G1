@@ -1,5 +1,6 @@
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -22,12 +23,6 @@ namespace Minseok
         [SerializeField] 
         private GameObject Button;
 
-        [SerializeField]
-        private TMP_Text test;
-
-        [SerializeField]
-        private TMP_Text test2;
-
         public ServerInfo Info { get; set; }
 
         public override void Init()
@@ -44,8 +39,6 @@ namespace Minseok
         {
             if (status == SignInStatus.Success)
             {
-                test2.text = Managers.Web.BuildUrl("account/create");
-
                 string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
                 string account = PlayGamesPlatform.Instance.GetUserId();
 
@@ -55,7 +48,6 @@ namespace Minseok
                 if (string.IsNullOrEmpty(account))
                 {
                     Debug.Log("구글 로그인은 성공했지만 account(UserId)가 없음");
-                    test.text = "account가 없음";
                     return;
                 }
 
@@ -68,18 +60,14 @@ namespace Minseok
                 Managers.Web.SendPostRequest<CreateAccountPacketRes>("account/create", packet, (res) =>
                 {
                     Debug.Log(res.CreateOk);
-                    test.text = res.CreateOk.ToString();
                     Button.SetActive(true);
                 });
-
-                test.text = ServerConfig.BaseUri.ToString();
             }
             else
             {
                 Debug.Log("로그인 실패");
                 googleID.text = "가져오기 실패";
                 Name.text = "가져오기 실패";
-                test.text = "가져오기 실패";
             }
         }
 
@@ -97,22 +85,47 @@ namespace Minseok
 
             Managers.Web.SendPostRequest<LoginAccountPacketRes>("account/login", packet, (res) =>
             {
-                Debug.Log(res.LoginOk);
-
-                if (res.LoginOk)
+                try
                 {
-                    test.text = "LoginOk 여기까지 옴";
+                    Debug.Log($"[LOGIN] ok={res?.LoginOk}, id={res?.AccountId}, name={res?.Name}");
+
+                    if (res == null)
+                    {
+                        Debug.LogError("[LOGIN] Response object is null");
+                        return;
+                    }
+
+                    if (!res.LoginOk)
+                    {
+                        return;
+                    }
+
+                    // 1) Managers.Network 존재 확인
+                    if (Managers.Network == null)
+                    {
+                        Debug.LogError("[LOGIN] Managers.Network is NULL. 네트워크 매니저 프리팹/오브젝트가 씬에 있는지, 초기화됐는지 확인하세요.");
+                        return;
+                    }
+
+                    // 2) 필드 설정
                     Managers.Network.AccountId = res.AccountId;
                     Managers.Network.Token = res.Token;
                     Managers.Network.GoogleID = res.GoogleID;
                     Managers.Network.UserName = res.Name;
 
+                    // 3) 서버 선택
                     ServerInfo chosen = null;
-                    if (res.ServerList != null && res.ServerList.Count > 0)
+                    var list = res.ServerList;
+                    if (list != null)
                     {
-                        res.ServerList.Sort((a, b) => a.BusyScore.CompareTo(b.BusyScore));
-                        chosen = res.ServerList[0];
-                        test.text = "chosen 없어서 여기 옴";
+                        // 잘못된 엔트리 제거(포트 0, 주소 빈 값 등)
+                        list.RemoveAll(s => string.IsNullOrWhiteSpace(s.IpAddress) || s.Port <= 0);
+                    }
+
+                    if (list != null && list.Count > 0)
+                    {
+                        list.Sort((a, b) => a.BusyScore.CompareTo(b.BusyScore));
+                        chosen = list[0];
                     }
                     else
                     {
@@ -123,14 +136,24 @@ namespace Minseok
                             Port = ServerConfig.GamePortFallback,
                             BusyScore = 0
                         };
-
-                        test.text = "chosen 있어서 여기 옴";
                     }
+
+                    if (chosen == null)
+                    {
+                        Debug.LogError("[LOGIN] No server available (chosen == null)");
+                        return;
+                    }
+
+                    Debug.Log($"[LOGIN] chosen server = {chosen.Name} {chosen.IpAddress}:{chosen.Port}");
 
                     Info = chosen;
 
                     Managers.Network.ConnectToGame(Info);
                     Managers.Scene.LoadScene(Define.Scene.Lobby);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LOGIN][HANDLER] {ex}");
                 }
 
             });

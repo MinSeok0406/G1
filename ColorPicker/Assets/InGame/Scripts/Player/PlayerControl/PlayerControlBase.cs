@@ -1,3 +1,7 @@
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;   // Gamepad.current, Keyboard.current, Touchscreen.current
+#endif
+
 using Photon.Pun;
 using UnityEngine;
 
@@ -10,9 +14,13 @@ namespace ColorPicker.InGame
     [RequireComponent(typeof(CircleCollider2D))]
     public abstract class PlayerControlBase : MonoBehaviourPun
     {
+<<<<<<< HEAD
         [Header("Input Settings")]
         [SerializeField] protected bl_Joystick joystick;
 
+=======
+        [SerializeField] private bl_Joystick _joystick;
+>>>>>>> 9ccbd7be9016a3c41e786a51375977596e1b44b2
         protected PlayerBase _player;
         protected CircleCollider2D _circleCollider;
         protected float _moveSpeed;
@@ -42,6 +50,7 @@ namespace ColorPicker.InGame
         protected virtual void InitializeComponents()
         {
             _player = GetComponent<PlayerBase>();
+            _joystick = GetComponent<bl_Joystick>();
             _circleCollider = GetComponentInChildren<CircleCollider2D>(includeInactive: true);
 
             ValidateComponents();
@@ -127,8 +136,9 @@ namespace ColorPicker.InGame
         /// 이동 입력 벡터 가져오기
         /// 조이스틱 입력 우선, 없으면 키보드 입력 사용
         /// </summary>
-        protected Vector2 GetMovementInput()
+        protected virtual Vector2 GetMovementInput()
         {
+<<<<<<< HEAD
             float horizontal = 0f;
             float vertical = 0f;
 
@@ -150,11 +160,45 @@ namespace ColorPicker.InGame
 
             // 대각선 이동 시 정규화
             if (horizontal != 0f && vertical != 0f)
+=======
+            // 1) 우선순위: 모바일/온스크린 조이스틱
+            if (_joystick != null)
+>>>>>>> 9ccbd7be9016a3c41e786a51375977596e1b44b2
             {
-                direction.Normalize();
+                var j = new Vector2(_joystick.Horizontal, _joystick.Vertical);
+                if (j.sqrMagnitude > 0.0001f)
+                {
+                    return Vector2.ClampMagnitude(j, 1f);
+                }
             }
 
-            return direction;
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            // 2) 새 Input System 읽기 (키보드/패드)
+            var move = Vector2.zero;
+
+            // 키보드 WASD/화살표
+            var kb = Keyboard.current;
+            if (kb != null)
+            {
+                float x = 0f, y = 0f;
+                if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) x -= 1f;
+                if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) x += 1f;
+                if (kb.wKey.isPressed || kb.upArrowKey.isPressed) y += 1f;
+                if (kb.sKey.isPressed || kb.downArrowKey.isPressed) y -= 1f;
+                move += new Vector2(x, y);
+            }
+
+            // 게임패드 좌스틱
+            if (Gamepad.current != null)
+                move += Gamepad.current.leftStick.ReadValue();
+
+            return Vector2.ClampMagnitude(move, 1f);
+#else
+    // 3) 레거시 입력(구 Input Manager)로 빌드할 때만 사용
+    float h = Input.GetAxisRaw("Horizontal");
+    float v = Input.GetAxisRaw("Vertical");
+    return new Vector2(h, v);
+#endif
         }
 
         /// <summary>
