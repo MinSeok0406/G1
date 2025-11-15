@@ -210,6 +210,17 @@ public class bl_Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private float smoothTime { get { return (1 - (SmoothTime)); } }
 
     /// <summary>
+    /// 조이스틱이 현재 터치되어 있는지 여부
+    /// </summary>
+    public bool IsTouching
+    {
+        get
+        {
+            return lastId != -2;
+        }
+    }
+
+    /// <summary>
     /// Value Horizontal of the Joystick
     /// Get this for get the horizontal value of joystick
     /// </summary>

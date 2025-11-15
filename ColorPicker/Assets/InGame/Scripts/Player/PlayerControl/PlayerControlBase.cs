@@ -10,6 +10,9 @@ namespace ColorPicker.InGame
     [RequireComponent(typeof(CircleCollider2D))]
     public abstract class PlayerControlBase : MonoBehaviourPun
     {
+        [Header("Input Settings")]
+        [SerializeField] protected bl_Joystick joystick;
+
         protected PlayerBase _player;
         protected CircleCollider2D _circleCollider;
         protected float _moveSpeed;
@@ -22,6 +25,7 @@ namespace ColorPicker.InGame
         protected virtual void Awake()
         {
             InitializeComponents();
+            InitializeJoystick();
             CacheSettings();
         }
 
@@ -41,6 +45,23 @@ namespace ColorPicker.InGame
             _circleCollider = GetComponentInChildren<CircleCollider2D>(includeInactive: true);
 
             ValidateComponents();
+        }
+
+        /// <summary>
+        /// 조이스틱 초기화
+        /// 할당되지 않은 경우 씬에서 자동으로 찾기
+        /// </summary>
+        protected virtual void InitializeJoystick()
+        {
+            if (joystick == null)
+            {
+                joystick = FindObjectOfType<bl_Joystick>();
+
+                if (joystick != null)
+                {
+                    Debug.Log($"[{GetType().Name}] 조이스틱을 자동으로 찾았습니다: {joystick.name}", this);
+                }
+            }
         }
 
         /// <summary>
@@ -104,11 +125,26 @@ namespace ColorPicker.InGame
 
         /// <summary>
         /// 이동 입력 벡터 가져오기
+        /// 조이스틱 입력 우선, 없으면 키보드 입력 사용
         /// </summary>
         protected Vector2 GetMovementInput()
         {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
+            float horizontal = 0f;
+            float vertical = 0f;
+
+            // 조이스틱 입력 체크 (우선순위) - 터치 중일 때만
+            if (joystick != null && joystick.IsTouching)
+            {
+                horizontal = joystick.Horizontal;
+                vertical = joystick.Vertical;
+            }
+
+            // 조이스틱 입력이 없으면 키보드 입력 사용
+            if (Mathf.Approximately(horizontal, 0f) && Mathf.Approximately(vertical, 0f))
+            {
+                horizontal = Input.GetAxisRaw("Horizontal");
+                vertical = Input.GetAxisRaw("Vertical");
+            }
 
             Vector2 direction = new Vector2(horizontal, vertical);
 
